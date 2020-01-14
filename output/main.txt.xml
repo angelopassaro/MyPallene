@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Program>
+  <Global>
+    <VarDecl>
+      <Id lexeme="b"/>
+      <PrimitiveType kind="INT"/>
+      <VarInitValue>
+        <IntegerConst value="0"/>
+      </VarInitValue>
+    </VarDecl>
+    <VarDecl>
+      <Id lexeme="a"/>
+      <PrimitiveType kind="INT"/>
+      <VarInitValue>
+        <IntegerConst value="0"/>
+      </VarInitValue>
+    </VarDecl>
+    <VarDecl>
+      <Id lexeme="select"/>
+      <PrimitiveType kind="INT"/>
+      <VarInitValue>
+        <IntegerConst value="1"/>
+      </VarInitValue>
+    </VarDecl>
+  </Global>
+  <Function>
+    <Id lexeme="menu"/>
+    <PrimitiveType kind="NIL"/>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <ReadStatement>
+      <Id lexeme="select"/>
+    </ReadStatement>
+  </Function>
+  <Function>
+    <Id lexeme="sum"/>
+    <PrimitiveType kind="INT"/>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <ReadStatement>
+      <Id lexeme="a"/>
+      <Id lexeme="b"/>
+    </ReadStatement>
+    <ReturnStatement>
+      <PlusOp>
+        <Id lexeme="a"/>
+        <Id lexeme="b"/>
+      </PlusOp>
+    </ReturnStatement>
+  </Function>
+  <Function>
+    <Id lexeme="sub"/>
+    <PrimitiveType kind="INT"/>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <ReadStatement>
+      <Id lexeme="a"/>
+      <Id lexeme="b"/>
+    </ReadStatement>
+    <ReturnStatement>
+      <MinusOp>
+        <Id lexeme="a"/>
+        <Id lexeme="b"/>
+      </MinusOp>
+    </ReturnStatement>
+  </Function>
+  <Function>
+    <Id lexeme="mul"/>
+    <PrimitiveType kind="INT"/>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <ReadStatement>
+      <Id lexeme="a"/>
+      <Id lexeme="b"/>
+    </ReadStatement>
+    <ReturnStatement>
+      <TimesOp>
+        <Id lexeme="a"/>
+        <Id lexeme="b"/>
+      </TimesOp>
+    </ReturnStatement>
+  </Function>
+  <Function>
+    <Id lexeme="div"/>
+    <PrimitiveType kind="INT"/>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <ReadStatement>
+      <Id lexeme="a"/>
+      <Id lexeme="b"/>
+    </ReadStatement>
+    <ReturnStatement>
+      <DivOp>
+        <Id lexeme="a"/>
+        <Id lexeme="b"/>
+      </DivOp>
+    </ReturnStatement>
+  </Function>
+  <Function>
+    <Id lexeme="square"/>
+    <PrimitiveType kind="INT"/>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <ReadStatement>
+      <Id lexeme="a"/>
+    </ReadStatement>
+    <ReturnStatement>
+      <TimesOp>
+        <Id lexeme="a"/>
+        <Id lexeme="a"/>
+      </TimesOp>
+    </ReturnStatement>
+  </Function>
+  <Function>
+    <Id lexeme="main"/>
+    <PrimitiveType kind="NIL"/>
+    <WriteStatement>
+      <StringConst text=""/>
+    </WriteStatement>
+    <WriteStatement>
+      <Id lexeme="a"/>
+    </WriteStatement>
+  </Function>
+</Program>

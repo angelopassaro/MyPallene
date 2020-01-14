@@ -1,0 +1,77 @@
+global
+    select: int = 1;
+    a: int = 0;
+    b: int = 0
+end
+
+
+function menu(): nil
+    "Inserisci un numero da 1 a 5 per effettuare un operazione:" ==>;
+    "(1) Addizione" ==>;
+    "(2) Sottrazione" ==>;
+    "(3) Moltiplicazione" ==>;
+    "(4) Divisione" ==>;
+    "(5) Quadrato" ==>;
+    "(0) Esci" ==>;
+    select <==
+end
+
+function sum(): int
+    "Inserisci due numeri per la somma (a + b)" ==>;
+     a, b <==;
+     return a + b
+end
+
+function sub(): int
+    "Inserisci due numeri per la sottrazione (a - b)" ==>;
+     a, b <==;
+     return a - b
+end
+
+function mul(): int
+    "Inserisci due numeri per la somma (a * b)" ==>;
+     a, b <==;
+     return a * b
+end
+
+function div(): int
+    "Inserisci due numeri per la somma (a / b)" ==>;
+     a, b <==;
+     return a / b
+end
+
+function square(): int
+    "Inserisci il numero per il quadrato (a * a)" ==>;
+     a <==;
+     return a * a
+end
+
+function main(): nil
+    "MyPallene demo" ==>;
+    menu()
+
+    while select != 0 do
+
+        if select == 1 then
+            sum() ==>
+        end
+
+        if select == 2 then
+           sub() ==>
+        end
+
+        if select == 3 then
+            mul() ==>
+        end
+
+        if select == 4 then
+            div() ==>
+        end
+
+        if select == 5 then
+            square() ==>
+        end
+
+        menu()
+    end
+end

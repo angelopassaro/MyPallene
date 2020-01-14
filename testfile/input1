@@ -1,0 +1,7 @@
+global
+    t:float = 0
+end
+
+function a (q:float): bool
+    x = 1
+end
