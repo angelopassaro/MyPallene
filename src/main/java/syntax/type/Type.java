@@ -1,10 +1,13 @@
 package syntax.type;
 
-import syntax.AstNode;
 
-public abstract class Type extends AstNode {
+public interface Type {
 
-    public Type(int leftLocation, int rightLocation) {
-        super(leftLocation, rightLocation);
-    }
+    PrimitiveType checkAdd(PrimitiveType type);
+
+    PrimitiveType checkSub(PrimitiveType type);
+
+    PrimitiveType checkMul(PrimitiveType type);
+
+    PrimitiveType checkDiv(PrimitiveType type);
 }
