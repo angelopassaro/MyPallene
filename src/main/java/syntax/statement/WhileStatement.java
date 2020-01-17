@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import visitor.Visitor;
 
@@ -16,7 +17,7 @@ public class WhileStatement extends Statement {
      * @param expr       The expr
      * @param statements The statements
      */
-    public WhileStatement(int leftLocation,int rightLocation, Expr expr, LinkedList<Statement> statements) {
+    public WhileStatement(Location leftLocation, Location rightLocation, Expr expr, LinkedList<Statement> statements) {
         super(leftLocation, rightLocation);
         this.expr = expr;
         this.statements = statements;

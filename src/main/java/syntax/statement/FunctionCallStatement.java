@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import syntax.expression.Id;
 import visitor.Visitor;
@@ -13,10 +14,10 @@ public class FunctionCallStatement extends Statement {
     /**
      * {@inheritDoc}
      *
-     * @param id   The id
+     * @param id    The id
      * @param exprs The expr
      */
-    public FunctionCallStatement(int leftLocation,int rightLocation, Id id, LinkedList<Expr> exprs) {
+    public FunctionCallStatement(Location leftLocation, Location rightLocation, Id id, LinkedList<Expr> exprs) {
         super(leftLocation, rightLocation);
         this.id = id;
         this.exprs = exprs;

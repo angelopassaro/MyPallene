@@ -1,6 +1,7 @@
 package syntax.expression.binaryexpr.relop;
 
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import visitor.Visitor;
 
@@ -14,7 +15,7 @@ public class AndOp extends Expr {
      * @param element1 The element1
      * @param element2 The element2
      */
-    public AndOp(int leftLocation, int rightLocation, Expr element1, Expr element2) {
+    public AndOp(Location leftLocation, Location rightLocation, Expr element1, Expr element2) {
         super(leftLocation, rightLocation);
         this.element1 = element1;
         this.element2 = element2;

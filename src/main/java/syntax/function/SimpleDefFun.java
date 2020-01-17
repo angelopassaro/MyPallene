@@ -1,5 +1,6 @@
 package syntax.function;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Id;
 import syntax.statement.Statement;
 import syntax.type.Type;
@@ -20,7 +21,7 @@ public class SimpleDefFun extends Function {
      * @param type          The function return syntax.type
      * @param statements    The statements
      */
-    public SimpleDefFun(int leftLocation, int rightLocation, Id id, Type type, LinkedList<Statement> statements) {
+    public SimpleDefFun(Location leftLocation, Location rightLocation, Id id, Type type, LinkedList<Statement> statements) {
         super(leftLocation, rightLocation);
         this.id = id;
         this.type = type;

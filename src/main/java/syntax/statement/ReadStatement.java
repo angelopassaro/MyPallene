@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Id;
 import visitor.Visitor;
 
@@ -14,7 +15,7 @@ public class ReadStatement extends Statement {
      *
      * @param ids The id
      */
-    public ReadStatement(int leftLocation, int rightLocation, LinkedList<Id> ids) {
+    public ReadStatement(Location leftLocation, Location rightLocation, LinkedList<Id> ids) {
         super(leftLocation, rightLocation);
         this.ids = ids;
     }

@@ -1,5 +1,6 @@
 package syntax.expression.unaryexpr;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.BooleanExp;
 import syntax.expression.Expr;
 import visitor.Visitor;
@@ -13,7 +14,7 @@ public class NotExpression extends BooleanExp {
      *
      * @param not The not
      */
-    public NotExpression(int leftLocation, int rightLocation, Expr not) {
+    public NotExpression(Location leftLocation, Location rightLocation, Expr not) {
         super(leftLocation, rightLocation);
         this.not = not;
     }

@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import syntax.expression.Id;
 import visitor.Visitor;
@@ -14,7 +15,7 @@ public class AssignStatement extends Statement {
      *
      * @param expr The expr
      */
-    public AssignStatement(int leftLocation, int rightLocation,Id id, Expr expr) {
+    public AssignStatement(Location leftLocation, Location rightLocation, Id id, Expr expr) {
         super(leftLocation, rightLocation);
         this.expr = expr;
         this.id = id;

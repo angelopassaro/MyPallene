@@ -1,5 +1,6 @@
 package syntax.expression;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import visitor.Visitor;
 
 public class ArrayRead extends Expr {
@@ -12,7 +13,7 @@ public class ArrayRead extends Expr {
      * @param arrayName    The arrayName
      * @param arrayElement The arrayElement
      */
-    public ArrayRead(int leftLocation,int rightLocation, Expr arrayName, Expr arrayElement) {
+    public ArrayRead(Location leftLocation, Location rightLocation, Expr arrayName, Expr arrayElement) {
         super(leftLocation, rightLocation);
         this.arrayName = arrayName;
         this.arrayElement = arrayElement;

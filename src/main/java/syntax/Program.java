@@ -1,5 +1,6 @@
 package syntax;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.function.Function;
 import visitor.Visitor;
 
@@ -16,7 +17,7 @@ public class Program extends AstNode {
      * @param global    The list of global
      * @param functions The list of functions
      */
-    public Program(int leftLocation, int rightLocation, Global global, LinkedList<Function> functions) {
+    public Program(Location leftLocation, Location rightLocation, Global global, LinkedList<Function> functions) {
         super(leftLocation, rightLocation);
         this.global = global;
         this.functions = functions;

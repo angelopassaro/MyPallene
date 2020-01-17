@@ -1,5 +1,6 @@
 package syntax;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import visitor.Visitor;
 
 import java.util.LinkedList;
@@ -13,7 +14,7 @@ public class Global extends AstNode {
      *
      * @param varDecls The list of varDecls
      */
-    public Global(int leftLocation, int rightLocation, LinkedList<VarDecl> varDecls) {
+    public Global(Location leftLocation, Location rightLocation, LinkedList<VarDecl> varDecls) {
         super(leftLocation, rightLocation);
         this.varDecls = varDecls;
     }

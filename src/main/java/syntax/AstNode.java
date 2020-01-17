@@ -1,10 +1,11 @@
 package syntax;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import visitor.Visitable;
 
 public abstract class AstNode implements Visitable {
-    private final int leftLocation;
-    private final int rightLocation;
+    private final Location leftLocation;
+    private final Location rightLocation;
 
     /**
      * Create a new generic AST node.
@@ -12,7 +13,7 @@ public abstract class AstNode implements Visitable {
      * @param leftLocation  the left location
      * @param rightLocation the right location
      */
-    public AstNode(int leftLocation, int rightLocation) {
+    public AstNode(Location leftLocation, Location rightLocation) {
         this.leftLocation = leftLocation;
         this.rightLocation = rightLocation;
     }
@@ -20,14 +21,14 @@ public abstract class AstNode implements Visitable {
     /**
      * @return The left position
      */
-    public int getLeftLocation() {
+    public Location getLeftLocation() {
         return leftLocation;
     }
 
     /**
      * @return The right position
      */
-    public int getRightLocation() {
+    public Location getRightLocation() {
         return rightLocation;
     }
 }

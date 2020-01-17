@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import visitor.Visitor;
 
@@ -18,7 +19,7 @@ public class IfThenElseStatement extends Statement {
      * @param thenStatement The then Statement
      * @param elseStatement The else statement
      */
-    public IfThenElseStatement(int leftLocation, int rightLocation, Expr expr, LinkedList<Statement> thenStatement, LinkedList<Statement> elseStatement) {
+    public IfThenElseStatement(Location leftLocation, Location rightLocation, Expr expr, LinkedList<Statement> thenStatement, LinkedList<Statement> elseStatement) {
         super(leftLocation, rightLocation);
         this.expr = expr;
         this.thenStatement = thenStatement;

@@ -1,11 +1,12 @@
 package syntax.expression;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.Leaf;
 import visitor.Visitor;
 
 public class NilConst extends Expr implements Leaf<Object> {
 
-    public NilConst(int leftLocation, int rightLocation) {
+    public NilConst(Location leftLocation, Location rightLocation) {
         super(leftLocation, rightLocation);
     }
 

@@ -1,5 +1,6 @@
 package syntax.expression;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.Leaf;
 import visitor.Visitor;
 
@@ -12,7 +13,7 @@ public class IntegerConst extends Expr implements Leaf<Integer> {
      *
      * @param value The value
      */
-    public IntegerConst(int leftLocation, int rightLocation, int value) {
+    public IntegerConst(Location leftLocation, Location rightLocation, int value) {
         super(leftLocation, rightLocation);
         this.value = value;
     }

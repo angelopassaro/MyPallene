@@ -1,5 +1,6 @@
 package syntax.expression;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.AstNode;
 
 public abstract class Expr extends AstNode {
@@ -10,7 +11,7 @@ public abstract class Expr extends AstNode {
      * @param leftLocation  the left location
      * @param rightLocation the right location
      */
-    public Expr(int leftLocation, int rightLocation) {
+    public Expr(Location leftLocation, Location rightLocation) {
         super(leftLocation, rightLocation);
     }
 }

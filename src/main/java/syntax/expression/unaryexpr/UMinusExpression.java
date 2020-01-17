@@ -1,5 +1,6 @@
 package syntax.expression.unaryexpr;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import visitor.Visitor;
 
@@ -12,7 +13,7 @@ public class UMinusExpression extends Expr {
      *
      * @param minus The minus
      */
-    public UMinusExpression(int leftLocation, int rightLocation, Expr minus) {
+    public UMinusExpression(Location leftLocation, Location rightLocation, Expr minus) {
         super(leftLocation, rightLocation);
         this.minus = minus;
     }

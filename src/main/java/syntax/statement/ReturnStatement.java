@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import visitor.Visitor;
 
@@ -14,7 +15,7 @@ public class ReturnStatement extends Statement {
      *
      * @param exprs The expr
      */
-    public ReturnStatement(int leftLocation, int rightLocation, Expr exprs) {
+    public ReturnStatement(Location leftLocation, Location rightLocation, Expr exprs) {
         super(leftLocation, rightLocation);
         this.expr = exprs;
     }

@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.VarDecl;
 import visitor.Visitor;
 
@@ -13,10 +14,10 @@ public class LocalStatement extends Statement {
     /**
      * {@inheritDoc}
      *
-     * @param varDecls   The varDecl
+     * @param varDecls  The varDecl
      * @param statement The statement
      */
-    public LocalStatement(int leftLocation, int rightLocation, LinkedList<VarDecl> varDecls, LinkedList<Statement> statement) {
+    public LocalStatement(Location leftLocation, Location rightLocation, LinkedList<VarDecl> varDecls, LinkedList<Statement> statement) {
         super(leftLocation, rightLocation);
         this.varDecls = varDecls;
         this.statements = statement;

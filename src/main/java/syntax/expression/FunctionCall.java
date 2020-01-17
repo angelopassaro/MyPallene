@@ -1,5 +1,6 @@
 package syntax.expression;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import visitor.Visitor;
 
 import java.util.LinkedList;
@@ -15,7 +16,7 @@ public class FunctionCall extends Expr {
      * @param id    The id
      * @param exprs The exprs
      */
-    public FunctionCall(int leftLocation, int rightLocation, Id id, LinkedList<Expr> exprs) {
+    public FunctionCall(Location leftLocation, Location rightLocation, Id id, LinkedList<Expr> exprs) {
         super(leftLocation, rightLocation);
         this.id = id;
         this.exprs = exprs;

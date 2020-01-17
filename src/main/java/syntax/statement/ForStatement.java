@@ -1,5 +1,6 @@
 package syntax.statement;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Expr;
 import syntax.expression.Id;
 import visitor.Visitor;
@@ -17,9 +18,9 @@ public class ForStatement extends Statement {
      *
      * @param assignExpr The assign expr
      * @param commaExpr  The comma expr
-     * @param statements  The statement
+     * @param statements The statement
      */
-    public ForStatement(int leftLocation,int rightLocation, Id id, Expr assignExpr, Expr commaExpr, LinkedList<Statement> statements) {
+    public ForStatement(Location leftLocation, Location rightLocation, Id id, Expr assignExpr, Expr commaExpr, LinkedList<Statement> statements) {
         super(leftLocation, rightLocation);
         this.id = id;
         this.assignExpr = assignExpr;
