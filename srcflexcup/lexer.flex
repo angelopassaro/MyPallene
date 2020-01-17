@@ -5,6 +5,9 @@ import java_cup.runtime.Symbol;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+import lexical.StringTable;
+
+import java.io.InputStreamReader;
 /**
 * This class is a simple example lexer.
 */
@@ -21,21 +24,30 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 %column
 %cup
 
-/**
-TODO complete symboltable
-*/
+%eofval{
+    return generateTokenSym("EOF", ParserSym.EOF);
+%eofval}
+
 %{
     private StringBuilder string = new StringBuilder();
+    private ComplexSymbolFactory symbolFactory;
+    private StringTable table;
 
-        public Symbol generateTokenSym(String name, int type){
-            return symbolFactory.newSymbol(name, type, new Location(yyline+1,yycolumn+1 - yylength()),
-                                  new Location(yyline+1,yycolumn+1));
-             }
+    public Lexer(ComplexSymbolFactory sf, java.io.InputStream is, StringTable table){
+        this(new InputStreamReader(is));
+        this.symbolFactory = sf;
+        this.table = table;
+    }
 
-        public Symbol generateTokenSym(String name, int type, Object value){
-            return symbolFactory.newSymbol(name, code, new Location(yyline+1, yycolumn+1),
-                            new Location(yyline+1, yycolumn+yylength()), value);
-             }
+    public Symbol generateTokenSym(String name, int type){
+        return symbolFactory.newSymbol(name, type, new Location(yyline+1,yycolumn+1 - yylength()),
+            new Location(yyline+1,yycolumn+1));
+    }
+
+    public Symbol generateTokenSym(String name, int type, Object value){
+        return symbolFactory.newSymbol(name, type, new Location(yyline+1, yycolumn+1),
+            new Location(yyline+1, yycolumn+yylength()), value);
+    }
 
     public boolean initialize(String filePath) {
         try {
@@ -46,17 +58,10 @@ TODO complete symboltable
                 }
            }
 
-        public Lexer(ComplexSymbolFactory sf, java.io.InputStream is, StringTable table){
-              this(new InputStreamReader(is));
-              this.symbolFactory = sf;
-              this.table = table;
-            }
+
 
 %}
 
-%eofval{
-    return generateTokenSym(ParserSym.EOF);
-%eofval}
 
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
@@ -156,7 +161,7 @@ GlobalKeyword = [gG][lL][oO][bB][aA][lL]
 }
 
 <STRING> {
-    \" { yybegin(YYINITIAL); return generateTokenSym(ParserSym.STRING_CONST); }
+    \" { yybegin(YYINITIAL); return generateTokenSym("STRING_CONST", ParserSym.STRING_CONST); }
     /* escape sequences */
     {StringLiteral}+ { string.append( yytext()); }
     "\\b" { string.append( '\b' ); }
