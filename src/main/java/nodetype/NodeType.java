@@ -3,11 +3,11 @@ package nodetype;
 
 public interface NodeType {
 
-    PrimitiveType checkAdd(PrimitiveType type);
+    PrimitiveNodeType checkAdd(PrimitiveNodeType type);
 
-    PrimitiveType checkSub(PrimitiveType type);
+    PrimitiveNodeType checkSub(PrimitiveNodeType type);
 
-    PrimitiveType checkMul(PrimitiveType type);
+    PrimitiveNodeType checkMul(PrimitiveNodeType type);
 
-    PrimitiveType checkDiv(PrimitiveType type);
+    PrimitiveNodeType checkDiv(PrimitiveNodeType type);
 }

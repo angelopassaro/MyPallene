@@ -1,11 +1,11 @@
 package nodetype;
 
 
-public enum PrimitiveType implements NodeType {
+public enum PrimitiveNodeType implements NodeType {
 
     INT {
         @Override
-        public PrimitiveType checkAdd(PrimitiveType type) {
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -18,7 +18,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkSub(PrimitiveType type) {
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -31,7 +31,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkMul(PrimitiveType type) {
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -44,7 +44,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkDiv(PrimitiveType type) {
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -60,7 +60,7 @@ public enum PrimitiveType implements NodeType {
 
     FLOAT {
         @Override
-        public PrimitiveType checkAdd(PrimitiveType type) {
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
                 case FLOAT:
@@ -72,7 +72,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkSub(PrimitiveType type) {
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
                 case FLOAT:
@@ -84,7 +84,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkMul(PrimitiveType type) {
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
                 case FLOAT:
@@ -96,7 +96,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkDiv(PrimitiveType type) {
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
                 case FLOAT:
@@ -110,7 +110,7 @@ public enum PrimitiveType implements NodeType {
     },
     BOOL {
         @Override
-        public PrimitiveType checkAdd(PrimitiveType type) {
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -123,7 +123,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkSub(PrimitiveType type) {
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -136,7 +136,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkMul(PrimitiveType type) {
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -149,7 +149,7 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkDiv(PrimitiveType type) {
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
             switch (type) {
                 case BOOL:
                 case INT:
@@ -165,7 +165,7 @@ public enum PrimitiveType implements NodeType {
 
     STRING {
         @Override
-        public PrimitiveType checkAdd(PrimitiveType type) {
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
             switch (type) {
                 case NULL:
                     return NULL;
@@ -175,39 +175,39 @@ public enum PrimitiveType implements NodeType {
         }
 
         @Override
-        public PrimitiveType checkSub(PrimitiveType type) {
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
             return null;
         }
 
         @Override
-        public PrimitiveType checkMul(PrimitiveType type) {
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
             return null;
         }
 
         @Override
-        public PrimitiveType checkDiv(PrimitiveType type) {
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
             return null;
         }
     },
 
     NULL {
         @Override
-        public PrimitiveType checkAdd(PrimitiveType type) {
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
             return null;
         }
 
         @Override
-        public PrimitiveType checkSub(PrimitiveType type) {
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
             return null;
         }
 
         @Override
-        public PrimitiveType checkMul(PrimitiveType type) {
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
             return null;
         }
 
         @Override
-        public PrimitiveType checkDiv(PrimitiveType type) {
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
             return null;
         }
     };
