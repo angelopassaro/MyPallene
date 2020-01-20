@@ -1,5 +1,6 @@
 package visitor;
 
+import nodetype.PrimitiveNodeType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import syntax.*;
@@ -15,9 +16,8 @@ import syntax.expression.unaryexpr.UMinusExpression;
 import syntax.function.ComplexDefFun;
 import syntax.function.SimpleDefFun;
 import syntax.statement.*;
-import syntax.type.ArrayType;
-import syntax.type.FunctionType;
-import syntax.type.PrimitiveType;
+import syntax.typedenoter.ArrayTypeDenoter;
+import syntax.typedenoter.FunctionTypeDenoter;
 
 import java.util.function.Consumer;
 
@@ -87,24 +87,24 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     }
 
     @Override
-    public Element visit(PrimitiveType primitiveType, Document arg) {
+    public Element visit(PrimitiveNodeType primitiveNodeType, Document arg) {
         Element element = arg.createElement("PrimitiveType");
-        element.setAttribute("kind", primitiveType.getKind());
+        element.setAttribute("kind", primitiveNodeType.getKind());
         return element;
     }
 
     @Override
-    public Element visit(ArrayType arrayType, Document arg) {
+    public Element visit(ArrayTypeDenoter arrayTypeDenoter, Document arg) {
         Element element = arg.createElement("ArrayType");
-        element.appendChild(arrayType.getType().accept(this, arg));
+        element.appendChild(arrayTypeDenoter.getType().accept(this, arg));
         return element;
     }
 
     @Override
-    public Element visit(FunctionType functionType, Document arg) {
+    public Element visit(FunctionTypeDenoter functionTypeDenoter, Document arg) {
         Element element = arg.createElement("FunctionType");
-        functionType.getTypes().forEach(addParent(element, arg));
-        element.appendChild(functionType.getType().accept(this, arg));
+        functionTypeDenoter.getTypes().forEach(addParent(element, arg));
+        element.appendChild(functionTypeDenoter.getType().accept(this, arg));
         return element;
     }
 
@@ -383,4 +383,5 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
         Element element = arg.createElement("NopStatement");
         return element;
     }
+
 }

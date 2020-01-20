@@ -1,5 +1,6 @@
 package visitor;
 
+import nodetype.PrimitiveNodeType;
 import syntax.*;
 import syntax.expression.*;
 import syntax.expression.binaryexpr.arithop.DivOp;
@@ -13,9 +14,10 @@ import syntax.expression.unaryexpr.UMinusExpression;
 import syntax.function.ComplexDefFun;
 import syntax.function.SimpleDefFun;
 import syntax.statement.*;
-import syntax.type.ArrayType;
-import syntax.type.FunctionType;
-import syntax.type.PrimitiveType;
+import syntax.typedenoter.ArrayTypeDenoter;
+import syntax.typedenoter.FunctionTypeDenoter;
+import syntax.typedenoter.PrimitiveTypeDenoter;
+import syntax.typedenoter.TypeDenoter;
 
 public interface Visitor<T, P> {
 
@@ -78,26 +80,26 @@ public interface Visitor<T, P> {
     /**
      * Visit for primitiveType node
      *
-     * @param primitiveType The type
-     * @param arg           Additional parameter
+     * @param primitiveNodeType The type
+     * @param arg               Additional parameter
      */
-    T visit(PrimitiveType primitiveType, P arg);
+    T visit(PrimitiveNodeType primitiveNodeType, P arg);
 
     /**
      * Visit For arrayType node
      *
-     * @param arrayType The type of array
-     * @param arg       Additional parameter
+     * @param arrayTypeDenoter The type of array
+     * @param arg              Additional parameter
      */
-    T visit(ArrayType arrayType, P arg);
+    T visit(ArrayTypeDenoter arrayTypeDenoter, P arg);
 
     /**
      * Visit for functionType node
      *
-     * @param functionType The type
-     * @param arg          Additional parameter
+     * @param functionTypeDenoter The type
+     * @param arg                 Additional parameter
      */
-    T visit(FunctionType functionType, P arg);
+    T visit(FunctionTypeDenoter functionTypeDenoter, P arg);
 
     /**
      * Visit for WhileStatement node
@@ -337,10 +339,21 @@ public interface Visitor<T, P> {
 
 
     /**
-     *
-     * @param nopStatement TheNopStatement
-     * @param arg           The Additional parameter
+     * @param nopStatement The NopStatement
+     * @param arg          The Additional parameter
      */
     T visit(NopStatement nopStatement, P arg);
 
+
+    /**
+     * @param typeDenoter The typeDenoter
+     * @param arg         The Additional parameter
+     */
+    T visit(TypeDenoter typeDenoter, P arg);
+
+    /**
+     * @param primitiveTypeDenoter The typeDenoter
+     * @param arg                  The Additional parameter
+     */
+    T visit(PrimitiveTypeDenoter primitiveTypeDenoter, P arg);
 }

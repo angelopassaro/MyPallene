@@ -13,9 +13,9 @@
     <!--Compile properties with source and target-->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>12</maven.compiler.source>
-        <maven.compiler.target>12</maven.compiler.target>
-        <flex.input>srcflexcup/lexer.jflex</flex.input>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <flex.input>srcflexcup/lexer.flex</flex.input>
         <cup.input>srcflexcup/parser.cup</cup.input>
         <output.dist>src/main/java</output.dist>
     </properties>
@@ -81,6 +81,8 @@
                     <symbolsInterface>true</symbolsInterface>
                     <symbolsName>sym</symbolsName>
                     <locations>true</locations>
+                    <expectedConflicts>5</expectedConflicts>
+                    <dumpStates>true</dumpStates>
                 </configuration>
             </plugin>
         </plugins>

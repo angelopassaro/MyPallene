@@ -1,7 +1,8 @@
 package visitor;
 
 import error.ErrorHandler;
-import semantic.NodeKind;
+import nodekind.NodeKind;
+import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
 import semantic.SymbolTableRecord;
 import syntax.*;
@@ -17,9 +18,9 @@ import syntax.expression.unaryexpr.UMinusExpression;
 import syntax.function.ComplexDefFun;
 import syntax.function.SimpleDefFun;
 import syntax.statement.*;
-import syntax.type.ArrayType;
-import syntax.type.FunctionType;
-import syntax.type.PrimitiveType;
+import syntax.typedenoter.ArrayTypeDenoter;
+import syntax.typedenoter.FunctionTypeDenoter;
+import syntax.typedenoter.TypeDenoter;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
                 this.errorHandler.reportError("Simple Function Error", simpleDefFun);
             }
             arg.exitScope();
-            arg.addEntry(simpleDefFun.getId().toString(), new SymbolTableRecord(simpleDefFun.getType().toString(), NodeKind.FUNCTION));
+            arg.addEntry(simpleDefFun.getId().toString(), new SymbolTableRecord(simpleDefFun.getType().typeFactory().toString(), NodeKind.FUNCTION));
         }
         return isSimpleFunctionSafe;
     }
@@ -97,7 +98,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
                 this.errorHandler.reportError("Simple Function Error", complexDefFun);
             }
             arg.exitScope();
-            arg.addEntry(complexDefFun.getId().toString(), new SymbolTableRecord(complexDefFun.getType().toString(), NodeKind.FUNCTION));
+            arg.addEntry(complexDefFun.getId().toString(), new SymbolTableRecord(complexDefFun.getType().typeFactory().toString(), NodeKind.FUNCTION));
         }
         return isComplexFunctionSafe;
     }
@@ -108,7 +109,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isParDeclSafe) {
             this.errorHandler.reportError("ParDecl Error", parDecl);
         } else {
-            arg.addEntry(parDecl.getId().toString(), new SymbolTableRecord(parDecl.getType().toString(), NodeKind.VARIABLE));
+            arg.addEntry(parDecl.getId().toString(), new SymbolTableRecord(parDecl.getType().typeFactory().toString(), NodeKind.VARIABLE));
         }
         return isParDeclSafe;
     }
@@ -119,7 +120,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isVarDeclSafe) {
             this.errorHandler.reportError("VarDecl Error", varDecl);
         } else {
-            arg.addEntry(varDecl.getId().toString(), new SymbolTableRecord(varDecl.getType().toString(), NodeKind.VARIABLE));
+            arg.addEntry(varDecl.getId().toString(), new SymbolTableRecord(varDecl.getType().typeFactory().toString(), NodeKind.VARIABLE));
         }
         return isVarDeclSafe;
     }
@@ -179,6 +180,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isForSafe;
     }
 
+    //????
     @Override
     public Boolean visit(LocalStatement localStatement, SymbolTable arg) {
         arg.enterScope();
@@ -208,7 +210,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     public Boolean visit(ReadStatement readStatement, SymbolTable arg) {
         boolean isReadStatementSafe = checkContext(readStatement.getIds(), arg);
         if (!isReadStatementSafe) {
-            this.errorHandler.reportError("Read Statement Error", readStatement);
+            this.errorHandler.reportNotDefined(readStatement);
         }
         return isReadStatementSafe;
     }
@@ -222,25 +224,34 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isWriteStatementSafe;
     }
 
-    @Override
-    public Boolean visit(ReturnStatement returnStatement, SymbolTable arg) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
-        return null;
-    }
 
     @Override
     public Boolean visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
         boolean isFunctionCallSafe = functionCallStatement.getId().accept(this, arg);
         if (!isFunctionCallSafe) {
             this.errorHandler.reportNotDefined(functionCallStatement);
+        } else {
+            boolean areStatementsSafe = checkContext(functionCallStatement.getExprs(), arg);
+            if (!areStatementsSafe) {
+                this.errorHandler.reportError("Function Call Error", functionCallStatement);
+            }
         }
-        boolean areStatementsSafe = checkContext(functionCallStatement.getExprs(), arg);
-        if (!areStatementsSafe) {
-            this.errorHandler.reportError("FunctionCall Statement", functionCallStatement);
+        return isFunctionCallSafe;
+    }
+
+    @Override
+    public Boolean visit(FunctionCall functionCallExpression, SymbolTable arg) {
+        boolean isFunctionCallSafe = functionCallExpression.getId().accept(this, arg);
+        if (!isFunctionCallSafe) {
+            this.errorHandler.reportYetDefined(functionCallExpression);
+        } else {
+            arg.enterScope();
+            boolean areStatementsSafe = checkContext(functionCallExpression.getExprs(), arg);
+            if (!areStatementsSafe) {
+                this.errorHandler.reportError("Function Call Error", functionCallExpression);
+            }
+            arg.exitScope();
+            arg.addEntry(functionCallExpression.getId().toString(), new SymbolTableRecord("da modificare il type", NodeKind.FUNCTION));
         }
         return isFunctionCallSafe;
     }
@@ -260,20 +271,6 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return true;
     }
 
-    @Override
-    public Boolean visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(ArrayRead readArrayExpression, SymbolTable arg) {
-        return null;
-    }
-
-    @Override
-    public Boolean visit(FunctionCall functionCallExpression, SymbolTable arg) {
-        return null;
-    }
 
     @Override
     public Boolean visit(PlusOp plusOp, SymbolTable arg) {
@@ -439,8 +436,8 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
 
     @Override
     public Boolean visit(SharpExpression sharpExpression, SymbolTable arg) {
-        boolean isSharpSafe = sharpExpression.getExpr().accept(this,arg);
-        if(!isSharpSafe){
+        boolean isSharpSafe = sharpExpression.getExpr().accept(this, arg);
+        if (!isSharpSafe) {
             this.errorHandler.reportError("Sharp Error", sharpExpression);
         }
         return isSharpSafe;
@@ -452,17 +449,42 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     }
 
     @Override
-    public Boolean visit(PrimitiveType primitiveType, SymbolTable arg) {
+    public Boolean visit(TypeDenoter typeDenoter, SymbolTable arg) {
+        return true;
+    }
+
+    @Override
+    public Boolean visit(PrimitiveNodeType primitiveNodeType, SymbolTable arg) {
         return null;
     }
 
     @Override
-    public Boolean visit(ArrayType arrayType, SymbolTable arg) {
+    public Boolean visit(ArrayTypeDenoter arrayTypeDenoter, SymbolTable arg) {
         return null;
     }
 
     @Override
-    public Boolean visit(FunctionType functionType, SymbolTable arg) {
+    public Boolean visit(FunctionTypeDenoter functionTypeDenoter, SymbolTable arg) {
+        return null;
+    }
+
+    @Override
+    public Boolean visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
+        return null;
+    }
+
+    @Override
+    public Boolean visit(ArrayRead readArrayExpression, SymbolTable arg) {
+        return null;
+    }
+
+    @Override
+    public Boolean visit(ReturnStatement returnStatement, SymbolTable arg) {
+        return null;
+    }
+
+    @Override
+    public Boolean visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
         return null;
     }
 }
