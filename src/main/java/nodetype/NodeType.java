@@ -1,7 +1,7 @@
-package syntax.type;
+package nodetype;
 
 
-public interface Type {
+public interface NodeType {
 
     PrimitiveType checkAdd(PrimitiveType type);
 

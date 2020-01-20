@@ -1,4 +1,4 @@
-package semantic;
+package nodekind;
 
 public enum NodeKind {
     VARIABLE,

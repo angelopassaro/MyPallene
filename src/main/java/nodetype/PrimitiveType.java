@@ -1,7 +1,7 @@
-package syntax.type;
+package nodetype;
 
 
-public enum PrimitiveType implements Type {
+public enum PrimitiveType implements NodeType {
 
     INT {
         @Override
