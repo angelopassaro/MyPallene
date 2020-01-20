@@ -1,9 +1,9 @@
 /* Simple +/-/* syntax.expression language; Parser evaluates constant expressions on the fly*/
 package core;
 
-import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java.util.LinkedList;
+import java.util.List;
 
 import syntax.*;
 import syntax.expression.*;
@@ -16,6 +16,7 @@ import syntax.expression.unaryexpr.*;
 import syntax.function.*;
 import syntax.statement.*;
 import syntax.typedenoter.*;
+import java_cup.runtime.ComplexSymbolFactory.Location;
 
 class Parser;
 
@@ -80,10 +81,10 @@ precedence left UMINUS, NOT, COMMA, SHARP;
 
 /* The grammar rules */
 
-Program             ::= Global:global Functions:functions                                                               {: RESULT = new Program(functionsleft, functionsright, global, functions); :}
+Program             ::= Global:global Functions:functions                                                               {: RESULT = new Program(functionsxleft, functionsxright, global, functions); :}
                         ;
 
-Global              ::= GLOBAL:g Var_decls:varDecls END                                                                 {: RESULT = new Global(gleft,gright,varDecls); :}
+Global              ::= GLOBAL:g Var_decls:varDecls END                                                                 {: RESULT = new Global(gxleft,gxright,varDecls); :}
                         | /* empty*/
                         ;
 
@@ -91,32 +92,32 @@ Functions           ::= Def_fun:defFun Functions:functions                      
                         | Def_fun:defFun                                                                                {: RESULT = new LinkedList<Function>(); RESULT.addFirst(defFun); :}
                         ;
 
-Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON TypeDenoter:type Statements:statements END   {: RESULT = new ComplexDefFun(fleft, fright, new Id(idleft, idright, id), type, statements, parDecl); :}
+Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON TypeDenoter:type Statements:statements END   {: RESULT = new ComplexDefFun(fxleft, fxright, new Id(idxleft, idxright, id), type, statements, parDecl); :}
                         ;
 
-Def_fun             ::= FUNCTION:f ID:id LPAR RPAR COLON TypeDenoter:type Statements:statements END                     {: RESULT = new SimpleDefFun(fleft, fright,new Id(idleft, idright, id), type, statements);:}
+Def_fun             ::= FUNCTION:f ID:id LPAR RPAR COLON TypeDenoter:type Statements:statements END                     {: RESULT = new SimpleDefFun(fxleft, fxright,new Id(idxleft, idxright, id), type, statements);:}
                         ;
 
-Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl                                           {: parDecl.addFirst(new ParDecl(idleft, idright, new Id(idleft, idright, id), type));RESULT = parDecl;:}
-                        | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idleft, idright, new Id(idleft, idright, id), type));:}
+Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl                                           {: parDecl.addFirst(new ParDecl(idxleft, idxright, new Id(idxleft, idxright, id), type));RESULT = parDecl;:}
+                        | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idxleft, idxright, new Id(idxleft, idxright, id), type));:}
                         ;
 
-Var_decls           ::= ID:id COLON TypeDenoter:type Var_init_value:varInit SEMI Var_decls:varDecls                     {: varDecls.addFirst(new VarDecl(idleft,idright,new Id(idleft, idright, id),type,varInit)); RESULT = varDecls;:}
-                        | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idleft,idright,new Id(idleft, idright, id), type, varInit)); :}
+Var_decls           ::= ID:id COLON TypeDenoter:type Var_init_value:varInit SEMI Var_decls:varDecls                     {: varDecls.addFirst(new VarDecl(idxleft,idxright,new Id(idxleft, idxright, id),type,varInit)); RESULT = varDecls;:}
+                        | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idxleft,idxright,new Id(idxleft, idxright, id), type, varInit)); :}
                         ;
 
-Var_init_value      ::= ASSIGN Expr:expr                                                                                {:  RESULT = new VarInitValue(exprleft, exprright, expr); :}
+Var_init_value      ::= ASSIGN Expr:expr                                                                                {:  RESULT = new VarInitValue(exprxleft, exprxright, expr); :}
                         | /*empty*/
                         ;
 
-TypeDenoter         ::= NIL:nil                                                                                         {: RESULT = new PrimitiveTypeDenoter(nilleft, nilright, "NIL"); :}
-                        | INT:integer                                                                                   {: RESULT = new PrimitiveTypeDenoter(integerleft, integerright, "INT");:}
-                        | BOOL:booler                                                                                   {: RESULT = new PrimitiveTypeDenoter(boolerleft, boolerright, "BOOL"); :}
-                        | FLOAT:floater                                                                                 {: RESULT = new PrimitiveTypeDenoter(floaterleft, floaterright, "FLOAT");:}
-                        | STRING:stringer                                                                               {: RESULT = new PrimitiveTypeDenoter(stringerleft, stringerright, "STRING");:}
-                        | BLPAR:b TypeDenoter:type BLPAR                                                                {: RESULT = new ArrayTypeDenoter(bleft, bright, type);:}
-                        | LPAR:l Types:types RPAR ARROW TypeDenoter:rtype                                               {: RESULT = new FunctionTypeDenoter(lleft, lright, types, rtype);:} //controllare type
-                        | LPAR:l RPAR ARROW TypeDenoter:type                                                            {: RESULT = new FunctionTypeDenoter(typeleft, typeright, type); :}
+TypeDenoter         ::= NIL:nil                                                                                         {: RESULT = new PrimitiveTypeDenoter(nilxleft, nilxright, "NIL"); :}
+                        | INT:integer                                                                                   {: RESULT = new PrimitiveTypeDenoter(integerxleft, integerxright, "INT");:}
+                        | BOOL:booler                                                                                   {: RESULT = new PrimitiveTypeDenoter(boolerxleft, boolerxright, "BOOL"); :}
+                        | FLOAT:floater                                                                                 {: RESULT = new PrimitiveTypeDenoter(floaterxleft, floaterxright, "FLOAT");:}
+                        | STRING:stringer                                                                               {: RESULT = new PrimitiveTypeDenoter(stringerxleft, stringerxright, "STRING");:}
+                        | BLPAR:b TypeDenoter:type BLPAR                                                                {: RESULT = new ArrayTypeDenoter(bxleft, bxright, type);:}
+                        | LPAR:l Types:types RPAR ARROW TypeDenoter:rtype                                               {: RESULT = new FunctionTypeDenoter(lxleft, lxright, types, rtype);:} //controllare type
+                        | LPAR:l RPAR ARROW TypeDenoter:type                                                            {: RESULT = new FunctionTypeDenoter(typexleft, typexright, type); :}
                         ;
 
 Types               ::= TypeDenoter:type COMMA Types:types                                                              {: types.addFirst(type); RESULT = types;:}
@@ -127,53 +128,53 @@ Statements           ::= Stat:stat SEMI Statements:statements                   
                         | Stat:stat                                                                                     {: RESULT = new LinkedList<Statement>(); RESULT.addFirst(stat); :}
                         ;
 
-Stat                ::= NOP:nop                                                                                         {: RESULT = new NopStatement(nopleft, nopright); :}
-                        | WHILE:w Expr:expr DO Statements:statements END                                                {: RESULT = new WhileStatement(wleft, wright, expr, statements);:}
-                        | IF:ifer Expr:expr THEN Statements:statements ELSE Statements:elseStatements END               {: RESULT = new IfThenElseStatement(iferleft, iferright,expr,statements, elseStatements);:}
-                        | IF:ifer Expr:expr THEN Statements:statements                                                  {: RESULT = new IfThenStatement(iferleft, iferright, expr, statements); :}
-                        | FOR:forer ID:id ASSIGN Expr:expr COMMA Expr:commaExpr DO Statements:statements END            {: RESULT = new ForStatement(forerleft, forerright, new Id(idleft, idright, id), expr, commaExpr, statements);:}
-                        | LOCAL:local Var_decls:varDecls SEMI Statements:statements END                                 {: RESULT = new LocalStatement(localleft, localright, varDecls, statements);:}
-                        | ID:id ASSIGN Expr:expr                                                                        {: RESULT = new AssignStatement(idleft, idright, new Id(idleft, idright, id), expr);:}
-                        | Expr:expr SLPAR Expr:arrayExpr SRPAR ASSIGN Expr:assignExpr                                   {: RESULT = new ArrayElementStatement(exprleft, exprright, arrayExpr, expr, assignExpr);:}
-                        | ID:id LPAR Exprs:exprs RPAR                                                                   {: RESULT = new FunctionCallStatement(idleft, idright, new Id(idleft, idright, id) ,exprs);:}
-                        | Vars:vars READ                                                                                {: RESULT = new ReadStatement(varsleft, varsright, vars); :}
-                        | Exprs:exprs WRITE                                                                             {: RESULT = new WriteStatement(exprsleft, exprsright, exprs); :}
-                        | RETURN Expr:expr                                                                              {: RESULT = new ReturnStatement(exprleft, exprright, expr); :}
+Stat                ::= NOP:nop                                                                                         {: RESULT = new NopStatement(nopxleft, nopxright); :}
+                        | WHILE:w Expr:expr DO Statements:statements END                                                {: RESULT = new WhileStatement(wxleft, wxright, expr, statements);:}
+                        | IF:ifer Expr:expr THEN Statements:statements ELSE Statements:elseStatements END               {: RESULT = new IfThenElseStatement(iferxleft, iferxright,expr,statements, elseStatements);:}
+                        | IF:ifer Expr:expr THEN Statements:statements                                                  {: RESULT = new IfThenStatement(iferxleft, iferxright, expr, statements); :}
+                        | FOR:forer ID:id ASSIGN Expr:expr COMMA Expr:commaExpr DO Statements:statements END            {: RESULT = new ForStatement(forerxleft, forerxright, new Id(idxleft, idxright, id), expr, commaExpr, statements);:}
+                        | LOCAL:local Var_decls:varDecls SEMI Statements:statements END                                 {: RESULT = new LocalStatement(localxleft, localxright, varDecls, statements);:}
+                        | ID:id ASSIGN Expr:expr                                                                        {: RESULT = new AssignStatement(idxleft, idxright, new Id(idxleft, idxright, id), expr);:}
+                        | Expr:expr SLPAR Expr:arrayExpr SRPAR ASSIGN Expr:assignExpr                                   {: RESULT = new ArrayElementStatement(exprxleft, exprxright, arrayExpr, expr, assignExpr);:}
+                        | ID:id LPAR Exprs:exprs RPAR                                                                   {: RESULT = new FunctionCallStatement(idxleft, idxright, new Id(idxleft, idxright, id) ,exprs);:}
+                        | Vars:vars READ                                                                                {: RESULT = new ReadStatement(varsxleft, varsxright, vars); :}
+                        | Exprs:exprs WRITE                                                                             {: RESULT = new WriteStatement(exprsxleft, exprsxright, exprs); :}
+                        | RETURN Expr:expr                                                                              {: RESULT = new ReturnStatement(exprxleft, exprxright, expr); :}
                         | error                                                                                         {: :}
                         ;
 
-Vars                ::= ID:id COMMA Vars:vars                                                                           {: vars.addFirst(new Id(idleft, idright, id));RESULT = vars; :}
-                        | ID:id                                                                                         {: RESULT = new LinkedList<Id>(); RESULT.addFirst(new Id(idleft, idright, id));:}
+Vars                ::= ID:id COMMA Vars:vars                                                                           {: vars.addFirst(new Id(idxleft, idxright, id));RESULT = vars; :}
+                        | ID:id                                                                                         {: RESULT = new LinkedList<Id>(); RESULT.addFirst(new Id(idxleft, idxright, id));:}
                         ;
 Exprs               ::= Expr:expr COMMA Exprs:exprs                                                                     {: exprs.addFirst(expr); RESULT = exprs;:}
                         | Expr:expr                                                                                     {: RESULT = new LinkedList<Expr>(); RESULT.addFirst(expr);:}
                         ;
 
-Expr                ::= NIL:nil                                                                                         {: RESULT = new NilConst(nilleft, nilright); :}
-                        | TRUE:truer                                                                                    {: RESULT = new BooleanConst(truerleft, truerright, true);:}
-                        | FALSE:falser                                                                                  {: RESULT = new BooleanConst(falserleft, falserright, false);:}
-                        | INT_CONST:intConst                                                                            {: RESULT = new IntegerConst(intConstleft, intConstright, intConst);:}
-                        | FLOAT_CONST:floatConst                                                                        {: RESULT = new FloatConst(floatConstleft, floatConstright, floatConst);:}
-                        | STRING_CONST:stringConst                                                                      {: RESULT = new StringConst(stringConstleft, stringConstright, stringConst);:}
-                        | BLPAR:b BRPAR COLON Type:type                                                                 {: RESULT = new ArrayConst(bleft, bright, type);:}
-                        | ID:id                                                                                         {: RESULT = new Id(idleft, idright, id);:}
-                        | Expr:expr SLPAR Expr:exprElem SRPAR                                                           {: RESULT = new ArrayRead(exprleft, exprright, expr, exprElem);:}
-                        | ID:id LPAR Exprs:exprs RPAR                                                                   {: RESULT = new FunctionCall(idleft, idright, new Id(idleft, idright, id), exprs);:}
-                        | Expr:e1 PLUS Expr:e2                                                                          {: RESULT = new PlusOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 MINUS Expr:e2                                                                         {: RESULT = new MinusOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 TIMES Expr:e2                                                                         {: RESULT = new TimesOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 DIV Expr:e2                                                                           {: RESULT = new DivOp(e1left, e1right, e1, e2); :}
-                        | Expr:e1 AND Expr:e2                                                                           {: RESULT = new AndOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 OR Expr:e2                                                                            {: RESULT = new OrOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 GT Expr:e2                                                                            {: RESULT = new GtOp(e1left, e1right, e1, e2); :}
-                        | Expr:e1 GE Expr:e2                                                                            {: RESULT = new GeOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 LT Expr:e2                                                                            {: RESULT = new LtOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 LE Expr:e2                                                                            {: RESULT = new LeOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 EQ Expr:e2                                                                            {: RESULT = new EqOp(e1left, e1right, e1, e2);:}
-                        | Expr:e1 NE Expr:e2                                                                            {: RESULT = new NeOp(e1left, e1right, e1, e2);:}
-                        | MINUS Expr:expr                                                                               {: RESULT = new UMinusExpression(exprleft, exprright,expr);:}
+Expr                ::= NIL:nil                                                                                         {: RESULT = new NilConst(nilxleft, nilxright); :}
+                        | TRUE:truer                                                                                    {: RESULT = new BooleanConst(truerxleft, truerxright, true);:}
+                        | FALSE:falser                                                                                  {: RESULT = new BooleanConst(falserxleft, falserxright, false);:}
+                        | INT_CONST:intConst                                                                            {: RESULT = new IntegerConst(intConstxleft, intConstxright, intConst);:}
+                        | FLOAT_CONST:floatConst                                                                        {: RESULT = new FloatConst(floatConstxleft, floatConstxright, floatConst);:}
+                        | STRING_CONST:stringConst                                                                      {: RESULT = new StringConst(stringConstxleft, stringConstxright, stringConst);:}
+                        | BLPAR:b BRPAR COLON TypeDenoter:type                                                          {: RESULT = new ArrayConst(bxleft, bxright, type);:}
+                        | ID:id                                                                                         {: RESULT = new Id(idxleft, idxright, id);:}
+                        | Expr:expr SLPAR Expr:exprElem SRPAR                                                           {: RESULT = new ArrayRead(exprxleft, exprxright, expr, exprElem);:}
+                        | ID:id LPAR Exprs:exprs RPAR                                                                   {: RESULT = new FunctionCall(idxleft, idxright, new Id(idxleft, idxright, id), exprs);:}
+                        | Expr:e1 PLUS Expr:e2                                                                          {: RESULT = new PlusOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 MINUS Expr:e2                                                                         {: RESULT = new MinusOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 TIMES Expr:e2                                                                         {: RESULT = new TimesOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 DIV Expr:e2                                                                           {: RESULT = new DivOp(e1xleft, e1xright, e1, e2); :}
+                        | Expr:e1 AND Expr:e2                                                                           {: RESULT = new AndOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 OR Expr:e2                                                                            {: RESULT = new OrOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 GT Expr:e2                                                                            {: RESULT = new GtOp(e1xleft, e1xright, e1, e2); :}
+                        | Expr:e1 GE Expr:e2                                                                            {: RESULT = new GeOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 LT Expr:e2                                                                            {: RESULT = new LtOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 LE Expr:e2                                                                            {: RESULT = new LeOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 EQ Expr:e2                                                                            {: RESULT = new EqOp(e1xleft, e1xright, e1, e2);:}
+                        | Expr:e1 NE Expr:e2                                                                            {: RESULT = new NeOp(e1xleft, e1xright, e1, e2);:}
+                        | MINUS Expr:expr                                                                               {: RESULT = new UMinusExpression(exprxleft, exprxright,expr);:}
                         %prec UMINUS
-                        | NOT Expr:expr                                                                                 {: RESULT = new NotExpression(exprleft, exprright, expr);:}
-                        | SHARP Expr:expr                                                                               {: RESULT = new SharpExpression(exprleft, exprright, expr);:}
+                        | NOT Expr:expr                                                                                 {: RESULT = new NotExpression(exprxleft, exprxright, expr);:}
+                        | SHARP Expr:expr                                                                               {: RESULT = new SharpExpression(exprxleft, exprxright, expr);:}
                         | error                                                                                         {: :}
                         ;
