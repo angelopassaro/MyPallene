@@ -139,6 +139,7 @@ Stat                ::= NOP:nop                                                 
                         | Vars:vars READ                                                                                {: RESULT = new ReadStatement(varsleft, varsright, vars); :}
                         | Exprs:exprs WRITE                                                                             {: RESULT = new WriteStatement(exprsleft, exprsright, exprs); :}
                         | RETURN Expr:expr                                                                              {: RESULT = new ReturnStatement(exprleft, exprright, expr); :}
+                        | error                                                                                         {: :}
                         ;
 
 Vars                ::= ID:id COMMA Vars:vars                                                                           {: vars.addFirst(new Id(idleft, idright, id));RESULT = vars; :}
@@ -174,4 +175,5 @@ Expr                ::= NIL:nil                                                 
                         %prec UMINUS
                         | NOT Expr:expr                                                                                 {: RESULT = new NotExpression(exprleft, exprright, expr);:}
                         | SHARP Expr:expr                                                                               {: RESULT = new SharpExpression(exprleft, exprright, expr);:}
+                        | error                                                                                         {: :}
                         ;
