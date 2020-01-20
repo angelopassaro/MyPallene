@@ -15,7 +15,7 @@ import syntax.expression.binaryexpr.relop.*;
 import syntax.expression.unaryexpr.*;
 import syntax.function.*;
 import syntax.statement.*;
-import syntax.type.*;
+import syntax.typedenoter.*;
 
 class Parser;
 
@@ -63,8 +63,8 @@ non terminal                Function Def_fun;
 non terminal                LinkedList<ParDecl> Par_decls;
 non terminal                LinkedList<VarDecl> Var_decls;
 non terminal                VarInitValue Var_init_value;
-non terminal                Type Type;
-non terminal                LinkedList<Type> Types;
+non terminal                TypeDenoter TypeDenoter;
+non terminal                LinkedList<TypeDenoter> Types;
 non terminal                LinkedList<Statement> Statements;
 non terminal                Statement Stat;
 non terminal                LinkedList<Id> Vars;
@@ -91,36 +91,36 @@ Functions           ::= Def_fun:defFun Functions:functions                      
                         | Def_fun:defFun                                                                                {: RESULT = new LinkedList<Function>(); RESULT.addFirst(defFun); :}
                         ;
 
-Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON Type:type Statements:statements END          {: RESULT = new ComplexDefFun(fleft, fright, new Id(idleft, idright, id), type, statements, parDecl); :}
+Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON TypeDenoter:type Statements:statements END   {: RESULT = new ComplexDefFun(fleft, fright, new Id(idleft, idright, id), type, statements, parDecl); :}
                         ;
 
-Def_fun             ::= FUNCTION:f ID:id LPAR RPAR COLON Type:type Statements:statements END                            {: RESULT = new SimpleDefFun(fleft, fright,new Id(idleft, idright, id), type, statements);:}
+Def_fun             ::= FUNCTION:f ID:id LPAR RPAR COLON TypeDenoter:type Statements:statements END                     {: RESULT = new SimpleDefFun(fleft, fright,new Id(idleft, idright, id), type, statements);:}
                         ;
 
-Par_decls            ::= ID:id COLON Type:type COMMA Par_decls:parDecl                                                  {: parDecl.addFirst(new ParDecl(idleft, idright, new Id(idleft, idright, id), type));RESULT = parDecl;:}
-                        | ID:id COLON Type:type                                                                         {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idleft, idright, new Id(idleft, idright, id), type));:}
+Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl                                           {: parDecl.addFirst(new ParDecl(idleft, idright, new Id(idleft, idright, id), type));RESULT = parDecl;:}
+                        | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idleft, idright, new Id(idleft, idright, id), type));:}
                         ;
 
-Var_decls           ::= ID:id COLON Type:type Var_init_value:varInit SEMI Var_decls:varDecls                            {: varDecls.addFirst(new VarDecl(idleft,idright,new Id(idleft, idright, id),type,varInit)); RESULT = varDecls;:}
-                        | ID:id COLON Type:type Var_init_value:varInit                                                  {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idleft,idright,new Id(idleft, idright, id), type, varInit)); :}
+Var_decls           ::= ID:id COLON TypeDenoter:type Var_init_value:varInit SEMI Var_decls:varDecls                     {: varDecls.addFirst(new VarDecl(idleft,idright,new Id(idleft, idright, id),type,varInit)); RESULT = varDecls;:}
+                        | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idleft,idright,new Id(idleft, idright, id), type, varInit)); :}
                         ;
 
 Var_init_value      ::= ASSIGN Expr:expr                                                                                {:  RESULT = new VarInitValue(exprleft, exprright, expr); :}
                         | /*empty*/
                         ;
 
-Type                ::= NIL:nil                                                                                         {: RESULT = new PrimitiveType(nilleft, nilright, "NIL"); :}
-                        | INT:integer                                                                                   {: RESULT = new PrimitiveType(integerleft, integerright, "INT");:}
-                        | BOOL:booler                                                                                   {: RESULT = new PrimitiveType(boolerleft, boolerright, "BOOL"); :}
-                        | FLOAT:floater                                                                                 {: RESULT = new PrimitiveType(floaterleft, floaterright, "FLOAT");:}
-                        | STRING:stringer                                                                               {: RESULT = new PrimitiveType(stringerleft, stringerright, "STRING");:}
-                        | BLPAR:b Type:type BLPAR                                                                       {: RESULT = new ArrayType(bleft, bright, type);:}
-                        | LPAR:l Types:types RPAR ARROW Type:rtype                                                      {: RESULT = new FunctionType(lleft, lright, types, rtype);:} //controllare type
-                        | LPAR:l RPAR ARROW Type:type                                                                   {: RESULT = new FunctionType(typeleft, typeright, type); :}
+TypeDenoter         ::= NIL:nil                                                                                         {: RESULT = new PrimitiveTypeDenoter(nilleft, nilright, "NIL"); :}
+                        | INT:integer                                                                                   {: RESULT = new PrimitiveTypeDenoter(integerleft, integerright, "INT");:}
+                        | BOOL:booler                                                                                   {: RESULT = new PrimitiveTypeDenoter(boolerleft, boolerright, "BOOL"); :}
+                        | FLOAT:floater                                                                                 {: RESULT = new PrimitiveTypeDenoter(floaterleft, floaterright, "FLOAT");:}
+                        | STRING:stringer                                                                               {: RESULT = new PrimitiveTypeDenoter(stringerleft, stringerright, "STRING");:}
+                        | BLPAR:b TypeDenoter:type BLPAR                                                                {: RESULT = new ArrayTypeDenoter(bleft, bright, type);:}
+                        | LPAR:l Types:types RPAR ARROW TypeDenoter:rtype                                               {: RESULT = new FunctionTypeDenoter(lleft, lright, types, rtype);:} //controllare type
+                        | LPAR:l RPAR ARROW TypeDenoter:type                                                            {: RESULT = new FunctionTypeDenoter(typeleft, typeright, type); :}
                         ;
 
-Types               ::= Type:type COMMA Types:types                                                                     {: types.addFirst(type); RESULT = types;:}
-                        | Type:type                                                                                     {: RESULT = new LinkedList<Type>(); RESULT.addFirst(type);:}
+Types               ::= TypeDenoter:type COMMA Types:types                                                              {: types.addFirst(type); RESULT = types;:}
+                        | TypeDenoter:type                                                                              {: RESULT = new LinkedList<TypeDenoter>(); RESULT.addFirst(type);:}
                         ;
 
 Statements           ::= Stat:stat SEMI Statements:statements                                                           {: statements.addFirst(stat); RESULT = statements; :}
