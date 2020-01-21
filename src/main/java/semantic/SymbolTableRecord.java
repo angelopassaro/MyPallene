@@ -1,5 +1,7 @@
 package semantic;
 
+import nodekind.NodeKind;
+
 public class SymbolTableRecord {
 
     private String type;
@@ -10,7 +12,7 @@ public class SymbolTableRecord {
         this.kind = kind;
     }
 
-    public String getType() {
+    public String getTypeDenoter() {
         return type;
     }
 

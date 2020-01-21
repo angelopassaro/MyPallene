@@ -22,7 +22,7 @@ public class ArrayTypeDenoter extends TypeDenoter {
     /**
      * @return The syntax.type
      */
-    public TypeDenoter getType() {
+    public TypeDenoter getTypeDenoterDenoter() {
         return type;
     }
 

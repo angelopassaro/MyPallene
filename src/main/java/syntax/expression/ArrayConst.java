@@ -1,21 +1,21 @@
 package syntax.expression;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-import syntax.type.Type;
+import syntax.typedenoter.TypeDenoter;
 import visitor.Visitor;
 
 
 
 public class ArrayConst extends Expr{
 
-    private Type type;
+    private TypeDenoter type;
 
-    public ArrayConst(Location leftLocation, Location rightLocation, Type type) {
+    public ArrayConst(Location leftLocation, Location rightLocation, TypeDenoter type) {
         super(leftLocation, rightLocation);
         this.type = type;
     }
 
-    public Type getType() {
+    public TypeDenoter getTypeDenoterDenoter() {
         return type;
     }
 

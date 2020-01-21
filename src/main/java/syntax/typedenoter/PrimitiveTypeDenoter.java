@@ -2,12 +2,11 @@ package syntax.typedenoter;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import nodetype.PrimitiveNodeType;
-import syntax.AstNode;
 import syntax.Leaf;
 import visitor.Visitor;
 
 
-public class PrimitiveTypeDenoter extends AstNode implements Leaf<String> {
+public class PrimitiveTypeDenoter extends TypeDenoter implements Leaf<String> {
 
 
     private String kind;

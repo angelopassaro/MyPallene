@@ -34,7 +34,7 @@ public class FunctionTypeDenoter extends TypeDenoter {
     /**
      * @return the types
      */
-    public LinkedList<TypeDenoter> getTypes() {
+    public LinkedList<TypeDenoter> getTypeDenoters() {
         return typeDenoters;
     }
 

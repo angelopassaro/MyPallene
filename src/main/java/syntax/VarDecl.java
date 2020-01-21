@@ -2,13 +2,13 @@ package syntax;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Id;
-import syntax.type.Type;
+import syntax.typedenoter.TypeDenoter;
 import visitor.Visitor;
 
 public class VarDecl extends AstNode {
 
     private Id id;
-    private Type type;
+    private TypeDenoter type;
     private VarInitValue varInitValue;
 
     /**
@@ -18,7 +18,7 @@ public class VarDecl extends AstNode {
      * @param type         The syntax.type of variable
      * @param varInitValue The initial value of variable
      */
-    public VarDecl(Location leftLocation, Location rightLocation, Id id, Type type, VarInitValue varInitValue) {
+    public VarDecl(Location leftLocation, Location rightLocation, Id id, TypeDenoter type, VarInitValue varInitValue) {
         super(leftLocation, rightLocation);
         this.id = id;
         this.type = type;
@@ -35,7 +35,7 @@ public class VarDecl extends AstNode {
     /**
      * @return The syntax.type
      */
-    public Type getType() {
+    public TypeDenoter getTypeDenoterDenoter() {
         return type;
     }
 

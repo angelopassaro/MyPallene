@@ -3,7 +3,7 @@ package syntax.function;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.expression.Id;
 import syntax.statement.Statement;
-import syntax.type.Type;
+import syntax.typedenoter.TypeDenoter;
 import visitor.Visitor;
 
 import java.util.LinkedList;
@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public class SimpleDefFun extends Function {
 
     private Id id;
-    private Type type;
+    private TypeDenoter type;
     private LinkedList<Statement> statements;
 
     /**
@@ -21,7 +21,7 @@ public class SimpleDefFun extends Function {
      * @param type          The function return syntax.type
      * @param statements    The statements
      */
-    public SimpleDefFun(Location leftLocation, Location rightLocation, Id id, Type type, LinkedList<Statement> statements) {
+    public SimpleDefFun(Location leftLocation, Location rightLocation, Id id, TypeDenoter type, LinkedList<Statement> statements) {
         super(leftLocation, rightLocation);
         this.id = id;
         this.type = type;
@@ -38,7 +38,7 @@ public class SimpleDefFun extends Function {
     /**
      * @return The syntax.type
      */
-    public Type getType() {
+    public TypeDenoter getTypeDenoterDenoter() {
         return type;
     }
 
