@@ -1,6 +1,5 @@
 package visitor;
 
-import nodetype.PrimitiveNodeType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import syntax.*;
@@ -18,6 +17,7 @@ import syntax.function.SimpleDefFun;
 import syntax.statement.*;
 import syntax.typedenoter.ArrayTypeDenoter;
 import syntax.typedenoter.FunctionTypeDenoter;
+import syntax.typedenoter.PrimitiveTypeDenoter;
 
 import java.util.function.Consumer;
 
@@ -47,7 +47,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     public Element visit(SimpleDefFun simpleDefFun, Document arg) {
         Element element = arg.createElement("Function");
         element.appendChild(simpleDefFun.getId().accept(this, arg));
-        element.appendChild(simpleDefFun.getType().accept(this, arg));
+        element.appendChild(simpleDefFun.getTypeDenoterDenoter().accept(this, arg));
         simpleDefFun.getStatements().forEach(addParent(element, arg));
         return element;
     }
@@ -57,7 +57,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
         Element element = arg.createElement("Function");
         element.appendChild(complexDefFun.getId().accept(this, arg));
         complexDefFun.getParDecls().forEach(addParent(element, arg));
-        element.appendChild(complexDefFun.getType().accept(this, arg));
+        element.appendChild(complexDefFun.getTypeDenoterDenoter().accept(this, arg));
         complexDefFun.getStatements().forEach(addParent(element, arg));
         return element;
     }
@@ -66,7 +66,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     public Element visit(ParDecl parDecl, Document arg) {
         Element element = arg.createElement("ParDecl");
         element.appendChild(parDecl.getId().accept(this, arg));
-        element.appendChild(parDecl.getType().accept(this, arg));
+        element.appendChild(parDecl.getTypeDenoterDenoter().accept(this, arg));
         return element;
     }
 
@@ -74,7 +74,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     public Element visit(VarDecl varDecl, Document arg) {
         Element element = arg.createElement("VarDecl");
         element.appendChild(varDecl.getId().accept(this, arg));
-        element.appendChild(varDecl.getType().accept(this, arg));
+        element.appendChild(varDecl.getTypeDenoterDenoter().accept(this, arg));
         element.appendChild(varDecl.getVarInitValue().accept(this, arg));
         return element;
     }
@@ -87,24 +87,25 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     }
 
     @Override
-    public Element visit(PrimitiveNodeType primitiveNodeType, Document arg) {
-        Element element = arg.createElement("PrimitiveType");
-        element.setAttribute("kind", primitiveNodeType.getKind());
+    public Element visit(PrimitiveTypeDenoter primitiveTypeDenoter, Document arg) {
+        Element element = arg.createElement("PrimitiveTypeDenoter.java");
+        element.setAttribute("kind", primitiveTypeDenoter.getKind());
         return element;
     }
+
 
     @Override
     public Element visit(ArrayTypeDenoter arrayTypeDenoter, Document arg) {
         Element element = arg.createElement("ArrayType");
-        element.appendChild(arrayTypeDenoter.getType().accept(this, arg));
+        element.appendChild(arrayTypeDenoter.getTypeDenoterDenoter().accept(this, arg));
         return element;
     }
 
     @Override
     public Element visit(FunctionTypeDenoter functionTypeDenoter, Document arg) {
         Element element = arg.createElement("FunctionType");
-        functionTypeDenoter.getTypes().forEach(addParent(element, arg));
-        element.appendChild(functionTypeDenoter.getType().accept(this, arg));
+        functionTypeDenoter.getTypeDenoters().forEach(addParent(element, arg));
+        element.appendChild(functionTypeDenoter.getReturnType().accept(this, arg));
         return element;
     }
 
@@ -221,7 +222,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     @Override
     public Element visit(ArrayConst emptyArrayExpression, Document arg) {
         Element element = arg.createElement("EmptyArrayExpression");
-        element.setAttribute("type", emptyArrayExpression.getType().toString());
+        element.setAttribute("type", emptyArrayExpression.getTypeDenoterDenoter().toString());
         return element;
     }
 
@@ -383,5 +384,6 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
         Element element = arg.createElement("NopStatement");
         return element;
     }
+
 
 }

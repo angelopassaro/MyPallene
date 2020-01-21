@@ -1,6 +1,5 @@
 package visitor;
 
-import nodetype.PrimitiveNodeType;
 import syntax.*;
 import syntax.expression.*;
 import syntax.expression.binaryexpr.arithop.DivOp;
@@ -17,7 +16,6 @@ import syntax.statement.*;
 import syntax.typedenoter.ArrayTypeDenoter;
 import syntax.typedenoter.FunctionTypeDenoter;
 import syntax.typedenoter.PrimitiveTypeDenoter;
-import syntax.typedenoter.TypeDenoter;
 
 public interface Visitor<T, P> {
 
@@ -77,13 +75,13 @@ public interface Visitor<T, P> {
      */
     T visit(VarInitValue varInitValue, P arg);
 
+
     /**
-     * Visit for primitiveType node
-     *
-     * @param primitiveNodeType The type
-     * @param arg               Additional parameter
+     * @param primitiveTypeDenoter Primitive type
+     * @param arg                  Additional parameter
      */
-    T visit(PrimitiveNodeType primitiveNodeType, P arg);
+    T visit(PrimitiveTypeDenoter primitiveTypeDenoter, P arg);
+
 
     /**
      * Visit For arrayType node
@@ -345,15 +343,4 @@ public interface Visitor<T, P> {
     T visit(NopStatement nopStatement, P arg);
 
 
-    /**
-     * @param typeDenoter The typeDenoter
-     * @param arg         The Additional parameter
-     */
-    T visit(TypeDenoter typeDenoter, P arg);
-
-    /**
-     * @param primitiveTypeDenoter The typeDenoter
-     * @param arg                  The Additional parameter
-     */
-    T visit(PrimitiveTypeDenoter primitiveTypeDenoter, P arg);
 }
