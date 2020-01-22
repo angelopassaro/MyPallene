@@ -2,7 +2,6 @@ package visitor;
 
 import error.ErrorHandler;
 import nodekind.NodeKind;
-import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
 import semantic.SymbolTableRecord;
 import syntax.*;
@@ -20,7 +19,7 @@ import syntax.function.SimpleDefFun;
 import syntax.statement.*;
 import syntax.typedenoter.ArrayTypeDenoter;
 import syntax.typedenoter.FunctionTypeDenoter;
-import syntax.typedenoter.TypeDenoter;
+import syntax.typedenoter.PrimitiveTypeDenoter;
 
 import java.util.List;
 
@@ -39,6 +38,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
             return nodes.stream().allMatch(node -> node.accept(this, arg));
     }
 
+    /**
+     * Program visit
+     *
+     * @param program The program node
+     * @param arg     Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(Program program, SymbolTable arg) {
         arg.enterScope();
@@ -52,18 +58,30 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isProgramSafe;
     }
 
+    /**
+     * Global visit
+     *
+     * @param global The program node
+     * @param arg    Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(Global global, SymbolTable arg) {
-        arg.enterScope();
         boolean areVarDeclsSafe = this.checkContext(global.getVarDecls(), arg);
         boolean isGlobalSafe = areVarDeclsSafe;
         if (!isGlobalSafe) {
             this.errorHandler.reportError("Global Error", global);
         }
-        arg.exitScope();
         return isGlobalSafe;
     }
 
+    /**
+     * SimpleDef visit
+     *
+     * @param simpleDefFun The simple function node
+     * @param arg          Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
         boolean isSimpleFunctionSafe = simpleDefFun.getId().accept(this, arg);
@@ -72,17 +90,24 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         } else {
             arg.enterScope();
             boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
-            boolean isTypeSafe = simpleDefFun.getType().accept(this, arg);
-            isSimpleFunctionSafe = isStatementsSafe && isTypeSafe;
+            // boolean isTypeSafe = simpleDefFun.getTypeDenoterDenoter().accept(this, arg);
+            isSimpleFunctionSafe = isStatementsSafe;
             if (!isSimpleFunctionSafe) {
                 this.errorHandler.reportError("Simple Function Error", simpleDefFun);
             }
             arg.exitScope();
-            arg.addEntry(simpleDefFun.getId().toString(), new SymbolTableRecord(simpleDefFun.getType().typeFactory().toString(), NodeKind.FUNCTION));
+            arg.addEntry(simpleDefFun.getId().toString(), new SymbolTableRecord(simpleDefFun.getTypeDenoterDenoter().typeFactory().toString(), NodeKind.FUNCTION));
         }
         return isSimpleFunctionSafe;
     }
 
+    /**
+     * ComplesDefFun visit
+     *
+     * @param complexDefFun The complex function node
+     * @param arg           Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ComplexDefFun complexDefFun, SymbolTable arg) {
         boolean isComplexFunctionSafe = complexDefFun.getId().accept(this, arg);
@@ -92,58 +117,93 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
             arg.enterScope();
             boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
             boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
-            boolean isTypeSafe = complexDefFun.getType().accept(this, arg);
-            isComplexFunctionSafe = isStatementsSafe && isTypeSafe && isParDeclSafe;
+            //boolean isTypeSafe = complexDefFun.getTypeDenoterDenoter().accept(this, arg);
+            isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
             if (!isComplexFunctionSafe) {
                 this.errorHandler.reportError("Simple Function Error", complexDefFun);
             }
             arg.exitScope();
-            arg.addEntry(complexDefFun.getId().toString(), new SymbolTableRecord(complexDefFun.getType().typeFactory().toString(), NodeKind.FUNCTION));
+            arg.addEntry(complexDefFun.getId().toString(), new SymbolTableRecord(complexDefFun.getTypeDenoterDenoter().typeFactory().toString(), NodeKind.FUNCTION));
         }
         return isComplexFunctionSafe;
     }
 
+    /**
+     * ParDecl visit
+     *
+     * @param parDecl The param
+     * @param arg     Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ParDecl parDecl, SymbolTable arg) {
         boolean isParDeclSafe = parDecl.getId().accept(this, arg);
         if (!isParDeclSafe) {
             this.errorHandler.reportError("ParDecl Error", parDecl);
         } else {
-            arg.addEntry(parDecl.getId().toString(), new SymbolTableRecord(parDecl.getType().typeFactory().toString(), NodeKind.VARIABLE));
+            arg.addEntry(parDecl.getId().toString(), new SymbolTableRecord(parDecl.getTypeDenoterDenoter().typeFactory().toString(), NodeKind.VARIABLE));
         }
         return isParDeclSafe;
     }
 
+    /**
+     * VarDecl visit
+     *
+     * @param varDecl The variable
+     * @param arg     Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(VarDecl varDecl, SymbolTable arg) {
         boolean isVarDeclSafe = varDecl.getId().accept(this, arg);
         if (!isVarDeclSafe) {
             this.errorHandler.reportError("VarDecl Error", varDecl);
         } else {
-            arg.addEntry(varDecl.getId().toString(), new SymbolTableRecord(varDecl.getType().typeFactory().toString(), NodeKind.VARIABLE));
+            arg.addEntry(varDecl.getId().toString(), new SymbolTableRecord(varDecl.getTypeDenoterDenoter().typeFactory().toString(), NodeKind.VARIABLE));
         }
         return isVarDeclSafe;
     }
 
+    /**
+     * @param varInitValue The initial value of variable
+     * @param arg          Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(VarInitValue varInitValue, SymbolTable arg) {
-        return varInitValue.getExpr().accept(this, arg);
+        boolean isVarInitValueSafe = varInitValue.getExpr().accept(this, arg);
+        if (!isVarInitValueSafe) {
+            this.errorHandler.reportError("VarInitValue Error", varInitValue);
+        }
+        return isVarInitValueSafe;
     }
 
 
+    /**
+     * WhileStatement visit
+     *
+     * @param whileStatement The while statement
+     * @param arg            Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(WhileStatement whileStatement, SymbolTable arg) {
         boolean isExprSafe = whileStatement.getExpr().accept(this, arg);
-        arg.enterScope();
         boolean areStatementsSafe = checkContext(whileStatement.getStatements(), arg);
         boolean isWhileSafe = isExprSafe && areStatementsSafe;
         if (!isWhileSafe) {
             this.errorHandler.reportError("While Statement Error", whileStatement);
         }
-        arg.exitScope();
         return isWhileSafe;
     }
 
+    /**
+     * IfThenStatement visit
+     *
+     * @param ifThenStatement The If Then Statement
+     * @param arg             Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(IfThenStatement ifThenStatement, SymbolTable arg) {
         boolean isExprSafe = ifThenStatement.getExpr().accept(this, arg);
@@ -155,6 +215,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isIfThenStatementSafe;
     }
 
+    /**
+     * ifThenElseStatement visit
+     *
+     * @param ifThenElseStatements The If Then Statement
+     * @param arg                  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(IfThenElseStatement ifThenElseStatements, SymbolTable arg) {
         boolean isExprSafe = ifThenElseStatements.getExpr().accept(this, arg);
@@ -167,11 +234,16 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return ifThenElseStatement;
     }
 
-    //????
+    /**
+     * forStatement visit
+     *
+     * @param forStatement The for statement
+     * @param arg          Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ForStatement forStatement, SymbolTable arg) {
         arg.enterScope();
-        arg.addEntry(forStatement.getId().toString(), new SymbolTableRecord(forStatement.getId().getValue(), NodeKind.VARIABLE));
         boolean areStatemetSafe = checkContext(forStatement.getStatements(), arg);
         boolean isAssignExprSafe = forStatement.getAssignExpr().accept(this, arg);
         boolean isAssignCommaSafe = forStatement.getCommaExpr().accept(this, arg);
@@ -180,7 +252,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isForSafe;
     }
 
-    //????
+    /**
+     * Local statement visit
+     *
+     * @param localStatement The local statement
+     * @param arg            Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(LocalStatement localStatement, SymbolTable arg) {
         arg.enterScope();
@@ -194,6 +272,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isLocalSafe;
     }
 
+    /**
+     * AssignStatement visit
+     *
+     * @param assignStatement The assign Statement
+     * @param arg             Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(AssignStatement assignStatement, SymbolTable arg) {
         boolean isLeftSafe = assignStatement.getId().accept(this, arg);
@@ -206,6 +291,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     }
 
 
+    /**
+     * ReadStatement visit
+     *
+     * @param readStatement The readStatement
+     * @param arg           Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ReadStatement readStatement, SymbolTable arg) {
         boolean isReadStatementSafe = checkContext(readStatement.getIds(), arg);
@@ -215,6 +307,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isReadStatementSafe;
     }
 
+    /**
+     * WriteStatement visit
+     *
+     * @param writeStatement The writeStatement
+     * @param arg            Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(WriteStatement writeStatement, SymbolTable arg) {
         boolean isWriteStatementSafe = checkContext(writeStatement.getExprs(), arg);
@@ -225,6 +324,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     }
 
 
+    /**
+     * FunctionCallstatement visit
+     *
+     * @param functionCallStatement The FunctionCallStatement
+     * @param arg                   Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
         boolean isFunctionCallSafe = functionCallStatement.getId().accept(this, arg);
@@ -239,39 +345,70 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isFunctionCallSafe;
     }
 
+    /**
+     * FunctionCall visit
+     *
+     * @param functionCallExpression The FunctionCallStatement
+     * @param arg                    Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(FunctionCall functionCallExpression, SymbolTable arg) {
         boolean isFunctionCallSafe = functionCallExpression.getId().accept(this, arg);
         if (!isFunctionCallSafe) {
             this.errorHandler.reportYetDefined(functionCallExpression);
         } else {
-            arg.enterScope();
             boolean areStatementsSafe = checkContext(functionCallExpression.getExprs(), arg);
             if (!areStatementsSafe) {
                 this.errorHandler.reportError("Function Call Error", functionCallExpression);
             }
-            arg.exitScope();
-            arg.addEntry(functionCallExpression.getId().toString(), new SymbolTableRecord("da modificare il type", NodeKind.FUNCTION));
         }
         return isFunctionCallSafe;
     }
 
+    /**
+     * Float value const
+     *
+     * @param floatConst The value
+     * @param arg        Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(FloatConst floatConst, SymbolTable arg) {
         return true;
     }
 
+
+    /**
+     * @param stringConst The value
+     * @param arg         Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(StringConst stringConst, SymbolTable arg) {
         return true;
     }
 
+    /**
+     * Integer value const
+     *
+     * @param integerConst The value
+     * @param arg          Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(IntegerConst integerConst, SymbolTable arg) {
         return true;
     }
 
 
+    /**
+     * PlusOp visit
+     *
+     * @param plusOp The plusExpression
+     * @param arg    Additional paramaeter
+     * @return
+     */
     @Override
     public Boolean visit(PlusOp plusOp, SymbolTable arg) {
         boolean isLeftSafe = plusOp.getElement1().accept(this, arg);
@@ -283,6 +420,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isPlusSafe;
     }
 
+    /**
+     * MinusOp visit
+     *
+     * @param minusOp The minusExpression
+     * @param arg     Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(MinusOp minusOp, SymbolTable arg) {
         boolean isLeftSafe = minusOp.getElement1().accept(this, arg);
@@ -294,6 +438,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isMinusSafe;
     }
 
+    /**
+     * TimesOp visit
+     *
+     * @param timesOp The TimesExpression
+     * @param arg     Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(TimesOp timesOp, SymbolTable arg) {
         boolean isLeftSafe = timesOp.getElement1().accept(this, arg);
@@ -305,6 +456,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isTimesSafe;
     }
 
+    /**
+     * DivOp visit
+     *
+     * @param divOp The DivExpression
+     * @param arg   Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(DivOp divOp, SymbolTable arg) {
         boolean isLeftSafe = divOp.getElement1().accept(this, arg);
@@ -316,6 +474,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isDivSafe;
     }
 
+    /**
+     * AndOp visit
+     *
+     * @param andOp The AndExpression
+     * @param arg   Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(AndOp andOp, SymbolTable arg) {
         boolean isLeftSafe = andOp.getElement1().accept(this, arg);
@@ -327,6 +492,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isAndSafe;
     }
 
+    /**
+     * OrOp visit
+     *
+     * @param orOp The AndExpression
+     * @param arg  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(OrOp orOp, SymbolTable arg) {
         boolean isLeftSafe = orOp.getElement1().accept(this, arg);
@@ -338,6 +510,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isOrSafe;
     }
 
+    /**
+     * GtOp visit
+     *
+     * @param gtOp The AndExpression
+     * @param arg  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(GtOp gtOp, SymbolTable arg) {
         boolean isLeftSafe = gtOp.getElement1().accept(this, arg);
@@ -349,6 +528,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isGtSafe;
     }
 
+    /**
+     * GeOp visit
+     *
+     * @param geOp The AndExpression
+     * @param arg  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(GeOp geOp, SymbolTable arg) {
         boolean isLeftSafe = geOp.getElement1().accept(this, arg);
@@ -360,6 +546,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isGeSafe;
     }
 
+    /**
+     * LtOp visit
+     *
+     * @param ltOp The AndExpression
+     * @param arg  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(LtOp ltOp, SymbolTable arg) {
         boolean isLeftSafe = ltOp.getElement1().accept(this, arg);
@@ -371,6 +564,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isLtSafe;
     }
 
+    /**
+     * LeOp visit
+     *
+     * @param leOp The AndExpression
+     * @param arg  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(LeOp leOp, SymbolTable arg) {
         boolean isLeftSafe = leOp.getElement1().accept(this, arg);
@@ -382,6 +582,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isLeSafe;
     }
 
+    /**
+     * EqOp visit
+     *
+     * @param eqOp The AndExpression
+     * @param arg  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(EqOp eqOp, SymbolTable arg) {
         boolean isLeftSafe = eqOp.getElement1().accept(this, arg);
@@ -393,6 +600,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isEqSafe;
     }
 
+    /**
+     * NeOp visit
+     *
+     * @param neOp The AndExpression
+     * @param arg  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(NeOp neOp, SymbolTable arg) {
         boolean isLeftSafe = neOp.getElement1().accept(this, arg);
@@ -404,6 +618,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isNeSafe;
     }
 
+    /**
+     * IMinusExpression
+     *
+     * @param uMinusExpression The AndExpression
+     * @param arg              Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(UMinusExpression uMinusExpression, SymbolTable arg) {
         boolean isUMinusSafe = uMinusExpression.getMinus().accept(this, arg);
@@ -413,27 +634,60 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isUMinusSafe;
     }
 
+    /**
+     * @param id  The id
+     * @param arg Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(Id id, SymbolTable arg) {
         return arg.lookup(id.getValue()).isPresent();
     }
 
+    /**
+     * Nil value const
+     *
+     * @param nilConst The NilConst
+     * @param arg      Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(NilConst nilConst, SymbolTable arg) {
         return true;
     }
 
 
+    /**
+     * Boolean value const
+     *
+     * @param booleanConst The boolenConst
+     * @param arg          Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(BooleanConst booleanConst, SymbolTable arg) {
         return true;
     }
 
+    /**
+     * NotExpression
+     *
+     * @param notExpression The notExpression
+     * @param arg           Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(NotExpression notExpression, SymbolTable arg) {
         return true;
     }
 
+    /**
+     * SharpExpression
+     *
+     * @param sharpExpression The sharpExpression
+     * @param arg             The Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(SharpExpression sharpExpression, SymbolTable arg) {
         boolean isSharpSafe = sharpExpression.getExpr().accept(this, arg);
@@ -443,48 +697,114 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isSharpSafe;
     }
 
+    /**
+     * NopStatement
+     *
+     * @param nopStatement The NopStatement
+     * @param arg          The Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(NopStatement nopStatement, SymbolTable arg) {
         return true;
     }
 
+    /**
+     * PrimitiveTypeDenoter
+     *
+     * @param primitiveTypeDenoter Primitive type
+     * @param arg                  Additional parameter
+     * @return
+     */
     @Override
-    public Boolean visit(TypeDenoter typeDenoter, SymbolTable arg) {
+    public Boolean visit(PrimitiveTypeDenoter primitiveTypeDenoter, SymbolTable arg) {
         return true;
     }
 
-    @Override
-    public Boolean visit(PrimitiveNodeType primitiveNodeType, SymbolTable arg) {
-        return null;
-    }
-
+    /**
+     * ArrayTypeDenoter
+     *
+     * @param arrayTypeDenoter The type of array
+     * @param arg              Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ArrayTypeDenoter arrayTypeDenoter, SymbolTable arg) {
-        return null;
+        return true;
     }
 
+    /**
+     * FunctionTypeDenoter
+     *
+     * @param functionTypeDenoter The type
+     * @param arg                 Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(FunctionTypeDenoter functionTypeDenoter, SymbolTable arg) {
-        return null;
+        return true;
     }
 
+    /**
+     * @param emptyArrayExpression Type
+     * @param arg                  Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
         return null;
     }
 
+    /**
+     * ArrayRead visit
+     *
+     * @param readArrayExpression The readArray
+     * @param arg                 Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ArrayRead readArrayExpression, SymbolTable arg) {
-        return null;
+        boolean isArrayElementSafe = readArrayExpression.getArrayElement().accept(this, arg);
+        boolean isArrayExpressionSafe = readArrayExpression.getArrayName().accept(this, arg);
+        boolean isArrayReadSafe = isArrayElementSafe && isArrayExpressionSafe;
+        if (!isArrayReadSafe) {
+            this.errorHandler.reportError("Array Statement Error", readArrayExpression);
+        }
+        return isArrayReadSafe;
     }
 
+    /**
+     * ReturnStatement visit
+     *
+     * @param returnStatement The returnStatement
+     * @param arg             Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ReturnStatement returnStatement, SymbolTable arg) {
-        return null;
+        boolean isRetunStatementSafe = returnStatement.getExpr().accept(this, arg);
+        if (!isRetunStatementSafe) {
+            this.errorHandler.reportError("Return Statement Error", returnStatement);
+        }
+        return isRetunStatementSafe;
     }
 
+    /**
+     * ArrayElement visit
+     *
+     * @param arrayElementStatement The arrayElement statement
+     * @param arg                   Additional parameter
+     * @return
+     */
     @Override
     public Boolean visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
-        return null;
+        boolean isArrayAssignSafe = arrayElementStatement.getArrayAssign().accept(this, arg);
+        boolean isArrayExprSafe = arrayElementStatement.getArrayExpr().accept(this, arg);
+        boolean isArrayPointSafe = arrayElementStatement.getArrayPoint().accept(this, arg);
+        boolean isarrayElementStatementSafe = isArrayAssignSafe && isArrayExprSafe && isArrayPointSafe;
+        if (!isarrayElementStatementSafe) {
+            this.errorHandler.reportError("ArrayElement Statement Error", arrayElementStatement);
+        }
+        return isarrayElementStatementSafe;
     }
 }
