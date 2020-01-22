@@ -9,11 +9,11 @@ import java.util.Stack;
 
 public class StackSymbolTable extends LinkedHashMap<Integer, HashMap<Integer, SymbolTableRecord>> implements SymbolTable {
 
-    private Stack<Integer> scopeLevel;
-    private StringTable table;
+    private final Stack<Integer> scopeLevel;
+    private final StringTable table;
     private int currentLevel;
 
-    public StackSymbolTable() {
+    public StackSymbolTable(StringTable table) {
         this.table = table;
         this.scopeLevel = new Stack();
         this.currentLevel = 0;
