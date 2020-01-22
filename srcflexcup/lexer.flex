@@ -31,12 +31,10 @@ import java.io.InputStreamReader;
 %{
     private StringBuilder string = new StringBuilder();
     private ComplexSymbolFactory symbolFactory;
-    private StringTable table;
 
-    public Lexer(ComplexSymbolFactory sf, java.io.InputStream is, StringTable table){
+    public Lexer(ComplexSymbolFactory sf, java.io.InputStream is){
         this(new InputStreamReader(is));
         this.symbolFactory = sf;
-        this.table = table;
     }
 
     public Symbol generateTokenSym(String name, int type){
@@ -48,17 +46,6 @@ import java.io.InputStreamReader;
         return symbolFactory.newSymbol(name, type, new Location(yyline+1, yycolumn+1),
             new Location(yyline+1, yycolumn+yylength()), value);
     }
-
-    public boolean initialize(String filePath) {
-        try {
-                this.zzReader = new java.io.FileReader(filePath);
-                return true;
-            } catch (java.io.FileNotFoundException e) {
-                return false;
-                }
-           }
-
-
 
 %}
 
