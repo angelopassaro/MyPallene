@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Program>
+    <Global>
+        <VarDecl>
+            <Id lexeme="t"/>
+            <PrimitiveTypeDenoter.java kind="FLOAT"/>
+            <VarInitValue>
+                <IntegerConst value="0"/>
+            </VarInitValue>
+        </VarDecl>
+    </Global>
+    <Function>
+        <Id lexeme="a"/>
+        <ParDecl>
+            <Id lexeme="q"/>
+            <PrimitiveTypeDenoter.java kind="FLOAT"/>
+        </ParDecl>
+        <PrimitiveTypeDenoter.java kind="BOOL"/>
+        <AssignStatement>
+            <Id lexeme="x"/>
+            <IntegerConst value="1"/>
+        </AssignStatement>
+    </Function>
+</Program>
