@@ -34,7 +34,7 @@ public class VarDecl extends AstNode {
     /**
      * @return The syntax.type
      */
-    public TypeDenoter getTypeDenoterDenoter() {
+    public TypeDenoter getTypeDenoter() {
         return type;
     }
 

@@ -95,7 +95,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
                 this.errorHandler.reportError("Simple Function Error", simpleDefFun);
             }
             arg.exitScope();
-            arg.addEntry(simpleDefFun.getVariable().getValue(), new SymbolTableRecord(simpleDefFun.getTypeDenoterDenoter().typeFactory(), NodeKind.FUNCTION));
+            arg.addEntry(simpleDefFun.getVariable().getValue(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
         }
         return isSimpleFunctionSafe;
     }
@@ -121,7 +121,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
                 this.errorHandler.reportError("Simple Function Error", complexDefFun);
             }
             arg.exitScope();
-            arg.addEntry(complexDefFun.getVariable().getValue(), new SymbolTableRecord(complexDefFun.getTypeDenoterDenoter().typeFactory(), NodeKind.FUNCTION));
+            arg.addEntry(complexDefFun.getVariable().getValue(), new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
         }
         return isComplexFunctionSafe;
     }
@@ -139,7 +139,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isParDeclSafe) {
             this.errorHandler.reportError("ParDecl Error", parDecl);
         } else {
-            arg.addEntry(parDecl.getVariable().getValue(), new SymbolTableRecord(parDecl.getTypeDenoterDenoter().typeFactory(), NodeKind.VARIABLE));
+            arg.addEntry(parDecl.getVariable().getValue(), new SymbolTableRecord(parDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
         }
         return isParDeclSafe;
     }
@@ -157,7 +157,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isVarDeclSafe) {
             this.errorHandler.reportError("VarDecl Error", varDecl);
         } else {
-            arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoterDenoter().typeFactory(), NodeKind.VARIABLE));
+            arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
         }
         return isVarDeclSafe;
     }
@@ -641,6 +641,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(Id id, SymbolTable arg) {
+        System.out.println(arg);
         return arg.lookup(id.getValue()).isPresent();
     }
 

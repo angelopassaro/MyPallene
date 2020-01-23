@@ -47,7 +47,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     public Element visit(SimpleDefFun simpleDefFun, Document arg) {
         Element element = arg.createElement("Function");
         element.appendChild(simpleDefFun.getVariable().accept(this, arg));
-        element.appendChild(simpleDefFun.getTypeDenoterDenoter().accept(this, arg));
+        element.appendChild(simpleDefFun.getTypeDenoter().accept(this, arg));
         simpleDefFun.getStatements().forEach(addParent(element, arg));
         return element;
     }
@@ -57,7 +57,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
         Element element = arg.createElement("Function");
         element.appendChild(complexDefFun.getVariable().accept(this, arg));
         complexDefFun.getParDecls().forEach(addParent(element, arg));
-        element.appendChild(complexDefFun.getTypeDenoterDenoter().accept(this, arg));
+        element.appendChild(complexDefFun.getTypeDenoter().accept(this, arg));
         complexDefFun.getStatements().forEach(addParent(element, arg));
         return element;
     }
@@ -66,7 +66,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     public Element visit(ParDecl parDecl, Document arg) {
         Element element = arg.createElement("ParDecl");
         element.appendChild(parDecl.getVariable().accept(this, arg));
-        element.appendChild(parDecl.getTypeDenoterDenoter().accept(this, arg));
+        element.appendChild(parDecl.getTypeDenoter().accept(this, arg));
         return element;
     }
 
@@ -74,7 +74,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     public Element visit(VarDecl varDecl, Document arg) {
         Element element = arg.createElement("VarDecl");
         element.appendChild(varDecl.getVariable().accept(this, arg));
-        element.appendChild(varDecl.getTypeDenoterDenoter().accept(this, arg));
+        element.appendChild(varDecl.getTypeDenoter().accept(this, arg));
         element.appendChild(varDecl.getVarInitValue().accept(this, arg));
         return element;
     }

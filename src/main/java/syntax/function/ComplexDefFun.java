@@ -42,7 +42,7 @@ public class ComplexDefFun extends Function {
     /**
      * @return The syntax.type
      */
-    public TypeDenoter getTypeDenoterDenoter() {
+    public TypeDenoter getTypeDenoter() {
         return type;
     }
 
