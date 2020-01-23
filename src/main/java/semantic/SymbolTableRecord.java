@@ -1,18 +1,19 @@
 package semantic;
 
 import nodekind.NodeKind;
+import nodetype.NodeType;
 
 public class SymbolTableRecord {
 
-    private String type;
+    private NodeType type;
     private NodeKind kind;
 
-    public SymbolTableRecord(String type, NodeKind kind) {
+    public SymbolTableRecord(NodeType type, NodeKind kind) {
         this.type = type;
         this.kind = kind;
     }
 
-    public String getTypeDenoter() {
+    public NodeType getTypeDenoter() {
         return type;
     }
 
@@ -20,7 +21,7 @@ public class SymbolTableRecord {
         return kind;
     }
 
-    public void setType(String type) {
+    public void setType(NodeType type) {
         this.type = type;
     }
 
