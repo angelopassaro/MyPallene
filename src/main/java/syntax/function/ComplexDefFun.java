@@ -2,7 +2,7 @@ package syntax.function;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import syntax.ParDecl;
-import syntax.expression.Id;
+import syntax.Variable;
 import syntax.statement.Statement;
 import syntax.typedenoter.TypeDenoter;
 import visitor.Visitor;
@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 public class ComplexDefFun extends Function {
 
-    private Id id;
+    private Variable variable;
     private TypeDenoter type;
     private LinkedList<Statement> statements;
     private LinkedList<ParDecl> parDecls;
@@ -19,14 +19,14 @@ public class ComplexDefFun extends Function {
     /**
      * {@inheritDoc}
      *
-     * @param id         The id
+     * @param variable   The id
      * @param type       The function return syntax.type
      * @param statements The statment
      * @param parDecls   The param of function
      */
-    public ComplexDefFun(Location leftLocation, Location rightLocation, Id id, TypeDenoter type, LinkedList<Statement> statements, LinkedList<ParDecl> parDecls) {
+    public ComplexDefFun(Location leftLocation, Location rightLocation, Variable variable, TypeDenoter type, LinkedList<Statement> statements, LinkedList<ParDecl> parDecls) {
         super(leftLocation, rightLocation);
-        this.id = id;
+        this.variable = variable;
         this.type = type;
         this.statements = statements;
         this.parDecls = parDecls;
@@ -35,8 +35,8 @@ public class ComplexDefFun extends Function {
     /**
      * @return The id
      */
-    public Id getId() {
-        return id;
+    public Variable getVariable() {
+        return variable;
     }
 
     /**

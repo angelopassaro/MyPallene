@@ -1,16 +1,16 @@
 package syntax.statement;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
+import syntax.Variable;
 import syntax.expression.Expr;
-import syntax.expression.Id;
 import visitor.Visitor;
 
 import java.util.LinkedList;
 
 public class ForStatement extends Statement {
 
-    private Expr assignExpr,commaExpr;
-    private Id id;
+    private Expr assignExpr, commaExpr;
+    private Variable variable;
     private LinkedList<Statement> statements;
 
     /**
@@ -20,9 +20,9 @@ public class ForStatement extends Statement {
      * @param commaExpr  The comma expr
      * @param statements The statement
      */
-    public ForStatement(Location leftLocation, Location rightLocation, Id id, Expr assignExpr, Expr commaExpr, LinkedList<Statement> statements) {
+    public ForStatement(Location leftLocation, Location rightLocation, Variable variable, Expr assignExpr, Expr commaExpr, LinkedList<Statement> statements) {
         super(leftLocation, rightLocation);
-        this.id = id;
+        this.variable = variable;
         this.assignExpr = assignExpr;
         this.commaExpr = commaExpr;
         this.statements = statements;
@@ -50,10 +50,11 @@ public class ForStatement extends Statement {
     }
 
     /**
-     *
-     * @return The id
+     * @return The variable
      */
-    public Id getId() {return id; }
+    public Variable getVariable() {
+        return variable;
+    }
 
     @Override
     public <T, P> T accept(Visitor<T, P> visitor, P arg) {

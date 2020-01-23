@@ -1,24 +1,23 @@
 package syntax;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-import syntax.expression.Id;
 import syntax.typedenoter.TypeDenoter;
 import visitor.Visitor;
 
 public class ParDecl extends AstNode {
 
-    private Id id;
+    private Variable variable;
     private TypeDenoter type;
 
     /**
      * {@inheritDoc}
      *
-     * @param id   The id
-     * @param type The param syntax.type
+     * @param variable The variable
+     * @param type     The param syntax.type
      */
-    public ParDecl(Location leftLocation, Location rightLocation, Id id, TypeDenoter type) {
+    public ParDecl(Location leftLocation, Location rightLocation, Variable variable, TypeDenoter type) {
         super(leftLocation, rightLocation);
-        this.id = id;
+        this.variable = variable;
         this.type = type;
     }
 
@@ -26,8 +25,8 @@ public class ParDecl extends AstNode {
     /**
      * @return The id
      */
-    public Id getId() {
-        return id;
+    public Variable getVariable() {
+        return variable;
     }
 
     /**

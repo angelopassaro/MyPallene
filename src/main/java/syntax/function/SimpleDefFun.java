@@ -1,7 +1,7 @@
 package syntax.function;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-import syntax.expression.Id;
+import syntax.Variable;
 import syntax.statement.Statement;
 import syntax.typedenoter.TypeDenoter;
 import visitor.Visitor;
@@ -10,20 +10,20 @@ import java.util.LinkedList;
 
 public class SimpleDefFun extends Function {
 
-    private Id id;
+    private Variable variable;
     private TypeDenoter type;
     private LinkedList<Statement> statements;
 
     /**
      * @param leftLocation  The left location
      * @param rightLocation The right location
-     * @param id            The id
+     * @param variable      The id
      * @param type          The function return syntax.type
      * @param statements    The statements
      */
-    public SimpleDefFun(Location leftLocation, Location rightLocation, Id id, TypeDenoter type, LinkedList<Statement> statements) {
+    public SimpleDefFun(Location leftLocation, Location rightLocation, Variable variable, TypeDenoter type, LinkedList<Statement> statements) {
         super(leftLocation, rightLocation);
-        this.id = id;
+        this.variable = variable;
         this.type = type;
         this.statements = statements;
     }
@@ -31,8 +31,8 @@ public class SimpleDefFun extends Function {
     /**
      * @return The id
      */
-    public Id getId() {
-        return id;
+    public Variable getVariable() {
+        return variable;
     }
 
     /**

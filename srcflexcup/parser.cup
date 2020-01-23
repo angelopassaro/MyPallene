@@ -92,18 +92,18 @@ Functions           ::= Def_fun:defFun Functions:functions                      
                         | Def_fun:defFun                                                                                {: RESULT = new LinkedList<Function>(); RESULT.addFirst(defFun); :}
                         ;
 
-Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON TypeDenoter:type Statements:statements END   {: RESULT = new ComplexDefFun(fxleft, fxright, new Id(idxleft, idxright, id), type, statements, parDecl); :}
+Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON TypeDenoter:type Statements:statements END   {: RESULT = new ComplexDefFun(fxleft, fxright, new Variable(idxleft, idxright, id), type, statements, parDecl); :}
                         ;
 
-Def_fun             ::= FUNCTION:f ID:id LPAR RPAR COLON TypeDenoter:type Statements:statements END                     {: RESULT = new SimpleDefFun(fxleft, fxright,new Id(idxleft, idxright, id), type, statements);:}
+Def_fun             ::= FUNCTION:f ID:id LPAR RPAR COLON TypeDenoter:type Statements:statements END                     {: RESULT = new SimpleDefFun(fxleft, fxright,new Variable(idxleft, idxright, id), type, statements);:}
                         ;
 
-Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl                                           {: parDecl.addFirst(new ParDecl(idxleft, idxright, new Id(idxleft, idxright, id), type));RESULT = parDecl;:}
-                        | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idxleft, idxright, new Id(idxleft, idxright, id), type));:}
+Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl                                           {: parDecl.addFirst(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));RESULT = parDecl;:}
+                        | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));:}
                         ;
 
-Var_decls           ::= ID:id COLON TypeDenoter:type Var_init_value:varInit SEMI Var_decls:varDecls                     {: varDecls.addFirst(new VarDecl(idxleft,idxright,new Id(idxleft, idxright, id),type,varInit)); RESULT = varDecls;:}
-                        | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idxleft,idxright,new Id(idxleft, idxright, id), type, varInit)); :}
+Var_decls           ::= ID:id COLON TypeDenoter:type Var_init_value:varInit SEMI Var_decls:varDecls                     {: varDecls.addFirst(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id),type,varInit)); RESULT = varDecls;:}
+                        | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id), type, varInit)); :}
                         ;
 
 Var_init_value      ::= ASSIGN Expr:expr                                                                                {:  RESULT = new VarInitValue(exprxleft, exprxright, expr); :}
@@ -132,7 +132,7 @@ Stat                ::= NOP:nop                                                 
                         | WHILE:w Expr:expr DO Statements:statements END                                                {: RESULT = new WhileStatement(wxleft, wxright, expr, statements);:}
                         | IF:ifer Expr:expr THEN Statements:statements ELSE Statements:elseStatements END               {: RESULT = new IfThenElseStatement(iferxleft, iferxright,expr,statements, elseStatements);:}
                         | IF:ifer Expr:expr THEN Statements:statements                                                  {: RESULT = new IfThenStatement(iferxleft, iferxright, expr, statements); :}
-                        | FOR:forer ID:id ASSIGN Expr:expr COMMA Expr:commaExpr DO Statements:statements END            {: RESULT = new ForStatement(forerxleft, forerxright, new Id(idxleft, idxright, id), expr, commaExpr, statements);:}
+                        | FOR:forer ID:id ASSIGN Expr:expr COMMA Expr:commaExpr DO Statements:statements END            {: RESULT = new ForStatement(forerxleft, forerxright, new Variable(idxleft, idxright, id), expr, commaExpr, statements);:}
                         | LOCAL:local Var_decls:varDecls SEMI Statements:statements END                                 {: RESULT = new LocalStatement(localxleft, localxright, varDecls, statements);:}
                         | ID:id ASSIGN Expr:expr                                                                        {: RESULT = new AssignStatement(idxleft, idxright, new Id(idxleft, idxright, id), expr);:}
                         | Expr:expr SLPAR Expr:arrayExpr SRPAR ASSIGN Expr:assignExpr                                   {: RESULT = new ArrayElementStatement(exprxleft, exprxright, arrayExpr, expr, assignExpr);:}

@@ -766,7 +766,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return null;
+        return true;
     }
 
     /**
