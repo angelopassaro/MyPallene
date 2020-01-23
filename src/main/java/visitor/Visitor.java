@@ -343,4 +343,9 @@ public interface Visitor<T, P> {
     T visit(NopStatement nopStatement, P arg);
 
 
+    /**
+     * @param variable The Variable
+     * @param arg      The Additional parameter
+     */
+    T visit(Variable variable, P arg);
 }

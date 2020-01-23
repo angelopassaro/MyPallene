@@ -2,10 +2,7 @@ package semantic;
 
 import lexical.StringTable;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 
 public class StackSymbolTable extends LinkedHashMap<Integer, HashMap<Integer, SymbolTableRecord>> implements SymbolTable {
 
@@ -54,5 +51,25 @@ public class StackSymbolTable extends LinkedHashMap<Integer, HashMap<Integer, Sy
     public void addEntry(String lexeme, SymbolTableRecord str) {
         int address = this.table.getAddress(lexeme);
         this.get(this.scopeLevel.peek()).put(address, str);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder dump = new StringBuilder();
+        this.entrySet().forEach(entry -> {
+            Integer level = entry.getKey();
+            dump.append("Level: ").append(level).append('\n');
+            Map<Integer, SymbolTableRecord> record = entry.getValue();
+            record.entrySet().forEach(en -> {
+                dump.append("==> ");
+                dump.append("Address: ").append(en.getKey());
+                dump.append("|");
+                dump.append("Records(");
+                dump.append(en.getValue().toString());
+                dump.append(")");
+                dump.append("\n");
+            });
+        });
+        return dump.toString();
     }
 }
