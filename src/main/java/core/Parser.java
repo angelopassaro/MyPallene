@@ -39,32 +39,24 @@ public class Parser extends java_cup.runtime.lr_parser {
         return ParserSym.class;
     }
 
-    /**
-     * Default constructor.
-     */
+    /** Default constructor. */
     @Deprecated
     public Parser() {
         super();
     }
 
-    /**
-     * Constructor which sets the default scanner.
-     */
+    /** Constructor which sets the default scanner. */
     @Deprecated
     public Parser(java_cup.runtime.Scanner s) {
         super(s);
     }
 
-    /**
-     * Constructor which sets the default scanner.
-     */
+    /** Constructor which sets the default scanner. */
     public Parser(java_cup.runtime.Scanner s, java_cup.runtime.SymbolFactory sf) {
         super(s, sf);
     }
 
-    /**
-     * Production table.
-     */
+    /** Production table. */
     protected static final short _production_table[][] =
             unpackFromStrings(new String[]{
                     "\000\105\000\002\002\004\000\002\002\004\000\002\003" +
@@ -90,16 +82,12 @@ public class Parser extends java_cup.runtime.lr_parser {
                             "\017\005\000\002\017\004\000\002\017\004\000\002\017" +
                             "\004\000\002\017\003"});
 
-    /**
-     * Access to production table.
-     */
+    /** Access to production table. */
     public short[][] production_table() {
         return _production_table;
     }
 
-    /**
-     * Parse-action table.
-     */
+    /** Parse-action table. */
     protected static final short[][] _action_table =
             unpackFromStrings(new String[]{
                     "\000\237\000\006\004\ufffe\016\006\001\002\000\004\002" +
@@ -422,16 +410,12 @@ public class Parser extends java_cup.runtime.lr_parser {
                             "\134\001\002\000\004\033\ufff9\001\002\000\004\002\ufffd" +
                             "\001\002\000\004\002\000\001\002"});
 
-    /**
-     * Access to parse-action table.
-     */
+    /** Access to parse-action table. */
     public short[][] action_table() {
         return _action_table;
     }
 
-    /**
-     * <code>reduce_goto</code> table.
-     */
+    /** <code>reduce_goto</code> table. */
     protected static final short[][] _reduce_table =
             unpackFromStrings(new String[]{
                     "\000\237\000\006\002\003\003\004\001\001\000\002\001" +
@@ -499,28 +483,20 @@ public class Parser extends java_cup.runtime.lr_parser {
                             "\001\001\000\002\001\001\000\004\006\236\001\001\000" +
                             "\002\001\001\000\002\001\001\000\002\001\001"});
 
-    /**
-     * Access to <code>reduce_goto</code> table.
-     */
+    /** Access to <code>reduce_goto</code> table. */
     public short[][] reduce_table() {
         return _reduce_table;
     }
 
-    /**
-     * Instance of action encapsulation class.
-     */
+    /** Instance of action encapsulation class. */
     protected CUP$Parser$actions action_obj;
 
-    /**
-     * Action encapsulation object initializer.
-     */
+    /** Action encapsulation object initializer. */
     protected void init_actions() {
         action_obj = new CUP$Parser$actions(this);
     }
 
-    /**
-     * Invoke a user supplied parse action.
-     */
+    /** Invoke a user supplied parse action. */
     public java_cup.runtime.Symbol do_action(
             int act_num,
             java_cup.runtime.lr_parser parser,
@@ -531,30 +507,22 @@ public class Parser extends java_cup.runtime.lr_parser {
         return action_obj.CUP$Parser$do_action(act_num, parser, stack, top);
     }
 
-    /**
-     * Indicates start state.
-     */
+    /** Indicates start state. */
     public int start_state() {
         return 0;
     }
 
-    /**
-     * Indicates start production.
-     */
+    /** Indicates start production. */
     public int start_production() {
         return 1;
     }
 
-    /**
-     * <code>EOF</code> Symbol index.
-     */
+    /** <code>EOF</code> Symbol index. */
     public int EOF_sym() {
         return 0;
     }
 
-    /**
-     * <code>error</code> Symbol index.
-     */
+    /** <code>error</code> Symbol index. */
     public int error_sym() {
         return 1;
     }
@@ -578,23 +546,17 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
 
 
-    /**
-     * Cup generated class to encapsulate user supplied action code.
-     */
+    /** Cup generated class to encapsulate user supplied action code.*/
     @SuppressWarnings({"rawtypes", "unchecked", "unused"})
     class CUP$Parser$actions {
         private final Parser parser;
 
-        /**
-         * Constructor
-         */
+        /** Constructor */
         CUP$Parser$actions(Parser parser) {
             this.parser = parser;
         }
 
-        /**
-         * Method 0 with the actual generated action code for actions 0 to 300.
-         */
+        /** Method 0 with the actual generated action code for actions 0 to 300. */
         public final java_cup.runtime.Symbol CUP$Parser$do_action_part00000000(
                 int CUP$Parser$act_num,
                 java_cup.runtime.lr_parser CUP$Parser$parser,
@@ -707,7 +669,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     Location statementsxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).xleft;
                     Location statementsxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).xright;
                     LinkedList<Statement> statements = (LinkedList<Statement>) ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).value;
-                    RESULT = new ComplexDefFun(fxleft, fxright, new Id(idxleft, idxright, id), type, statements, parDecl);
+                    RESULT = new ComplexDefFun(fxleft, fxright, new Variable(idxleft, idxright, id), type, statements, parDecl);
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("Def_fun", 3, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 8)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
@@ -728,7 +690,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     Location statementsxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).xleft;
                     Location statementsxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).xright;
                     LinkedList<Statement> statements = (LinkedList<Statement>) ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).value;
-                    RESULT = new SimpleDefFun(fxleft, fxright, new Id(idxleft, idxright, id), type, statements);
+                    RESULT = new SimpleDefFun(fxleft, fxright, new Variable(idxleft, idxright, id), type, statements);
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("Def_fun", 3, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 7)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
@@ -746,7 +708,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     Location parDeclxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.peek()).xleft;
                     Location parDeclxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.peek()).xright;
                     LinkedList<ParDecl> parDecl = (LinkedList<ParDecl>) ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-                    parDecl.addFirst(new ParDecl(idxleft, idxright, new Id(idxleft, idxright, id), type));
+                    parDecl.addFirst(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));
                     RESULT = parDecl;
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("Par_decls", 4, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 4)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
@@ -763,7 +725,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     Location typexright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.peek()).xright;
                     TypeDenoter type = (TypeDenoter) ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
                     RESULT = new LinkedList<ParDecl>();
-                    RESULT.addFirst(new ParDecl(idxleft, idxright, new Id(idxleft, idxright, id), type));
+                    RESULT.addFirst(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("Par_decls", 4, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 2)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
@@ -784,7 +746,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     Location varDeclsxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.peek()).xleft;
                     Location varDeclsxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.peek()).xright;
                     LinkedList<VarDecl> varDecls = (LinkedList<VarDecl>) ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-                    varDecls.addFirst(new VarDecl(idxleft, idxright, new Id(idxleft, idxright, id), type, varInit));
+                    varDecls.addFirst(new VarDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type, varInit));
                     RESULT = varDecls;
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("Var_decls", 5, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 5)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
@@ -804,7 +766,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     Location varInitxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.peek()).xright;
                     VarInitValue varInit = (VarInitValue) ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
                     RESULT = new LinkedList<VarDecl>();
-                    RESULT.addFirst(new VarDecl(idxleft, idxright, new Id(idxleft, idxright, id), type, varInit));
+                    RESULT.addFirst(new VarDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type, varInit));
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("Var_decls", 5, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 3)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
@@ -1084,7 +1046,7 @@ public class Parser extends java_cup.runtime.lr_parser {
                     Location statementsxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).xleft;
                     Location statementsxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).xright;
                     LinkedList<Statement> statements = (LinkedList<Statement>) ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 1)).value;
-                    RESULT = new ForStatement(forerxleft, forerxright, new Id(idxleft, idxright, id), expr, commaExpr, statements);
+                    RESULT = new ForStatement(forerxleft, forerxright, new Variable(idxleft, idxright, id), expr, commaExpr, statements);
                     CUP$Parser$result = parser.getSymbolFactory().newSymbol("Stat", 10, ((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top - 8)), ((java_cup.runtime.Symbol) CUP$Parser$stack.peek()), RESULT);
                 }
                 return CUP$Parser$result;
@@ -1620,9 +1582,7 @@ public class Parser extends java_cup.runtime.lr_parser {
             }
         } /* end of method */
 
-        /**
-         * Method splitting the generated action code into several parts.
-         */
+        /** Method splitting the generated action code into several parts. */
         public final java_cup.runtime.Symbol CUP$Parser$do_action(
                 int CUP$Parser$act_num,
                 java_cup.runtime.lr_parser CUP$Parser$parser,

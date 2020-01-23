@@ -4,7 +4,7 @@ package core;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.ComplexSymbolFactory.Location;
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+import lexical.ArrayStringTable;
 import lexical.StringTable;
 
 import java.io.InputStreamReader;
@@ -29,12 +29,14 @@ import java.io.InputStreamReader;
 %eofval}
 
 %{
+    private StringTable table;
     private StringBuilder string = new StringBuilder();
     private ComplexSymbolFactory symbolFactory;
 
-    public Lexer(ComplexSymbolFactory sf, java.io.InputStream is){
+    public Lexer(ComplexSymbolFactory sf, java.io.InputStream is, StringTable table){
         this(new InputStreamReader(is));
         this.symbolFactory = sf;
+        this.table = table;
     }
 
     public Symbol generateTokenSym(String name, int type){
@@ -43,6 +45,7 @@ import java.io.InputStreamReader;
     }
 
     public Symbol generateTokenSym(String name, int type, Object value){
+        this.table.install(value.toString());
         return symbolFactory.newSymbol(name, type, new Location(yyline+1, yycolumn+1),
             new Location(yyline+1, yycolumn+yylength()), value);
     }

@@ -18,7 +18,7 @@ import visitor.ScopeCheckerVisitor;
 import java.io.File;
 import java.io.FileInputStream;
 
-class MyPalleneXML {
+class App {
 
     private static Lexer lexer;
     private static Parser parser;
@@ -30,7 +30,7 @@ class MyPalleneXML {
 
     public static void main(String[] args) throws Exception {
 
-        lexer = new Lexer(complexSymbolFactory, new FileInputStream(new File(path)));
+        lexer = new Lexer(complexSymbolFactory, new FileInputStream(new File(path)), stringTable);
         parser = new Parser(lexer, complexSymbolFactory);
 
         Program program = (Program) parser.parse().value;
