@@ -90,12 +90,16 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         } else {
             arg.enterScope();
             boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
+            String name = simpleDefFun.getVariable().getValue();
             isSimpleFunctionSafe = isStatementsSafe;
             if (!isSimpleFunctionSafe) {
                 this.errorHandler.reportError("Simple Function Error", simpleDefFun);
             }
             arg.exitScope();
-            arg.addEntry(simpleDefFun.getVariable().getValue(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            isSimpleFunctionSafe = isSimpleFunctionSafe && !arg.probe(name);
+            if (isSimpleFunctionSafe) {
+                arg.addEntry(name, new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            }
         }
         return isSimpleFunctionSafe;
     }
@@ -116,12 +120,16 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
             arg.enterScope();
             boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
             boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
+            String name = complexDefFun.getVariable().getValue();
             isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
             if (!isComplexFunctionSafe) {
                 this.errorHandler.reportError("Simple Function Error", complexDefFun);
             }
             arg.exitScope();
-            arg.addEntry(complexDefFun.getVariable().getValue(), new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            isComplexFunctionSafe = isComplexFunctionSafe && !arg.probe(name);
+            if (isComplexFunctionSafe) {
+                arg.addEntry(name, new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            }
         }
         return isComplexFunctionSafe;
     }
@@ -157,7 +165,10 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isVarDeclSafe) {
             this.errorHandler.reportError("VarDecl Error", varDecl);
         } else {
-            arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
+            isVarDeclSafe = !arg.probe(varDecl.getVariable().getValue());
+            if (isVarDeclSafe) {
+                arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
+            }
         }
         return isVarDeclSafe;
     }
