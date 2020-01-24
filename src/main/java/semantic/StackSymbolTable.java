@@ -38,9 +38,16 @@ public class StackSymbolTable extends LinkedHashMap<Integer, HashMap<Integer, Sy
     public Optional<SymbolTableRecord> lookup(String lexeme) {
         int address = this.table.getAddress(lexeme);
         int size = (this.scopeLevel.size() - 1);
-        for (int i = size; i > 0; i--) {
-            int level = this.scopeLevel.elementAt(i);
-            if (this.get(level).containsKey(address)) {
+        if (size != 0) {
+            for (int i = size; i > 0; i--) {
+                int level = this.scopeLevel.elementAt(i);
+                if (this.get(level).containsKey(address)) {
+                    return Optional.of(this.get(level).get(address));
+                }
+            }
+        } else {
+            if (probe(lexeme)) {
+                int level = this.scopeLevel.elementAt(0);
                 return Optional.of(this.get(level).get(address));
             }
         }
