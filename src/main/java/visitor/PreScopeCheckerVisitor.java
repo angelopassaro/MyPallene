@@ -1,7 +1,9 @@
 package visitor;
 
 import error.ErrorHandler;
+import nodekind.NodeKind;
 import semantic.SymbolTable;
+import semantic.SymbolTableRecord;
 import syntax.*;
 import syntax.expression.*;
 import syntax.expression.binaryexpr.arithop.DivOp;
@@ -41,10 +43,7 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     @Override
     public Boolean visit(Program program, SymbolTable arg) {
         arg.enterScope();
-        boolean isGlobalSafe = program.getGlobal().accept(this, arg);
-        boolean areFunctionsSafe = this.checkContext(program.getFunctions(), arg);
-        boolean isProgramSafe = isGlobalSafe && areFunctionsSafe;
-        arg.exitScope();
+        boolean isProgramSafe = this.checkContext(program.getFunctions(), arg);
         if (this.mainCounter >= 2) {
             this.errorHandler.reportError("Too many main method, only one can be present", program);
             return false;
@@ -66,24 +65,8 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (simpleDefFun.getVariable().getValue().equalsIgnoreCase("main")) {
             this.mainCounter++;
         }
-        boolean isSimpleFunctionSafe = simpleDefFun.getVariable().accept(this, arg);
-        if (!isSimpleFunctionSafe) {
-            this.errorHandler.reportYetDefined(simpleDefFun);
-        } else {
-            arg.enterScope();
-            boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
-            String name = simpleDefFun.getVariable().getValue();
-            isSimpleFunctionSafe = isStatementsSafe;
-            if (!isSimpleFunctionSafe) {
-                this.errorHandler.reportError("Simple Function Error", simpleDefFun);
-            }
-            arg.exitScope();
-            //  isSimpleFunctionSafe = isSimpleFunctionSafe && !arg.probe(name);
-            //  if (isSimpleFunctionSafe) {
-            //      arg.addEntry(name, new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-            //  }
-        }
-        return isSimpleFunctionSafe;
+        arg.addEntry(simpleDefFun.getVariable().getValue(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+        return true;
 
     }
 
@@ -92,25 +75,8 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (complexDefFun.getVariable().getValue().equalsIgnoreCase("main")) {
             this.mainCounter++;
         }
-        boolean isComplexFunctionSafe = complexDefFun.getVariable().accept(this, arg);
-        if (!isComplexFunctionSafe) {
-            this.errorHandler.reportYetDefined(complexDefFun);
-        } else {
-            arg.enterScope();
-            boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
-            boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
-            String name = complexDefFun.getVariable().getValue();
-            isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
-            if (!isComplexFunctionSafe) {
-                this.errorHandler.reportError("Simple Function Error", complexDefFun);
-            }
-            arg.exitScope();
-            //   isComplexFunctionSafe = isComplexFunctionSafe && !arg.probe(name);
-            //   if (isComplexFunctionSafe) {
-            //       arg.addEntry(name, new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-            //   }
-        }
-        return isComplexFunctionSafe;
+        arg.addEntry(complexDefFun.getVariable().getValue(), new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+        return true;
     }
 
     @Override

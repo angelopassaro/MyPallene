@@ -79,7 +79,6 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(Program program, SymbolTable arg) {
-        arg.enterScope();
         boolean isGlobalSafe = program.getGlobal().accept(this, arg);
         boolean areFunctionsSafe = this.checkContext(program.getFunctions(), arg);
         boolean isProgramSafe = isGlobalSafe && areFunctionsSafe;
@@ -128,10 +127,10 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
                 this.errorHandler.reportError("Simple Function Error", simpleDefFun);
             }
             arg.exitScope();
-            isSimpleFunctionSafe = isSimpleFunctionSafe && !arg.probe(name);
-            if (isSimpleFunctionSafe) {
-                arg.addEntry(name, new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-            }
+            //isSimpleFunctionSafe = isSimpleFunctionSafe && !arg.probe(name);
+            //if (isSimpleFunctionSafe) {
+            //    arg.addEntry(name, new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            //}
         }
         return isSimpleFunctionSafe;
     }
@@ -158,10 +157,10 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
                 this.errorHandler.reportError("Simple Function Error", complexDefFun);
             }
             arg.exitScope();
-            isComplexFunctionSafe = isComplexFunctionSafe && !arg.probe(name);
-            if (isComplexFunctionSafe) {
-                arg.addEntry(name, new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-            }
+            //isComplexFunctionSafe = isComplexFunctionSafe && !arg.probe(name);
+            //if (isComplexFunctionSafe) {
+            //    arg.addEntry(name, new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            //}
         }
         return isComplexFunctionSafe;
     }
