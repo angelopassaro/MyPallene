@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Program>
+  <Global>
+    <VarDecl>
+      <Variable lexeme="buffer"/>
+      <PrimitiveTypeDenoter.java kind="FLOAT"/>
+      <VarInitValue>
+        <FloatConst value="0.0"/>
+      </VarInitValue>
+    </VarDecl>
+    <VarDecl>
+      <Variable lexeme="result"/>
+      <PrimitiveTypeDenoter.java kind="FLOAT"/>
+      <VarInitValue>
+        <FloatConst value="0.0"/>
+      </VarInitValue>
+    </VarDecl>
+  </Global>
+  <Function>
+    <Variable lexeme="add"/>
+    <ParDecl>
+      <Variable lexeme="x"/>
+      <PrimitiveTypeDenoter.java kind="FLOAT"/>
+    </ParDecl>
+    <ParDecl>
+      <Variable lexeme="y"/>
+      <PrimitiveTypeDenoter.java kind="FLOAT"/>
+    </ParDecl>
+    <PrimitiveTypeDenoter.java kind="FLOAT"/>
+    <WriteStatement>
+      <Id lexeme="result"/>
+    </WriteStatement>
+    <LocalStatement>
+      <VarDecl>
+        <Variable lexeme="i"/>
+        <PrimitiveTypeDenoter.java kind="FLOAT"/>
+        <VarInitValue>
+          <FloatConst value="2.0"/>
+        </VarInitValue>
+      </VarDecl>
+      <AssignStatement>
+        <Id lexeme="i"/>
+        <PlusOp>
+          <Id lexeme="i"/>
+          <IntegerConst value="1"/>
+        </PlusOp>
+      </AssignStatement>
+      <ReturnStatement>
+        <PlusOp>
+          <PlusOp>
+            <Id lexeme="x"/>
+            <Id lexeme="y"/>
+          </PlusOp>
+          <Id lexeme="i"/>
+        </PlusOp>
+      </ReturnStatement>
+    </LocalStatement>
+  </Function>
+</Program>
