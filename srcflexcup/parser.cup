@@ -102,7 +102,7 @@ Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl   
                         | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));:}
                         ;
 
-Var_decls           ::= ID:id COLON TypeDenoter:type Var_init_value:varInit SEMI Var_decls:varDecls                     {: varDecls.addFirst(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id),type,varInit)); RESULT = varDecls;:}
+Var_decls           ::= Var_decls:varDecls SEMI ID:id COLON TypeDenoter:type Var_init_value:varInit                            {: varDecls.addFirst(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id),type,varInit)); RESULT = varDecls;:}
                         | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id), type, varInit)); :}
                         ;
 
@@ -140,7 +140,7 @@ Stat                ::= NOP:nop                                                 
                         | Vars:vars READ                                                                                {: RESULT = new ReadStatement(varsxleft, varsxright, vars); :}
                         | Exprs:exprs WRITE                                                                             {: RESULT = new WriteStatement(exprsxleft, exprsxright, exprs); :}
                         | RETURN Expr:expr                                                                              {: RESULT = new ReturnStatement(exprxleft, exprxright, expr); :}
-                        | error                                                                                         {: :}
+                        | error:e                                                                                       {: :}
                         ;
 
 Vars                ::= ID:id COMMA Vars:vars                                                                           {: vars.addFirst(new Id(idxleft, idxright, id));RESULT = vars; :}

@@ -7,18 +7,13 @@ import error.StackErrorHandler;
 import java_cup.runtime.ComplexSymbolFactory;
 import lexical.ArrayStringTable;
 import lexical.StringTable;
-import org.w3c.dom.Document;
 import semantic.StackSymbolTable;
 import semantic.SymbolTable;
-import syntax.Program;
-import template.XMLTemplate;
-import visitor.ConcreteXMLVisitor;
-import visitor.ScopeCheckerVisitor;
 
 import java.io.File;
 import java.io.FileInputStream;
 
-class App {
+public class ParserTest {
 
     private static Lexer lexer;
     private static Parser parser;
@@ -33,16 +28,27 @@ class App {
         lexer = new Lexer(complexSymbolFactory, new FileInputStream(new File(path)), stringTable);
         parser = new Parser(lexer, complexSymbolFactory);
 
-        Program program = (Program) parser.parse().value;
-        ScopeCheckerVisitor scopeCheckerVisitor = new ScopeCheckerVisitor(errorHandler);
-        boolean test = program.accept(scopeCheckerVisitor, symbolTable);
-        System.out.println(test);
+/**
+ //lexer OK
 
-        XMLTemplate xmlTemplate = new XMLTemplate();
-
-        Document xmlDocument = xmlTemplate.create().get();
-        ConcreteXMLVisitor xmlVisitor = new ConcreteXMLVisitor();
-        program.accept(xmlVisitor, xmlDocument);
-        xmlTemplate.write("/home/angelo/Documents/Universita/compilatori(GENNAIO)/esercizi/passaro_es5_scg/output/" + path.substring(path.lastIndexOf('/') + 1) + ".xml", xmlDocument);
+ Symbol token;
+ try {
+ while ((token = lexer.next_token()) != null) {
+ if (token.sym == ParserSym.EOF) {
+ break;
+ }
+ String toRet = "<" +
+ ParserSym.terminalNames[token.sym] +
+ (token.value == null ? ">" : (", " + token.value + ">"));
+ System.out.println(toRet);
+ }
+ } catch (Exception e) {
+ System.out.println("File parsing ended!!");
+ }
+ **/
+        //Parser not work with local
+        System.out.println(parser.parse().value);
     }
+
+
 }
