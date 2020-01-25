@@ -348,7 +348,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     @Override
     public Element visit(NilConst nilConst, Document arg) {
         Element element = arg.createElement("NilConst");
-        element.setAttribute("Value", nilConst.getValue().toString());
+        element.setAttribute("Value", "Nil");
         return element;
     }
 
