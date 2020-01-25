@@ -13,6 +13,7 @@ import semantic.SymbolTable;
 import syntax.Program;
 import template.XMLTemplate;
 import visitor.ConcreteXMLVisitor;
+import visitor.PreScopeCheckerVisitor;
 import visitor.ScopeCheckerVisitor;
 
 import java.io.File;
@@ -34,9 +35,14 @@ class App {
         parser = new Parser(lexer, complexSymbolFactory);
 
         Program program = (Program) parser.parse().value;
+        PreScopeCheckerVisitor preScopeCheckerVisitor = new PreScopeCheckerVisitor(errorHandler);
         ScopeCheckerVisitor scopeCheckerVisitor = new ScopeCheckerVisitor(errorHandler);
-        boolean test = program.accept(scopeCheckerVisitor, symbolTable);
-        System.out.println(test);
+        boolean prescope = program.accept(preScopeCheckerVisitor, symbolTable);
+        boolean scope = program.accept(scopeCheckerVisitor, symbolTable);
+        System.out.println("PreScope: " + prescope + " scope: " + scope);
+        if (errorHandler.haveErrors()) {
+            errorHandler.logErrors();
+        }
 
         XMLTemplate xmlTemplate = new XMLTemplate();
 
