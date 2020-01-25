@@ -32,6 +32,6 @@ public class StackErrorHandler implements ErrorHandler {
 
     @Override
     public boolean haveErrors() {
-        return this.catchedErrors.isEmpty();
+        return !this.catchedErrors.isEmpty();
     }
 }
