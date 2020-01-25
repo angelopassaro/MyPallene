@@ -271,8 +271,8 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     @Override
     public Boolean visit(LocalStatement localStatement, SymbolTable arg) {
         arg.enterScope();
-        boolean areStatementsSafe = checkContext(localStatement.getStatements(), arg);
         boolean areVarDeclSafe = checkContext(localStatement.getVarDecls(), arg);
+        boolean areStatementsSafe = checkContext(localStatement.getStatements(), arg);
         boolean isLocalSafe = areStatementsSafe && areVarDeclSafe;
         if (!isLocalSafe) {
             this.errorHandler.reportError("Local Statement Error", localStatement);
@@ -652,7 +652,6 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(Id id, SymbolTable arg) {
-        System.out.println(arg);
         return arg.lookup(id.getValue()).isPresent();
     }
 

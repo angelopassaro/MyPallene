@@ -10,4 +10,7 @@ public interface NodeType {
     PrimitiveNodeType checkMul(PrimitiveNodeType type);
 
     PrimitiveNodeType checkDiv(PrimitiveNodeType type);
+
+    PrimitiveNodeType checkRel(PrimitiveNodeType type);
+
 }

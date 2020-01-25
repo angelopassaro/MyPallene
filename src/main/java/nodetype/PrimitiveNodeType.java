@@ -1,113 +1,7 @@
 package nodetype;
 
-
 public enum PrimitiveNodeType implements NodeType {
 
-    INT {
-        @Override
-        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
-            switch (type) {
-                case BOOL:
-                case INT:
-                    return INT;
-                case FLOAT:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-        @Override
-        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
-            switch (type) {
-                case BOOL:
-                case INT:
-                    return INT;
-                case FLOAT:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-        @Override
-        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
-            switch (type) {
-                case BOOL:
-                case INT:
-                    return INT;
-                case FLOAT:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-        @Override
-        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
-            switch (type) {
-                case BOOL:
-                case INT:
-                    return INT;
-                case FLOAT:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-    },
-
-    FLOAT {
-        @Override
-        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
-            switch (type) {
-                case INT:
-                case FLOAT:
-                case BOOL:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-        @Override
-        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
-            switch (type) {
-                case INT:
-                case FLOAT:
-                case BOOL:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-        @Override
-        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
-            switch (type) {
-                case INT:
-                case FLOAT:
-                case BOOL:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-        @Override
-        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
-            switch (type) {
-                case INT:
-                case FLOAT:
-                case BOOL:
-                    return FLOAT;
-                default:
-                    return NULL;
-            }
-        }
-
-    },
     BOOL {
         @Override
         public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
@@ -161,8 +55,174 @@ public enum PrimitiveNodeType implements NodeType {
             }
         }
 
+        @Override
+        public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case FLOAT:
+                case BOOL:
+                    return BOOL;
+                default:
+                    return NULL;
+            }
+        }
     },
 
+    FLOAT {
+        @Override
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case FLOAT:
+                case BOOL:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case FLOAT:
+                case BOOL:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case FLOAT:
+                case BOOL:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case FLOAT:
+                case BOOL:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case BOOL:
+                case FLOAT:
+                    return BOOL;
+                default:
+                    return NULL;
+            }
+        }
+
+    },
+    INT {
+        @Override
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case BOOL:
+                    return INT;
+                case FLOAT:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case BOOL:
+                    return INT;
+                case FLOAT:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case BOOL:
+                    return INT;
+                case FLOAT:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case BOOL:
+                    return INT;
+                case FLOAT:
+                    return FLOAT;
+                default:
+                    return NULL;
+            }
+        }
+
+        @Override
+        public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
+            switch (type) {
+                case INT:
+                case FLOAT:
+                case BOOL:
+                    return BOOL;
+                default:
+                    return NULL;
+            }
+        }
+
+    },
+    NULL {
+        @Override
+        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
+            return NULL;
+        }
+
+        @Override
+        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
+            return NULL;
+        }
+
+        @Override
+        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
+            return NULL;
+        }
+
+        @Override
+        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
+            return NULL;
+        }
+
+        @Override
+        public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
+            return NULL;
+        }
+
+    },
     STRING {
         @Override
         public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
@@ -176,42 +236,39 @@ public enum PrimitiveNodeType implements NodeType {
 
         @Override
         public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
-            return null;
+            return NULL;
         }
 
         @Override
         public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
-            return null;
+            return NULL;
         }
 
         @Override
         public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
-            return null;
-        }
-    },
-
-    NULL {
-        @Override
-        public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
-            return null;
+            return NULL;
         }
 
         @Override
-        public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
-            return null;
-        }
-
-        @Override
-        public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
-            return null;
-        }
-
-        @Override
-        public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
-            return null;
+        public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
+            return NULL;
         }
     };
 
+    public String cType() {
+        switch (this) {
+            case STRING:
+                return "char *";
+            case FLOAT:
+                return "float";
+            case BOOL:
+                return "bool";
+            case INT:
+                return "int";
+            default:
+                return "";
+        }
+    }
 
     @Override
     public String toString() {
