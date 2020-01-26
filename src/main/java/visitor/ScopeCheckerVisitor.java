@@ -24,7 +24,7 @@ import syntax.typedenoter.PrimitiveTypeDenoter;
 import java.util.List;
 
 /*
-TODO Local inestato: (ora non funziona)
+TODO Local inestato: (ora non funziona) => modificato varDecl
 function add(x: float, y: float):float
         local
             i: float = 2.0;
@@ -209,14 +209,16 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(VarDecl varDecl, SymbolTable arg) {
-        boolean isVarDeclSafe = varDecl.getVariable().accept(this, arg);
+        //  boolean isVarDeclSafe = varDecl.getVariable().accept(this, arg);
+        //  if (!isVarDeclSafe) {
+        //      this.errorHandler.reportError("VarDecl Error", varDecl);
+        //  } else {
+        boolean isVarDeclSafe = !arg.probe(varDecl.getVariable().getValue());
         if (!isVarDeclSafe) {
             this.errorHandler.reportError("VarDecl Error", varDecl);
         } else {
-            isVarDeclSafe = !arg.probe(varDecl.getVariable().getValue());
-            if (isVarDeclSafe) {
-                arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
-            }
+            arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
+            // }
         }
         return isVarDeclSafe;
     }
