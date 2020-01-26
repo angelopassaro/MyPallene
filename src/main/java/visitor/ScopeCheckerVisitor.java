@@ -23,55 +23,6 @@ import syntax.typedenoter.PrimitiveTypeDenoter;
 
 import java.util.List;
 
-/*
-TODO Local inestato: (ora non funziona) => modificato varDecl
-function add(x: float, y: float):float
-        local
-            i: float = 2.0;
-            i = i + 1
-            local
-                i: float = 2.0;
-                i = i + 1;
-                return x + y + i
-            end
-        end
-end
-
-TODO Variabile globale non visibile (lookup >=0 ?)
-
-global
-    result: float = 0.0;
-    buffer: float = 0.0
-end
-
-function add(x: float, y: float):float
-        local
-            i: float = 2.0;
-            i = i + 1;
-            result ==>;
-            return x + y + i
-    end
-end
-TODO funzione non visibile (lookup >=0 ?)
-global
-    result: float = 0.0;
-    buffer: float = 0.0
-end
-
-function add(x: float, y: float):float
-        local
-            i: float = 2.0;
-            i = i + 1;
-            return x + y + i
-        end
-end
-
-function main():nil
-    add(3,2);
-   return nil
-end
- */
-
 public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
 
     private ErrorHandler errorHandler;
