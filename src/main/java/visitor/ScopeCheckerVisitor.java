@@ -24,8 +24,7 @@ import syntax.typedenoter.PrimitiveTypeDenoter;
 import java.util.List;
 
 /*
-TODO
-Local inestato: (ora non funziona)
+TODO Local inestato: (ora non funziona)
 function add(x: float, y: float):float
         local
             i: float = 2.0;
@@ -38,7 +37,7 @@ function add(x: float, y: float):float
         end
 end
 
-Variabile globale non visibile
+TODO Variabile globale non visibile (lookup >=0 ?)
 
 global
     result: float = 0.0;
@@ -52,6 +51,24 @@ function add(x: float, y: float):float
             result ==>;
             return x + y + i
     end
+end
+TODO funzione non visibile (lookup >=0 ?)
+global
+    result: float = 0.0;
+    buffer: float = 0.0
+end
+
+function add(x: float, y: float):float
+        local
+            i: float = 2.0;
+            i = i + 1;
+            return x + y + i
+        end
+end
+
+function main():nil
+    add(3,2);
+   return nil
 end
  */
 
@@ -116,22 +133,22 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     @Override
     public Boolean visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
         boolean isSimpleFunctionSafe = simpleDefFun.getVariable().accept(this, arg);
+        //      if (!isSimpleFunctionSafe) {
+        //          this.errorHandler.reportYetDefined(simpleDefFun);
+        //      } else {
+        arg.enterScope();
+        boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
+        String name = simpleDefFun.getVariable().getValue();
+        isSimpleFunctionSafe = isStatementsSafe;
         if (!isSimpleFunctionSafe) {
-            this.errorHandler.reportYetDefined(simpleDefFun);
-        } else {
-            arg.enterScope();
-            boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
-            String name = simpleDefFun.getVariable().getValue();
-            isSimpleFunctionSafe = isStatementsSafe;
-            if (!isSimpleFunctionSafe) {
-                this.errorHandler.reportError("Simple Function Error", simpleDefFun);
-            }
-            arg.exitScope();
-            //isSimpleFunctionSafe = isSimpleFunctionSafe && !arg.probe(name);
-            //if (isSimpleFunctionSafe) {
-            //    arg.addEntry(name, new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-            //}
+            this.errorHandler.reportError("Simple Function Error", simpleDefFun);
         }
+        arg.exitScope();
+        //isSimpleFunctionSafe = isSimpleFunctionSafe && !arg.probe(name);
+        //if (isSimpleFunctionSafe) {
+        //    arg.addEntry(name, new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+        //}
+        //    }
         return isSimpleFunctionSafe;
     }
 
@@ -145,23 +162,23 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     @Override
     public Boolean visit(ComplexDefFun complexDefFun, SymbolTable arg) {
         boolean isComplexFunctionSafe = complexDefFun.getVariable().accept(this, arg);
+        //  if (!isComplexFunctionSafe) {
+        //      this.errorHandler.reportYetDefined(complexDefFun);
+        //  } else {
+        arg.enterScope();
+        boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
+        boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
+        String name = complexDefFun.getVariable().getValue();
+        isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
         if (!isComplexFunctionSafe) {
-            this.errorHandler.reportYetDefined(complexDefFun);
-        } else {
-            arg.enterScope();
-            boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
-            boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
-            String name = complexDefFun.getVariable().getValue();
-            isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
-            if (!isComplexFunctionSafe) {
-                this.errorHandler.reportError("Simple Function Error", complexDefFun);
-            }
-            arg.exitScope();
-            //isComplexFunctionSafe = isComplexFunctionSafe && !arg.probe(name);
-            //if (isComplexFunctionSafe) {
-            //    arg.addEntry(name, new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-            //}
+            this.errorHandler.reportError("Complex Function Error", complexDefFun);
         }
+        arg.exitScope();
+        //isComplexFunctionSafe = isComplexFunctionSafe && !arg.probe(name);
+        //if (isComplexFunctionSafe) {
+        //    arg.addEntry(name, new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+        //}
+        //  }
         return isComplexFunctionSafe;
     }
 

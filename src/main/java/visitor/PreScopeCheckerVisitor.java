@@ -65,8 +65,13 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (simpleDefFun.getVariable().getValue().equalsIgnoreCase("main")) {
             this.mainCounter++;
         }
-        arg.addEntry(simpleDefFun.getVariable().getValue(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-        return true;
+        boolean isSimpleFunctionSafe = simpleDefFun.getVariable().accept(this, arg);
+        if (!isSimpleFunctionSafe) {
+            this.errorHandler.reportYetDefined(simpleDefFun);
+        } else {
+            arg.addEntry(simpleDefFun.getVariable().getValue(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+        }
+        return isSimpleFunctionSafe;
 
     }
 
@@ -75,8 +80,13 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (complexDefFun.getVariable().getValue().equalsIgnoreCase("main")) {
             this.mainCounter++;
         }
-        arg.addEntry(complexDefFun.getVariable().getValue(), new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-        return true;
+        boolean isComplexFunctionSafe = complexDefFun.getVariable().accept(this, arg);
+        if (!isComplexFunctionSafe) {
+            this.errorHandler.reportYetDefined(complexDefFun);
+        } else {
+            arg.addEntry(complexDefFun.getVariable().getValue(), new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+        }
+        return isComplexFunctionSafe;
     }
 
     @Override
@@ -291,6 +301,6 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
 
     @Override
     public Boolean visit(Variable variable, SymbolTable arg) {
-        return true;
+        return !arg.probe(variable.getValue());
     }
 }
