@@ -44,15 +44,17 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     public Boolean visit(Program program, SymbolTable arg) {
         arg.enterScope();
         boolean isProgramSafe = this.checkContext(program.getFunctions(), arg);
-        if (this.mainCounter >= 2) {
-            this.errorHandler.reportError("Too many main method, only one can be present", program);
-            return false;
-        } else if (this.mainCounter == 0) {
-            this.errorHandler.reportError("You must specify one main method", program);
-            return false;
-        } else {
-            return isProgramSafe;
+        if (!errorHandler.haveErrors()) {
+            if (this.mainCounter >= 2) {
+                this.errorHandler.reportError("Too many main method, only one can be present", program);
+                return false;
+            } else if (this.mainCounter == 0) {
+                this.errorHandler.reportError("You must specify one main method", program);
+                return false;
+            }
         }
+        return isProgramSafe;
+
     }
 
     @Override
