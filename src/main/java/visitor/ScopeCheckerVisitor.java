@@ -89,7 +89,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         //      } else {
         arg.enterScope();
         boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
-        String name = simpleDefFun.getVariable().getValue();
+        //String name = simpleDefFun.getVariable().getValue();
         isSimpleFunctionSafe = isStatementsSafe;
         if (!isSimpleFunctionSafe) {
             this.errorHandler.reportError("Simple Function Error", simpleDefFun);
@@ -119,7 +119,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         arg.enterScope();
         boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
         boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
-        String name = complexDefFun.getVariable().getValue();
+        //String name = complexDefFun.getVariable().getValue();
         isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
         if (!isComplexFunctionSafe) {
             this.errorHandler.reportError("Complex Function Error", complexDefFun);

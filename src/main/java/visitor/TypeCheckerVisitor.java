@@ -84,7 +84,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(VarInitValue varInitValue, SymbolTable arg) {
-        return null;
+        varInitValue.getExpr().accept(this, arg);
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
@@ -105,60 +106,109 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     @Override
     public NodeType visit(WhileStatement whileStatement, SymbolTable arg) {
         NodeType wType = whileStatement.getExpr().accept(this, arg);
-        if (wType.equals(PrimitiveNodeType.BOOL)) {
-
+        if (!wType.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, wType, whileStatement);
         }
-        return null;
+        whileStatement.getStatements().forEach(this.typeCheck(arg));
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(IfThenStatement ifThenStatement, SymbolTable arg) {
-        return null;
+        NodeType ifType = ifThenStatement.getExpr().accept(this, arg);
+        if (!ifType.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, ifType, ifThenStatement);
+        }
+        ifThenStatement.getStatements().forEach(this.typeCheck(arg));
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(IfThenElseStatement ifThenElseStatements, SymbolTable arg) {
-        return null;
+        NodeType ifType = ifThenElseStatements.getExpr().accept(this, arg);
+        if (!ifType.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, ifType, ifThenElseStatements);
+        }
+        ifThenElseStatements.getElseStatement().forEach(this.typeCheck(arg));
+        ifThenElseStatements.getThenStatement().forEach(this.typeCheck(arg));
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(ForStatement forStatement, SymbolTable arg) {
-        return null;
+        arg.enterScope();
+        NodeType assignType = forStatement.getAssignExpr().accept(this, arg);
+        if (!assignType.equals(PrimitiveNodeType.INT)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, assignType, forStatement);
+        }
+        NodeType commaExpr = forStatement.getCommaExpr().accept(this, arg);
+        if (!commaExpr.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, commaExpr, forStatement);
+        }
+        forStatement.getStatements().forEach(this.typeCheck(arg));
+        arg.exitScope();
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(LocalStatement localStatement, SymbolTable arg) {
-        return null;
+        arg.enterScope();
+        localStatement.getVarDecls().forEach(this.typeCheck(arg));
+        localStatement.getStatements().forEach(this.typeCheck(arg));
+        arg.exitScope();
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(AssignStatement assignStatement, SymbolTable arg) {
-        return null;
+        NodeType leftType = assignStatement.getId().accept(this, arg);
+        NodeType rightType = assignStatement.getExpr().accept(this, arg);
+        if (!leftType.equals(rightType)) {
+            this.errorHandler.reportTypeMismatch(leftType, rightType, assignStatement);
+        }
+        return rightType;
     }
 
     @Override
     public NodeType visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
-        return null;
+        arrayElementStatement.getArrayExpr().accept(this, arg);
+        NodeType aType = arrayElementStatement.getArrayPoint().getType();
+        if (!aType.equals(PrimitiveNodeType.INT)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, aType, arrayElementStatement);
+        }
+        arrayElementStatement.getArrayAssign().accept(this, arg);
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
+        functionCallStatement.getExprs().forEach(this.typeCheck(arg));
         return null;
+    }
+
+    @Override
+    public NodeType visit(FunctionCall functionCallExpression, SymbolTable arg) {
+        NodeType fType = functionCallExpression.getId().getType();
+        functionCallExpression.getExprs().forEach(this.typeCheck(arg));
+        return fType;
     }
 
     @Override
     public NodeType visit(ReadStatement readStatement, SymbolTable arg) {
-        return null;
+        readStatement.getIds().forEach(this.typeCheck(arg));
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(WriteStatement writeStatement, SymbolTable arg) {
-        return null;
+        writeStatement.getExprs().forEach(this.typeCheck(arg));
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(ReturnStatement returnStatement, SymbolTable arg) {
-        return null;
+        returnStatement.getExpr().accept(this, arg);
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
@@ -181,92 +231,161 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return null;
+        emptyArrayExpression.accept(this, arg);
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(ArrayRead readArrayExpression, SymbolTable arg) {
-        return null;
+        readArrayExpression.accept(this, arg);
+        return PrimitiveNodeType.NULL;
     }
 
-    @Override
-    public NodeType visit(FunctionCall functionCallExpression, SymbolTable arg) {
-        return null;
-    }
 
     @Override
     public NodeType visit(PlusOp plusOp, SymbolTable arg) {
-        return null;
+        NodeType lType = plusOp.getElement1().accept(this, arg); //getType()
+        NodeType rType = plusOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(lType, rType, plusOp);
+        }
+        return lType.checkAdd((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(MinusOp minusOp, SymbolTable arg) {
-        return null;
+        NodeType lType = minusOp.getElement1().accept(this, arg);
+        NodeType rType = minusOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(lType, rType, minusOp);
+        }
+        return lType.checkSub((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(TimesOp timesOp, SymbolTable arg) {
-        return null;
+        NodeType lType = timesOp.getElement1().accept(this, arg);
+        NodeType rType = timesOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(lType, rType, timesOp);
+        }
+        return lType.checkMul((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(DivOp divOp, SymbolTable arg) {
-        return null;
+        NodeType lType = divOp.getElement1().accept(this, arg);
+        NodeType rType = divOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(lType, rType, divOp);
+        }
+        return lType.checkDiv((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(AndOp andOp, SymbolTable arg) {
-        return null;
+        NodeType lType = andOp.getElement1().accept(this, arg);
+        NodeType rType = andOp.getElement2().accept(this, arg);
+        if (rType.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, andOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(OrOp orOp, SymbolTable arg) {
-        return null;
+        NodeType lType = orOp.getElement1().accept(this, arg);
+        NodeType rType = orOp.getElement2().accept(this, arg);
+        if (rType.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, orOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(GtOp gtOp, SymbolTable arg) {
-        return null;
+        NodeType lType = gtOp.getElement1().accept(this, arg);
+        NodeType rType = gtOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, gtOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(GeOp geOp, SymbolTable arg) {
-        return null;
+        NodeType lType = geOp.getElement1().accept(this, arg);
+        NodeType rType = geOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, geOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
+
 
     @Override
     public NodeType visit(LtOp ltOp, SymbolTable arg) {
-        return null;
+        NodeType lType = ltOp.getElement1().accept(this, arg);
+        NodeType rType = ltOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, ltOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
+
 
     @Override
     public NodeType visit(LeOp leOp, SymbolTable arg) {
-        return null;
+        NodeType lType = leOp.getElement1().accept(this, arg);
+        NodeType rType = leOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, leOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
+
 
     @Override
     public NodeType visit(EqOp eqOp, SymbolTable arg) {
-        return null;
+        NodeType lType = eqOp.getElement1().accept(this, arg);
+        NodeType rType = eqOp.getElement2().accept(this, arg);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, eqOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
+
 
     @Override
     public NodeType visit(NeOp neOp, SymbolTable arg) {
-        return null;
+        NodeType lType = neOp.getElement1().accept(this, arg);
+        NodeType rType = neOp.getElement2().accept(this, arg);
+        if (rType.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, neOp);
+        }
+        return lType.checkRel((PrimitiveNodeType) rType);
     }
 
     @Override
     public NodeType visit(UMinusExpression uMinusExpression, SymbolTable arg) {
-        return null;
+        NodeType uType = uMinusExpression.getMinus().accept(this, arg);
+        if (!uType.equals(PrimitiveNodeType.INT)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, uMinusExpression.getType(), uMinusExpression);
+        }
+        return uType;
     }
 
     @Override
     public NodeType visit(NilConst nilConst, SymbolTable arg) {
-        return null;
+        nilConst.setType(PrimitiveNodeType.NULL);
+        return nilConst.getType();
     }
 
     @Override
     public NodeType visit(Id id, SymbolTable arg) {
-        return null;
+        NodeType iType = arg.lookup(id.getValue()).get().getTypeDenoter();
+        id.setType(iType);
+        return iType;
     }
 
     @Override
@@ -277,17 +396,23 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(NotExpression notExpression, SymbolTable arg) {
-        return null;
+        NodeType nType = notExpression.getNot().accept(this, arg);
+        if (!nType.equals(PrimitiveNodeType.BOOL)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, nType, notExpression);
+        }
+        return nType;
     }
 
     @Override
     public NodeType visit(SharpExpression sharpExpression, SymbolTable arg) {
-        return null;
+        sharpExpression.getExpr().accept(this, arg);
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
     public NodeType visit(NopStatement nopStatement, SymbolTable arg) {
-        return null;
+        nopStatement.accept(this, arg);
+        return PrimitiveNodeType.NULL;
     }
 
     @Override
