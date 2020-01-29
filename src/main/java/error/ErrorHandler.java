@@ -1,11 +1,13 @@
 package error;
 
+import nodetype.NodeType;
 import syntax.AstNode;
 
 public interface ErrorHandler {
 
     static final String NOT_DEFINED = "Variable not defined";
     static final String YET_DEFINED = "Variable yet defined";
+    static final String TYPE_MISMATCH = "Type mismatch: Expected %s but found %s";
 
     void reportError(String msg, AstNode node);
 
@@ -18,6 +20,12 @@ public interface ErrorHandler {
     default void reportYetDefined(AstNode node) {
         this.reportError(YET_DEFINED, node);
     }
+
+    default void reportTypeMismatch(NodeType expected, NodeType actual, AstNode node) {
+        String msg = String.format(TYPE_MISMATCH, expected, actual);
+        this.reportError(msg, node);
+    }
+
 
     boolean haveErrors();
 }

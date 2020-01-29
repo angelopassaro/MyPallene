@@ -6,7 +6,7 @@ public enum PrimitiveNodeType implements NodeType {
         @Override
         public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
             switch (type) {
-                case BOOL:
+                //              case BOOL:
                 case INT:
                     return INT;
                 case FLOAT:
@@ -19,7 +19,7 @@ public enum PrimitiveNodeType implements NodeType {
         @Override
         public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
             switch (type) {
-                case BOOL:
+                //              case BOOL:
                 case INT:
                     return INT;
                 case FLOAT:
@@ -32,7 +32,7 @@ public enum PrimitiveNodeType implements NodeType {
         @Override
         public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
             switch (type) {
-                case BOOL:
+                //               case BOOL:
                 case INT:
                     return INT;
                 case FLOAT:
@@ -45,7 +45,7 @@ public enum PrimitiveNodeType implements NodeType {
         @Override
         public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
             switch (type) {
-                case BOOL:
+                //               case BOOL:
                 case INT:
                     return INT;
                 case FLOAT:
@@ -58,8 +58,8 @@ public enum PrimitiveNodeType implements NodeType {
         @Override
         public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
             switch (type) {
-                case INT:
-                case FLOAT:
+                //               case INT:
+                //               case FLOAT:
                 case BOOL:
                     return BOOL;
                 default:
@@ -74,7 +74,7 @@ public enum PrimitiveNodeType implements NodeType {
             switch (type) {
                 case INT:
                 case FLOAT:
-                case BOOL:
+//                case BOOL:
                     return FLOAT;
                 default:
                     return NULL;
@@ -86,7 +86,7 @@ public enum PrimitiveNodeType implements NodeType {
             switch (type) {
                 case INT:
                 case FLOAT:
-                case BOOL:
+                    //               case BOOL:
                     return FLOAT;
                 default:
                     return NULL;
@@ -98,7 +98,7 @@ public enum PrimitiveNodeType implements NodeType {
             switch (type) {
                 case INT:
                 case FLOAT:
-                case BOOL:
+                    //             case BOOL:
                     return FLOAT;
                 default:
                     return NULL;
@@ -110,7 +110,7 @@ public enum PrimitiveNodeType implements NodeType {
             switch (type) {
                 case INT:
                 case FLOAT:
-                case BOOL:
+                    //           case BOOL:
                     return FLOAT;
                 default:
                     return NULL;
@@ -121,7 +121,7 @@ public enum PrimitiveNodeType implements NodeType {
         public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
-                case BOOL:
+                    //          case BOOL:
                 case FLOAT:
                     return BOOL;
                 default:
@@ -135,7 +135,7 @@ public enum PrimitiveNodeType implements NodeType {
         public PrimitiveNodeType checkAdd(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
-                case BOOL:
+                    //          case BOOL:
                     return INT;
                 case FLOAT:
                     return FLOAT;
@@ -148,7 +148,7 @@ public enum PrimitiveNodeType implements NodeType {
         public PrimitiveNodeType checkSub(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
-                case BOOL:
+                    //           case BOOL:
                     return INT;
                 case FLOAT:
                     return FLOAT;
@@ -161,7 +161,7 @@ public enum PrimitiveNodeType implements NodeType {
         public PrimitiveNodeType checkMul(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
-                case BOOL:
+                    //         case BOOL:
                     return INT;
                 case FLOAT:
                     return FLOAT;
@@ -174,7 +174,7 @@ public enum PrimitiveNodeType implements NodeType {
         public PrimitiveNodeType checkDiv(PrimitiveNodeType type) {
             switch (type) {
                 case INT:
-                case BOOL:
+                    //     case BOOL:
                     return INT;
                 case FLOAT:
                     return FLOAT;
@@ -188,7 +188,7 @@ public enum PrimitiveNodeType implements NodeType {
             switch (type) {
                 case INT:
                 case FLOAT:
-                case BOOL:
+                    //      case BOOL:
                     return BOOL;
                 default:
                     return NULL;
