@@ -53,7 +53,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isProgramSafe) {
             this.errorHandler.reportError("Program Error", program);
         }
-        arg.exitScope();
+        //arg.exitScope();
         return isProgramSafe;
     }
 
@@ -160,14 +160,14 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(VarDecl varDecl, SymbolTable arg) {
-        //  boolean isVarDeclSafe = varDecl.getVariable().accept(this, arg);
-        //  if (!isVarDeclSafe) {
-        //      this.errorHandler.reportError("VarDecl Error", varDecl);
-        //  } else {
-        boolean isVarDeclSafe = !arg.probe(varDecl.getVariable().getValue());
+        boolean isVarDeclSafe = varDecl.getVariable().accept(this, arg);
         if (!isVarDeclSafe) {
             this.errorHandler.reportError("VarDecl Error", varDecl);
         } else {
+            //boolean isVarDeclSafe = !arg.probe(varDecl.getVariable().getValue());
+            // if (!isVarDeclSafe) {
+            //     this.errorHandler.reportError("VarDecl Error", varDecl);
+            //} else {
             arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
             // }
         }
@@ -666,7 +666,8 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(Variable variable, SymbolTable arg) {
-        return arg.lookup(variable.getValue()).isEmpty();
+        //return arg.lookup(variable.getValue()).isEmpty();
+        return !arg.probe(variable.getValue());
     }
 
     /**
