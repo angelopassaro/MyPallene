@@ -40,6 +40,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         arg.enterScope();
         program.getGlobal().getVarDecls().forEach(this.typeCheck(arg));
         program.getFunctions().forEach(this.typeCheck(arg));
+        arg.exitScope();
         return PrimitiveNodeType.NULL;
     }
 
@@ -61,7 +62,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     @Override
     public NodeType visit(ComplexDefFun complexDefFun, SymbolTable arg) {
         NodeType fType = complexDefFun.getTypeDenoter().accept(this, arg);
-        arg.exitScope();
+        arg.enterScope();
         complexDefFun.getParDecls().forEach(this.typeCheck(arg));
         complexDefFun.getStatements().forEach(this.typeCheck(arg));
         arg.exitScope();
@@ -77,9 +78,14 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(VarDecl varDecl, SymbolTable arg) {
-        NodeType vType = varDecl.getTypeDenoter().accept(this, arg);
-        varDecl.getVariable().accept(this, arg);
-        return vType;
+        NodeType tType = varDecl.getTypeDenoter().accept(this, arg);
+        NodeType vType = varDecl.getVarInitValue().getExpr().accept(this, arg);
+        if (!tType.equals(vType)) {
+            this.errorHandler.reportTypeMismatch(tType, vType, varDecl);
+        } else {
+            varDecl.getVariable().accept(this, arg);
+        }
+        return tType;
     }
 
     @Override
