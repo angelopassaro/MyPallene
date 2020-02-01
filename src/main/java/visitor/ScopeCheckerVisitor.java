@@ -2,6 +2,7 @@ package visitor;
 
 import error.ErrorHandler;
 import nodekind.NodeKind;
+import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
 import semantic.SymbolTableRecord;
 import syntax.*;
@@ -23,6 +24,10 @@ import syntax.typedenoter.PrimitiveTypeDenoter;
 
 import java.util.List;
 
+/*
+TODO Chiamata funzione senza variabili
+TODO controllo parametri funzione
+ */
 public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
 
     private ErrorHandler errorHandler;
@@ -53,7 +58,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isProgramSafe) {
             this.errorHandler.reportError("Program Error", program);
         }
-        //arg.exitScope();
+        arg.exitScope();
         return isProgramSafe;
     }
 
@@ -254,10 +259,15 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     @Override
     public Boolean visit(ForStatement forStatement, SymbolTable arg) {
         arg.enterScope();
+        boolean isVariableSafe = forStatement.getVariable().accept(this, arg);
+        if (isVariableSafe) {
+            arg.addEntry(forStatement.getVariable().getValue(), new SymbolTableRecord(PrimitiveNodeType.INT, NodeKind.VARIABLE));
+        }
         boolean areStatemetSafe = checkContext(forStatement.getStatements(), arg);
         boolean isAssignExprSafe = forStatement.getAssignExpr().accept(this, arg);
         boolean isAssignCommaSafe = forStatement.getCommaExpr().accept(this, arg);
         boolean isForSafe = areStatemetSafe && isAssignCommaSafe && isAssignExprSafe;
+
         arg.exitScope();
         return isForSafe;
     }
