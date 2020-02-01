@@ -92,8 +92,8 @@ GlobalKeyword = [gG][lL][oO][bB][aA][lL]
   "<=="                 { return generateTokenSym("READ", ParserSym.READ); }
   "==>"                 { return generateTokenSym("WRITE",ParserSym.WRITE); }
   "return"              { return generateTokenSym("RETURN", ParserSym.RETURN); }
-  "true"                { return generateTokenSym("TRUE", ParserSym.TRUE); }
-  "false"               { return generateTokenSym("FALSE", ParserSym.FALSE); }
+  "true"                { return generateTokenSym("TRUE", ParserSym.TRUE, Boolean.parseBoolean(yytext())); }
+  "false"               { return generateTokenSym("FALSE", ParserSym.FALSE, Boolean.parseBoolean(yytext())); }
   "not"                 { return generateTokenSym("NOT", ParserSym.NOT); }
   "#"                   { return generateTokenSym("SHARP", ParserSym.SHARP); }
 
