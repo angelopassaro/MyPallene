@@ -23,6 +23,17 @@ public class FunctionCall extends Expr {
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param id The id
+     */
+    public FunctionCall(Location leftLocation, Location rightLocation, Id id) {
+        super(leftLocation, rightLocation);
+        this.id = id;
+        this.exprs = new LinkedList<>();
+    }
+
+    /**
      * @return The id
      */
     public Id getId() {
