@@ -1,6 +1,7 @@
 package visitor;
 
 import error.ErrorHandler;
+import nodetype.CompositeType;
 import nodetype.NodeType;
 import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
@@ -21,8 +22,12 @@ import syntax.typedenoter.ArrayTypeDenoter;
 import syntax.typedenoter.FunctionTypeDenoter;
 import syntax.typedenoter.PrimitiveTypeDenoter;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
+/**
+ * TODO Controllo dato di ritorno
+ */
 public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     private ErrorHandler errorHandler;
 
@@ -188,14 +193,26 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
-        functionCallStatement.getExprs().forEach(this.typeCheck(arg));
-        return null;
+        CompositeType input = new CompositeType(new ArrayList<>());
+        functionCallStatement.getExprs().forEach(e -> input.addType(e.accept(this, arg)));
+        //functionCallStatement.getExprs().forEach(this.typeCheck(arg));
+        NodeType fType = functionCallStatement.getId().accept(this, arg);
+        if (!fType.equals(input)) {
+            this.errorHandler.reportTypeMismatch(fType, input, functionCallStatement);
+        }
+        //functionCallExpression.getExprs().forEach(this.typeCheck(arg));
+        return fType;
     }
 
     @Override
     public NodeType visit(FunctionCall functionCallExpression, SymbolTable arg) {
-        NodeType fType = functionCallExpression.getId().getType();
-        functionCallExpression.getExprs().forEach(this.typeCheck(arg));
+        CompositeType input = new CompositeType(new ArrayList<>());
+        functionCallExpression.getExprs().forEach(e -> input.addType(e.accept(this, arg)));
+        NodeType fType = functionCallExpression.getId().accept(this, arg);
+        if (!fType.equals(input)) {
+            this.errorHandler.reportTypeMismatch(fType, input, functionCallExpression);
+        }
+        //functionCallExpression.getExprs().forEach(this.typeCheck(arg));
         return fType;
     }
 

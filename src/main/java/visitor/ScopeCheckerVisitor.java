@@ -25,7 +25,7 @@ import syntax.typedenoter.PrimitiveTypeDenoter;
 import java.util.List;
 
 /*
-TODO Chiamata funzione senza variabili
+TODO Errore con i booleani
 TODO controllo parametri funzione
  */
 public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {

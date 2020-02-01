@@ -8,6 +8,7 @@ import java_cup.runtime.ComplexSymbolFactory;
 import lexical.ArrayStringTable;
 import lexical.StringTable;
 import org.w3c.dom.Document;
+import semantic.FakeSymbolTable;
 import semantic.StackSymbolTable;
 import semantic.SymbolTable;
 import syntax.Program;
@@ -15,6 +16,7 @@ import template.XMLTemplate;
 import visitor.ConcreteXMLVisitor;
 import visitor.PreScopeCheckerVisitor;
 import visitor.ScopeCheckerVisitor;
+import visitor.TypeCheckerVisitor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +38,16 @@ class App {
 
         Program program = (Program) parser.parse().value;
         PreScopeCheckerVisitor preScopeCheckerVisitor = new PreScopeCheckerVisitor(errorHandler);
+        TypeCheckerVisitor typeCheckerVisitor = new TypeCheckerVisitor(errorHandler);
+
         ScopeCheckerVisitor scopeCheckerVisitor = new ScopeCheckerVisitor(errorHandler);
         boolean prescope = program.accept(preScopeCheckerVisitor, symbolTable);
         boolean scope = program.accept(scopeCheckerVisitor, symbolTable);
+
+        program.accept(typeCheckerVisitor, new FakeSymbolTable((StackSymbolTable) symbolTable, stringTable));
+
         System.out.println("PreScope: " + prescope + " scope: " + scope);
+        System.out.println(symbolTable.toString());
         if (errorHandler.haveErrors()) {
             errorHandler.logErrors();
         }

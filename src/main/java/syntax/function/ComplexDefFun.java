@@ -1,12 +1,14 @@
 package syntax.function;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
+import nodetype.CompositeType;
 import syntax.ParDecl;
 import syntax.Variable;
 import syntax.statement.Statement;
 import syntax.typedenoter.TypeDenoter;
 import visitor.Visitor;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class ComplexDefFun extends Function {
@@ -59,6 +61,15 @@ public class ComplexDefFun extends Function {
      */
     public LinkedList<ParDecl> getParDecls() {
         return parDecls;
+    }
+
+    /**
+     * @return The list of type
+     */
+    public CompositeType codomain() {
+        CompositeType ct = new CompositeType(new ArrayList<>());
+        this.parDecls.forEach(pd -> ct.addType(pd.getTypeDenoter().typeFactory()));
+        return ct;
     }
 
     @Override
