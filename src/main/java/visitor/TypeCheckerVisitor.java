@@ -26,16 +26,18 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 /**
- * TODO Controllo dato di ritorno
+ * TODO Controllo dato di ritorno error message
  */
 public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     private ErrorHandler errorHandler;
+    private ArrayList<NodeType> returnType;
 
     public TypeCheckerVisitor(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
 
     private Consumer<? super AstNode> typeCheck(SymbolTable arg) {
+
         return (AstNode node) -> node.accept(this, arg);
     }
 
@@ -57,20 +59,29 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
+        this.returnType = new ArrayList<>();
         NodeType fType = simpleDefFun.getTypeDenoter().accept(this, arg);
         arg.enterScope();
         simpleDefFun.getStatements().forEach(this.typeCheck(arg));
+        if (!this.returnType.contains(fType)) {
+            this.errorHandler.reportTypeMismatch(fType, returnType.get(0), simpleDefFun);
+        }
         arg.exitScope();
         return fType;
     }
 
     @Override
     public NodeType visit(ComplexDefFun complexDefFun, SymbolTable arg) {
+        this.returnType = new ArrayList<>();
         NodeType fType = complexDefFun.getTypeDenoter().accept(this, arg);
         arg.enterScope();
         complexDefFun.getParDecls().forEach(this.typeCheck(arg));
         complexDefFun.getStatements().forEach(this.typeCheck(arg));
+        if (!this.returnType.contains(fType)) {
+            this.errorHandler.reportTypeMismatch(fType, returnType.get(0), complexDefFun);
+        }
         arg.exitScope();
+
         return fType;
     }
 
@@ -230,8 +241,14 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(ReturnStatement returnStatement, SymbolTable arg) {
-        returnStatement.getExpr().accept(this, arg);
-        return PrimitiveNodeType.NULL;
+        NodeType rType = returnStatement.getExpr().accept(this, arg);
+        this.returnType.add(rType);
+        // if (!rType.equals(this.functionType)) {
+        //     this.errorHandler.reportTypeMismatch(this.functionType, rType, returnStatement);
+        // }
+
+        // System.out.println("Return " + rType);
+        return rType;
     }
 
     @Override
@@ -267,7 +284,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(PlusOp plusOp, SymbolTable arg) {
-        NodeType lType = plusOp.getElement1().accept(this, arg); //getType()
+        NodeType lType = plusOp.getElement1().accept(this, arg);
         NodeType rType = plusOp.getElement2().accept(this, arg);
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, plusOp);
