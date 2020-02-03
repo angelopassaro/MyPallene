@@ -26,7 +26,7 @@ class App {
     private static Lexer lexer;
     private static Parser parser;
     private static ComplexSymbolFactory complexSymbolFactory = new ComplexSymbolFactory();
-    private static final String path = "/home/angelo/Documents/Universita/compilatori(GENNAIO)/esercizi/passaro_es5_scg/testfile/input1";
+    private static final String path = "/home/angelo/Documents/Universita/compilatori(GENNAIO)/esercizi/passaro_es5_scg/testfile/input2";
     private static final ErrorHandler errorHandler = new StackErrorHandler();
     private static final StringTable stringTable = new ArrayStringTable();
     private static final SymbolTable symbolTable = new StackSymbolTable(stringTable);

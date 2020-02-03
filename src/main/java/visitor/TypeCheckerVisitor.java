@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  */
 public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     private ErrorHandler errorHandler;
-    private ArrayList<NodeType> returnType;
+    private ArrayList<NodeType> returnType = new ArrayList<>();
 
     public TypeCheckerVisitor(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
@@ -59,29 +59,28 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
-        this.returnType = new ArrayList<>();
         NodeType fType = simpleDefFun.getTypeDenoter().accept(this, arg);
         arg.enterScope();
         simpleDefFun.getStatements().forEach(this.typeCheck(arg));
-        if (!this.returnType.contains(fType)) {
+        if (!this.returnType.isEmpty() && !this.returnType.contains(fType)) {
             this.errorHandler.reportTypeMismatch(fType, returnType.get(0), simpleDefFun);
         }
+        this.returnType.clear();
         arg.exitScope();
         return fType;
     }
 
     @Override
     public NodeType visit(ComplexDefFun complexDefFun, SymbolTable arg) {
-        this.returnType = new ArrayList<>();
         NodeType fType = complexDefFun.getTypeDenoter().accept(this, arg);
         arg.enterScope();
         complexDefFun.getParDecls().forEach(this.typeCheck(arg));
         complexDefFun.getStatements().forEach(this.typeCheck(arg));
-        if (!this.returnType.contains(fType)) {
+        if (!this.returnType.isEmpty() && !this.returnType.contains(fType)) {
             this.errorHandler.reportTypeMismatch(fType, returnType.get(0), complexDefFun);
         }
         arg.exitScope();
-
+        this.returnType.clear();
         return fType;
     }
 
