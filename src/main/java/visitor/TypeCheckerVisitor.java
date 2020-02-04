@@ -28,7 +28,6 @@ import java.util.function.Consumer;
 
 /**
  * TODO Controllo dato di ritorno error message
- * TODO AssignStatement return function type (input2 result = addInc(result + 1, buffer), => float !=floatfloat  e no float !=float)
  */
 public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     private ErrorHandler errorHandler;
