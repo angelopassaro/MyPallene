@@ -1,7 +1,8 @@
 package visitor;
 
 import error.ErrorHandler;
-import nodetype.CompositeType;
+import nodetype.CompositeNodeType;
+import nodetype.FunctionNodeType;
 import nodetype.NodeType;
 import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
@@ -27,6 +28,7 @@ import java.util.function.Consumer;
 
 /**
  * TODO Controllo dato di ritorno error message
+ * TODO AssignStatement return function type (input2 result = addInc(result + 1, buffer), => float !=floatfloat  e no float !=float)
  */
 public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     private ErrorHandler errorHandler;
@@ -45,11 +47,14 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     @Override
     public NodeType visit(Program program, SymbolTable arg) {
         arg.enterScope();
-        program.getGlobal().getVarDecls().forEach(this.typeCheck(arg));
+        if (program.getGlobal() != null) {
+            program.getGlobal().getVarDecls().forEach(this.typeCheck(arg));
+        }
         program.getFunctions().forEach(this.typeCheck(arg));
         arg.exitScope();
         return PrimitiveNodeType.NULL;
     }
+
 
     @Override
     public NodeType visit(Global global, SymbolTable arg) {
@@ -94,11 +99,14 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     @Override
     public NodeType visit(VarDecl varDecl, SymbolTable arg) {
         NodeType tType = varDecl.getTypeDenoter().accept(this, arg);
-        NodeType vType = varDecl.getVarInitValue().getExpr().accept(this, arg);
-        if (!tType.equals(vType)) {
-            this.errorHandler.reportTypeMismatch(tType, vType, varDecl);
-        } else {
-            varDecl.getVariable().accept(this, arg);
+        if (varDecl.getVarInitValue() != null) {
+            varDecl.getVarInitValue().getExpr().accept(this, arg);
+            //vType varDecl.getVarInitValue().getExpr().accept(this,arg);
+            //if (!tType.equals(vType)) {
+            //    this.errorHandler.reportTypeMismatch(tType, vType, varDecl);
+            //} else {
+            //    varDecl.getVariable().accept(this, arg);
+            //}
         }
         return tType;
     }
@@ -203,27 +211,26 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
-        CompositeType input = new CompositeType(new ArrayList<>());
+        CompositeNodeType input = new CompositeNodeType(new ArrayList<>());
         functionCallStatement.getExprs().forEach(e -> input.addType(e.accept(this, arg)));
-        //functionCallStatement.getExprs().forEach(this.typeCheck(arg));
-        NodeType fType = functionCallStatement.getId().accept(this, arg);
-        if (!fType.equals(input)) {
-            this.errorHandler.reportTypeMismatch(fType, input, functionCallStatement);
+        functionCallStatement.getId().accept(this, arg);
+        FunctionNodeType cNodeType = (FunctionNodeType) functionCallStatement.getId().accept(this, arg);
+        if (!cNodeType.getInput().equals(input)) {
+            this.errorHandler.reportTypeMismatch(cNodeType.getInput(), input, functionCallStatement);
         }
-        //functionCallExpression.getExprs().forEach(this.typeCheck(arg));
-        return fType;
+        return cNodeType.getOutput();
     }
 
     @Override
     public NodeType visit(FunctionCall functionCallExpression, SymbolTable arg) {
-        CompositeType input = new CompositeType(new ArrayList<>());
+        CompositeNodeType input = new CompositeNodeType(new ArrayList<>());
         functionCallExpression.getExprs().forEach(e -> input.addType(e.accept(this, arg)));
-        NodeType fType = functionCallExpression.getId().accept(this, arg);
-        if (!fType.equals(input)) {
-            this.errorHandler.reportTypeMismatch(fType, input, functionCallExpression);
+        functionCallExpression.getId().accept(this, arg);
+        FunctionNodeType cNodeType = (FunctionNodeType) functionCallExpression.getId().accept(this, arg);
+        if (!cNodeType.getInput().equals(input)) {
+            this.errorHandler.reportTypeMismatch(cNodeType.getInput(), input, functionCallExpression);
         }
-        //functionCallExpression.getExprs().forEach(this.typeCheck(arg));
-        return fType;
+        return cNodeType.getOutput();
     }
 
     @Override

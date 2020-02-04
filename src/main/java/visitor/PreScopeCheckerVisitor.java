@@ -2,6 +2,7 @@ package visitor;
 
 import error.ErrorHandler;
 import nodekind.NodeKind;
+import nodetype.FunctionNodeType;
 import semantic.SymbolTable;
 import semantic.SymbolTableRecord;
 import syntax.*;
@@ -86,7 +87,8 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isComplexFunctionSafe) {
             this.errorHandler.reportYetDefined(complexDefFun);
         } else {
-            arg.addEntry(complexDefFun.getVariable().getValue(), new SymbolTableRecord(complexDefFun.codomain(), NodeKind.FUNCTION));
+            arg.addEntry(complexDefFun.getVariable().getValue(),
+                    new SymbolTableRecord(new FunctionNodeType(complexDefFun.domain(), complexDefFun.getTypeDenoter().typeFactory()), NodeKind.FUNCTION));
         }
         return isComplexFunctionSafe;
     }

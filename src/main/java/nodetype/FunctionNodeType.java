@@ -1,14 +1,31 @@
 package nodetype;
 
-import java.util.List;
 import java.util.Objects;
 
-public class CompositeType implements NodeType {
+public class FunctionNodeType implements NodeType {
 
-    private final List<NodeType> types;
+    CompositeNodeType input;
+    PrimitiveNodeType output;
 
-    public CompositeType(List<NodeType> types) {
-        this.types = types;
+    public FunctionNodeType(CompositeNodeType input, PrimitiveNodeType output) {
+        this.input = input;
+        this.output = output;
+    }
+
+    public CompositeNodeType getInput() {
+        return input;
+    }
+
+    public void setInput(CompositeNodeType input) {
+        this.input = input;
+    }
+
+    public PrimitiveNodeType getOutput() {
+        return output;
+    }
+
+    public void setOutput(PrimitiveNodeType output) {
+        this.output = output;
     }
 
     @Override
@@ -39,12 +56,8 @@ public class CompositeType implements NodeType {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 11 * hash + Objects.hashCode(this.types);
+        hash = 11 * hash + Objects.hashCode(this.input) + Objects.hashCode(this.output);
         return hash;
-    }
-
-    public void addType(NodeType type) {
-        this.types.add(type);
     }
 
     @Override
@@ -56,15 +69,17 @@ public class CompositeType implements NodeType {
         } else if (getClass() != obj.getClass()) {
             return false;
         } else {
-            final CompositeType other = (CompositeType) obj;
-            return Objects.equals(this.types, other.types);
+            final FunctionNodeType other = (FunctionNodeType) obj;
+            return Objects.equals(this.output, other.output) && Objects.equals(this.input, other.input);
         }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        this.types.forEach(t -> sb.append(t.toString()));
+        sb.append(this.input.toString());
+        sb.append("->");
+        sb.append(this.input.toString());
         return sb.toString();
     }
 }

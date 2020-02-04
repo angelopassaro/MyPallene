@@ -1,12 +1,22 @@
 package semantic;
 
 import nodekind.NodeKind;
+import nodetype.CompositeNodeType;
 import nodetype.NodeType;
+
+import java.util.ArrayList;
 
 public class SymbolTableRecord {
 
     private NodeType type;
     private NodeKind kind;
+    private CompositeNodeType compositeNodeType = new CompositeNodeType(new ArrayList<>());
+
+    public SymbolTableRecord(NodeType type, NodeKind kind, CompositeNodeType compositeNodeType) {
+        this.type = type;
+        this.kind = kind;
+        this.compositeNodeType = compositeNodeType;
+    }
 
     public SymbolTableRecord(NodeType type, NodeKind kind) {
         this.type = type;
@@ -21,6 +31,10 @@ public class SymbolTableRecord {
         return kind;
     }
 
+    public CompositeNodeType getCompositeNodeType() {
+        return compositeNodeType;
+    }
+
     public void setType(NodeType type) {
         this.type = type;
     }
@@ -33,7 +47,8 @@ public class SymbolTableRecord {
     public String toString() {
         return "SymbolTableRecord{" +
                 "kind='" + kind + '\'' +
-                ", type=" + type +
+                ", type=" + type + '\'' +
+                ", compositeType=" + compositeNodeType +
                 '}';
     }
 }
