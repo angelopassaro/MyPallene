@@ -85,14 +85,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
-        boolean isSimpleFunctionSafe = simpleDefFun.getVariable().accept(this, arg);
         //      if (!isSimpleFunctionSafe) {
         //          this.errorHandler.reportYetDefined(simpleDefFun);
         //      } else {
         arg.enterScope();
         boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
         //String name = simpleDefFun.getVariable().getValue();
-        isSimpleFunctionSafe = isStatementsSafe;
+        boolean isSimpleFunctionSafe = isStatementsSafe;
         if (!isSimpleFunctionSafe) {
             this.errorHandler.reportError("Simple Function Error", simpleDefFun);
         }
@@ -114,7 +113,6 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(ComplexDefFun complexDefFun, SymbolTable arg) {
-        boolean isComplexFunctionSafe = complexDefFun.getVariable().accept(this, arg);
         //  if (!isComplexFunctionSafe) {
         //      this.errorHandler.reportYetDefined(complexDefFun);
         //  } else {
@@ -122,7 +120,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
         boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
         //String name = complexDefFun.getVariable().getValue();
-        isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
+        boolean isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
         if (!isComplexFunctionSafe) {
             this.errorHandler.reportError("Complex Function Error", complexDefFun);
         }

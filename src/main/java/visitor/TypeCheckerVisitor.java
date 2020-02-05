@@ -26,9 +26,7 @@ import syntax.typedenoter.PrimitiveTypeDenoter;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-/**
- * TODO Controllo dato di ritorno error message
- */
+
 public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     private ErrorHandler errorHandler;
     private ArrayList<NodeType> returnType = new ArrayList<>();
@@ -100,12 +98,6 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         NodeType tType = varDecl.getTypeDenoter().accept(this, arg);
         if (varDecl.getVarInitValue() != null) {
             varDecl.getVarInitValue().getExpr().accept(this, arg);
-            //vType varDecl.getVarInitValue().getExpr().accept(this,arg);
-            //if (!tType.equals(vType)) {
-            //    this.errorHandler.reportTypeMismatch(tType, vType, varDecl);
-            //} else {
-            //    varDecl.getVariable().accept(this, arg);
-            //}
         }
         return tType;
     }
@@ -248,11 +240,6 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(ReturnStatement returnStatement, SymbolTable arg) {
         NodeType rType = returnStatement.getExpr().accept(this, arg);
         this.returnType.add(rType);
-        // if (!rType.equals(this.functionType)) {
-        //     this.errorHandler.reportTypeMismatch(this.functionType, rType, returnStatement);
-        // }
-
-        // System.out.println("Return " + rType);
         return rType;
     }
 
