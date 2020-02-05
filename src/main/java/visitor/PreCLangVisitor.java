@@ -97,7 +97,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     @Override
     public String visit(PrimitiveTypeDenoter primitiveTypeDenoter, SymbolTable arg) {
         String type = primitiveTypeDenoter.typeFactory().toString();
-        return type.equals("undefined") ? "void" : type;
+        return type.equals("undefined") ? "int" : type;
     }
 
     @Override
@@ -197,68 +197,68 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(PlusOp plusOp, SymbolTable arg) {
-        return String.format("%s + %s", plusOp.getElement1(), plusOp.getElement2());
+        return String.format("%s + %s", plusOp.getElement1().accept(this, arg), plusOp.getElement2().accept(this, arg));
 
     }
 
     @Override
     public String visit(MinusOp minusOp, SymbolTable arg) {
-        return String.format("%s - %s", minusOp.getElement1(), minusOp.getElement2());
+        return String.format("%s - %s", minusOp.getElement1().accept(this, arg), minusOp.getElement2().accept(this, arg));
 
     }
 
     @Override
     public String visit(TimesOp timesOp, SymbolTable arg) {
-        return String.format("%s * %s", timesOp.getElement1(), timesOp.getElement2());
+        return String.format("%s * %s", timesOp.getElement1().accept(this, arg), timesOp.getElement2().accept(this, arg));
 
     }
 
     @Override
     public String visit(DivOp divOp, SymbolTable arg) {
-        return String.format("%s / %s", divOp.getElement1(), divOp.getElement2());
+        return String.format("%s / %s", divOp.getElement1().accept(this, arg), divOp.getElement2().accept(this, arg));
 
     }
 
     @Override
     public String visit(AndOp andOp, SymbolTable arg) {
-        return String.format("%s && %s", andOp.getElement1(), andOp.getElement2());
+        return String.format("%s && %s", andOp.getElement1().accept(this, arg), andOp.getElement2().accept(this, arg));
 
     }
 
     @Override
     public String visit(OrOp orOp, SymbolTable arg) {
-        return String.format("%s || %s", orOp.getElement1(), orOp.getElement2());
+        return String.format("%s || %s", orOp.getElement1().accept(this, arg), orOp.getElement2().accept(this, arg));
     }
 
     @Override
     public String visit(GtOp gtOp, SymbolTable arg) {
-        return String.format("%s > %s", gtOp.getElement1(), gtOp.getElement2());
+        return String.format("%s > %s", gtOp.getElement1().accept(this, arg), gtOp.getElement2().accept(this, arg));
     }
 
     @Override
     public String visit(GeOp geOp, SymbolTable arg) {
-        return String.format("%s >= %s", geOp.getElement1(), geOp.getElement2());
+        return String.format("%s >= %s", geOp.getElement1().accept(this, arg), geOp.getElement2().accept(this, arg));
     }
 
     @Override
     public String visit(LtOp ltOp, SymbolTable arg) {
-        return String.format("%s < %s", ltOp.getElement1(), ltOp.getElement2());
+        return String.format("%s < %s", ltOp.getElement1().accept(this, arg), ltOp.getElement2().accept(this, arg));
     }
 
     @Override
     public String visit(LeOp leOp, SymbolTable arg) {
-        return String.format("%s <= %s", leOp.getElement1(), leOp.getElement2());
+        return String.format("%s <= %s", leOp.getElement1().accept(this, arg), leOp.getElement2().accept(this, arg));
     }
 
     @Override
     public String visit(EqOp eqOp, SymbolTable arg) {
-        return String.format("%s == %s", eqOp.getElement1(), eqOp.getElement2());
+        return String.format("%s == %s", eqOp.getElement1().accept(this, arg), eqOp.getElement2().accept(this, arg));
 
     }
 
     @Override
     public String visit(NeOp neOp, SymbolTable arg) {
-        return String.format("%s != %s", neOp.getElement1(), neOp.getElement2());
+        return String.format("%s != %s", neOp.getElement1().accept(this, arg), neOp.getElement2().accept(this, arg));
     }
 
     @Override
