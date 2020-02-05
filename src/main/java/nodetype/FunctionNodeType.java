@@ -16,16 +16,8 @@ public class FunctionNodeType implements NodeType {
         return input;
     }
 
-    public void setInput(CompositeNodeType input) {
-        this.input = input;
-    }
-
     public PrimitiveNodeType getOutput() {
         return output;
-    }
-
-    public void setOutput(PrimitiveNodeType output) {
-        this.output = output;
     }
 
     @Override

@@ -9,18 +9,21 @@ public class StackSymbolTable extends LinkedHashMap<Integer, HashMap<Integer, Sy
     private final Stack<Integer> scopeLevel;
     private final StringTable table;
     private int currentLevel;
+    private static final int start = -1;
 
     public StackSymbolTable(StringTable table) {
         this.table = table;
         this.scopeLevel = new Stack();
-        this.currentLevel = 0;
+        this.currentLevel = start;
     }
 
     @Override
     public void enterScope() {
-        this.scopeLevel.push(this.currentLevel);
-        this.put(this.scopeLevel.peek(), new HashMap<>());
         this.currentLevel++;
+        this.scopeLevel.push(this.currentLevel);
+        if (!this.containsKey(this.scopeLevel.peek())) {
+            this.put(this.scopeLevel.peek(), new HashMap<>());
+        }
     }
 
     @Override
@@ -32,6 +35,10 @@ public class StackSymbolTable extends LinkedHashMap<Integer, HashMap<Integer, Sy
     public boolean probe(String lexeme) {
         int address = this.table.getAddress(lexeme);
         return this.get(this.scopeLevel.peek()).containsKey(address);
+    }
+
+    public void resetLevel() {
+        this.currentLevel = start;
     }
 
     @Override

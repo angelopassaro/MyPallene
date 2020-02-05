@@ -48,6 +48,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(Program program, SymbolTable arg) {
+        arg.enterScope();
         boolean isGlobalSafe = program.getGlobal().accept(this, arg);
         boolean areFunctionsSafe = this.checkContext(program.getFunctions(), arg);
         boolean isProgramSafe = isGlobalSafe && areFunctionsSafe;
