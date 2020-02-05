@@ -131,7 +131,7 @@ Statements           ::= Stat:stat SEMI Statements:statements                   
 Stat                ::= NOP:nop                                                                                         {: RESULT = new NopStatement(nopxleft, nopxright); :}
                         | WHILE:w Expr:expr DO Statements:statements END                                                {: RESULT = new WhileStatement(wxleft, wxright, expr, statements);:}
                         | IF:ifer Expr:expr THEN Statements:statements ELSE Statements:elseStatements END               {: RESULT = new IfThenElseStatement(iferxleft, iferxright,expr,statements, elseStatements);:}
-                        | IF:ifer Expr:expr THEN Statements:statements                                                  {: RESULT = new IfThenStatement(iferxleft, iferxright, expr, statements); :}
+                        | IF:ifer Expr:expr THEN Statements:statements END                                              {: RESULT = new IfThenStatement(iferxleft, iferxright, expr, statements); :}
                         | FOR:forer ID:id ASSIGN Expr:expr COMMA Expr:commaExpr DO Statements:statements END            {: RESULT = new ForStatement(forerxleft, forerxright, new Variable(idxleft, idxright, id), expr, commaExpr, statements);:}
                         | LOCAL:local Var_decls:varDecls SEMI Statements:statements END                                 {: RESULT = new LocalStatement(localxleft, localxright, varDecls, statements);:}
                         | ID:id ASSIGN Expr:expr                                                                        {: RESULT = new AssignStatement(idxleft, idxright, new Id(idxleft, idxright, id), expr);:}
