@@ -53,9 +53,9 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         arg.enterScope();
         String name = simpleDefFun.getVariable().accept(this, arg);
         String type = simpleDefFun.getTypeDenoter().accept(this, arg);
-        String statements = this.beautify(simpleDefFun.getStatements(), new StringJoiner(";\n"), arg);
+        String statements = this.beautify(simpleDefFun.getStatements(), new StringJoiner("\n"), arg);
         arg.exitScope();
-        return String.format("%s %s(){\n %s; \n}", type, name, statements);
+        return String.format("\n%s %s(){\n%s\n}\n", type, name, statements);
     }
 
     @Override
@@ -64,9 +64,9 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         String name = complexDefFun.getVariable().accept(this, arg);
         String type = complexDefFun.getTypeDenoter().accept(this, arg);
         String parDecls = this.beautify(complexDefFun.getParDecls(), new StringJoiner(" , "), arg);
-        String statements = this.beautify(complexDefFun.getStatements(), new StringJoiner(";\n"), arg);
+        String statements = this.beautify(complexDefFun.getStatements(), new StringJoiner("\n"), arg);
         arg.exitScope();
-        return String.format("%s %s (%s){\n %s; \n}", type, name, parDecls, statements);
+        return String.format("\n%s %s (%s){\n%s\n}\n", type, name, parDecls, statements);
     }
 
     @Override
@@ -101,47 +101,53 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     }
 
     @Override
-    public String visit(ArrayTypeDenoter arrayTypeDenoter, SymbolTable arg) {
-        return null;
-    }
-
-    @Override
-    public String visit(FunctionTypeDenoter functionTypeDenoter, SymbolTable arg) {
-        return null;
-    }
-
-    @Override
     public String visit(WhileStatement whileStatement, SymbolTable arg) {
         String expr = whileStatement.getExpr().accept(this, arg);
         String statements = this.beautify(whileStatement.getStatements(), new StringJoiner("\n"), arg);
-        return String.format("while(%s){\n %s;}", expr, statements);
+        return String.format("while(%s){\n%s}", expr, statements);
     }
 
     @Override
     public String visit(IfThenStatement ifThenStatement, SymbolTable arg) {
-        return null;
+        String condition = ifThenStatement.getExpr().accept(this, arg);
+        String statements = this.beautify(ifThenStatement.getStatements(), new StringJoiner("\n"), arg);
+        return String.format("if (%s) {\n%s\n}", condition, statements);
     }
 
     @Override
     public String visit(IfThenElseStatement ifThenElseStatements, SymbolTable arg) {
-        return null;
+        String condition = ifThenElseStatements.getExpr().accept(this, arg);
+        String statements = this.beautify(ifThenElseStatements.getThenStatement(), new StringJoiner("\n"), arg);
+        String elseStatements = this.beautify(ifThenElseStatements.getElseStatement(), new StringJoiner("\n"), arg);
+        return String.format("if (%s) {\n%s\n} else {\n%s\n}", condition, statements, elseStatements);
     }
 
+    //TODO da rivedere
     @Override
     public String visit(ForStatement forStatement, SymbolTable arg) {
-        return null;
+        arg.enterScope();
+        String var = forStatement.getVariable().accept(this, arg);
+        String varValue = forStatement.getAssignExpr().accept(this, arg);
+        String expr = forStatement.getCommaExpr().accept(this, arg);
+        String statements = this.beautify(forStatement.getStatements(), new StringJoiner("\n"), arg);
+        arg.exitScope();
+        return String.format("for (%s = %s; %s; %s++){\n %s\n}", var, varValue, expr, var, statements);
     }
 
     @Override
     public String visit(LocalStatement localStatement, SymbolTable arg) {
-        return null;
+        arg.enterScope();
+        String varDecl = this.beautify(localStatement.getVarDecls(), new StringJoiner("\n"), arg);
+        String statements = this.beautify(localStatement.getStatements(), new StringJoiner("\n"), arg);
+        arg.exitScope();
+        return String.format("{\n%s\n%s\n}", varDecl, statements);
     }
 
     @Override
     public String visit(AssignStatement assignStatement, SymbolTable arg) {
         String id = assignStatement.getId().accept(this, arg);
         String expr = assignStatement.getExpr().accept(this, arg);
-        return String.format("%s = %s", id, expr);
+        return String.format("%s = %s;", id, expr);
     }
 
     @Override
@@ -151,7 +157,9 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
-        return null;
+        String func = functionCallStatement.getId().accept(this, arg);
+        String params = this.beautify(functionCallStatement.getExprs(), new StringJoiner(" , "), arg);
+        return String.format("%s(%s)", func, params);
     }
 
     @Override
@@ -166,7 +174,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ReturnStatement returnStatement, SymbolTable arg) {
-        return null;
+        return String.format("return %s;", returnStatement.getExpr().accept(this, arg));
     }
 
     @Override
@@ -196,7 +204,9 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(FunctionCall functionCallExpression, SymbolTable arg) {
-        return null;
+        String func = functionCallExpression.getId().accept(this, arg);
+        String params = this.beautify(functionCallExpression.getExprs(), new StringJoiner(" , "), arg);
+        return String.format("%s(%s)", func, params);
     }
 
     @Override
@@ -273,7 +283,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(NilConst nilConst, SymbolTable arg) {
-        return nilConst.getValue().toString();
+        return null;
     }
 
     @Override
@@ -288,7 +298,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(NotExpression notExpression, SymbolTable arg) {
-        return null;
+        return String.format("!(%s)", notExpression.getNot().accept(this, arg));
     }
 
     @Override
@@ -298,6 +308,16 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(NopStatement nopStatement, SymbolTable arg) {
+        return null;
+    }
+
+    @Override
+    public String visit(ArrayTypeDenoter arrayTypeDenoter, SymbolTable arg) {
+        return null;
+    }
+
+    @Override
+    public String visit(FunctionTypeDenoter functionTypeDenoter, SymbolTable arg) {
         return null;
     }
 
