@@ -429,10 +429,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     @Override
     public NodeType visit(NotExpression notExpression, SymbolTable arg) {
         NodeType nType = notExpression.getNot().accept(this, arg);
-        if (!nType.equals(PrimitiveNodeType.BOOL)) {
-            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, nType, notExpression);
-        }
-        return nType;
+        return nType.checkRel(PrimitiveNodeType.BOOL);
     }
 
     @Override
