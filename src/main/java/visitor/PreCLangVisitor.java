@@ -57,7 +57,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(Variable variable, SymbolTable arg) {
-        return variable.getValue();
+        return variable.getName();
     }
 
 
@@ -99,7 +99,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ParDecl parDecl, SymbolTable arg) {
-        return String.format("%s %s", parDecl.getTypeDenoter().typeFactory(), parDecl.getVariable().getValue());
+        return String.format("%s %s", parDecl.getTypeDenoter().typeFactory(), parDecl.getVariable().getName());
     }
 
 
@@ -181,17 +181,17 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(FloatConst floatConst, SymbolTable arg) {
-        return Float.toString(floatConst.getValue());
+        return Float.toString(floatConst.getName());
     }
 
     @Override
     public String visit(StringConst stringConst, SymbolTable arg) {
-        return stringConst.getValue();
+        return stringConst.getName();
     }
 
     @Override
     public String visit(IntegerConst integerConst, SymbolTable arg) {
-        return Integer.toString(integerConst.getValue());
+        return Integer.toString(integerConst.getName());
     }
 
     @Override
@@ -283,7 +283,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(NilConst nilConst, SymbolTable arg) {
-        return nilConst.getValue().toString();
+        return nilConst.getName().toString();
     }
 
     @Override
@@ -293,7 +293,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(BooleanConst booleanConst, SymbolTable arg) {
-        return booleanConst.getValue().toString();
+        return booleanConst.getName().toString();
     }
 
     @Override

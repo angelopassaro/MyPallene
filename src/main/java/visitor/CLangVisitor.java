@@ -99,7 +99,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ParDecl parDecl, SymbolTable arg) {
-        return String.format("%s %s", parDecl.getTypeDenoter().typeFactory(), parDecl.getVariable().getValue());
+        return String.format("%s %s", parDecl.getTypeDenoter().typeFactory(), parDecl.getVariable().getName());
     }
 
 
@@ -107,6 +107,11 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(VarDecl varDecl, SymbolTable arg) {
         String type = varDecl.getTypeDenoter().accept(this, arg);
         String name = varDecl.getVariable().accept(this, arg);
+        if (type.equals("string")) {
+            type = "char *";
+        }
+        if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) name = name + "[50]";
+
         if (varDecl.getVarInitValue() != null) {
             return String.format("%s %s = %s;", type, name, varDecl.getVarInitValue().accept(this, arg));
         } else {
@@ -177,7 +182,10 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
-        return null;
+        String array = arrayElementStatement.getArrayExpr().accept(this, arg);
+        String index = arrayElementStatement.getArrayPoint().accept(this, arg);
+        String assignee = arrayElementStatement.getArrayAssign().accept(this, arg);
+        return String.format("%s[%s] = %s;", array, index, assignee);
     }
 
     @Override
@@ -191,8 +199,8 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(ReadStatement readStatement, SymbolTable arg) {
         StringJoiner scanfs = new StringJoiner("\n");
         readStatement.getIds().forEach(var -> {
-            String type = this.formatType(arg.lookup(var.getValue()).get().getTypeDenoter());
-            String varName = (type == "%s" ? "&" + var.getValue() : var.getValue());
+            String type = this.formatType(arg.lookup(var.getName()).get().getTypeDenoter());
+            String varName = (type == "%s" ? "&" + var.getName() : var.getName());
             scanfs.add(String.format("scanf(\"%s\", &%s);", type, varName));
         });
         return scanfs.toString();
@@ -216,27 +224,29 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(FloatConst floatConst, SymbolTable arg) {
-        return floatConst.getValue().toString();
+        return floatConst.getName().toString();
     }
 
     @Override
     public String visit(StringConst stringConst, SymbolTable arg) {
-        return stringConst.getValue();
+        return String.format("\"%s\"", stringConst.getName());
     }
 
     @Override
     public String visit(IntegerConst integerConst, SymbolTable arg) {
-        return Integer.toString(integerConst.getValue());
+        return Integer.toString(integerConst.getName());
     }
 
     @Override
     public String visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return null;
+        return "{ }";
     }
 
     @Override
     public String visit(ArrayRead readArrayExpression, SymbolTable arg) {
-        return null;
+        String array = readArrayExpression.getArrayName().accept(this, arg);
+        String index = readArrayExpression.getArrayElement().accept(this, arg);
+        return String.format("%s[%s]", array, index);
     }
 
     @Override
@@ -325,12 +335,12 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(Id id, SymbolTable arg) {
-        return id.getValue();
+        return id.getName();
     }
 
     @Override
     public String visit(BooleanConst booleanConst, SymbolTable arg) {
-        return booleanConst.getValue().toString();
+        return booleanConst.getName().toString();
     }
 
     @Override
@@ -350,7 +360,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayTypeDenoter arrayTypeDenoter, SymbolTable arg) {
-        return null;
+        return arrayTypeDenoter.getElementsType().cType();
     }
 
     @Override
@@ -360,6 +370,6 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(Variable variable, SymbolTable arg) {
-        return variable.getValue();
+        return variable.getName();
     }
 }

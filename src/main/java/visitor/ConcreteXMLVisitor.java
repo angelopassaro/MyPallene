@@ -101,7 +101,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     @Override
     public Element visit(ArrayTypeDenoter arrayTypeDenoter, Document arg) {
         Element element = arg.createElement("ArrayType");
-        element.appendChild(arrayTypeDenoter.getTypeDenoterDenoter().accept(this, arg));
+        element.appendChild(arrayTypeDenoter.getTypeDenoter().accept(this, arg));
         return element;
     }
 
@@ -205,28 +205,28 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     @Override
     public Element visit(FloatConst floatConst, Document arg) {
         Element element = arg.createElement("FloatConst");
-        element.setAttribute("value", floatConst.getValue().toString());
+        element.setAttribute("value", floatConst.getName().toString());
         return element;
     }
 
     @Override
     public Element visit(StringConst stringConst, Document arg) {
         Element element = arg.createElement("StringConst");
-        element.setAttribute("text", stringConst.getValue());
+        element.setAttribute("text", stringConst.getName());
         return element;
     }
 
     @Override
     public Element visit(IntegerConst integerConst, Document arg) {
         Element element = arg.createElement("IntegerConst");
-        element.setAttribute("value", integerConst.getValue().toString());
+        element.setAttribute("value", integerConst.getName().toString());
         return element;
     }
 
     @Override
     public Element visit(ArrayConst emptyArrayExpression, Document arg) {
         Element element = arg.createElement("EmptyArrayExpression");
-        element.setAttribute("type", emptyArrayExpression.getTypeDenoterDenoter().toString());
+        element.setAttribute("type", emptyArrayExpression.getTypeDenoter().toString());
         return element;
     }
 
@@ -359,14 +359,14 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     @Override
     public Element visit(Id id, Document arg) {
         Element element = arg.createElement("Id");
-        element.setAttribute("lexeme", id.getValue());
+        element.setAttribute("lexeme", id.getName());
         return element;
     }
 
     @Override
     public Element visit(BooleanConst booleanConst, Document arg) {
         Element element = arg.createElement("BooleanConst");
-        element.setAttribute("value", booleanConst.getValue().toString());
+        element.setAttribute("value", booleanConst.getName().toString());
         return element;
     }
 
@@ -392,7 +392,7 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
     @Override
     public Element visit(Variable variable, Document arg) {
         Element element = arg.createElement("Variable");
-        element.setAttribute("lexeme", variable.getValue());
+        element.setAttribute("lexeme", variable.getName());
         return element;
     }
 

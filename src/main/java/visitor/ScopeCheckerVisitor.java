@@ -2,6 +2,7 @@ package visitor;
 
 import error.ErrorHandler;
 import nodekind.NodeKind;
+import nodetype.ArrayNodeType;
 import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
 import semantic.SymbolTableRecord;
@@ -146,7 +147,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isParDeclSafe) {
             this.errorHandler.reportError("ParDecl Error", parDecl);
         } else {
-            arg.addEntry(parDecl.getVariable().getValue(), new SymbolTableRecord(parDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
+            arg.addEntry(parDecl.getVariable().getName(), new SymbolTableRecord(parDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
         }
         return isParDeclSafe;
     }
@@ -160,16 +161,18 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(VarDecl varDecl, SymbolTable arg) {
-        boolean isVarDeclSafe = varDecl.getVariable().accept(this, arg);
+        boolean isVariableSafe = varDecl.getVariable().accept(this, arg);
+        boolean isVarInitValueSafe = (varDecl.getVarInitValue() != null) ? varDecl.getVarInitValue().accept(this, arg) : true;
+        boolean isVarDeclSafe = isVariableSafe && isVarInitValueSafe;
         if (!isVarDeclSafe) {
-            this.errorHandler.reportError("VarDecl Error", varDecl);
+            this.errorHandler.reportError("Variable Declaration Error", varDecl);
         } else {
-            //boolean isVarDeclSafe = !arg.probe(varDecl.getVariable().getValue());
-            // if (!isVarDeclSafe) {
-            //     this.errorHandler.reportError("VarDecl Error", varDecl);
-            //} else {
-            arg.addEntry(varDecl.getVariable().getValue(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
-            // }
+            if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
+                ArrayNodeType arrayNodeType = new ArrayNodeType(((ArrayTypeDenoter) varDecl.getTypeDenoter()).getTypeDenoter().typeFactory());
+                arg.addEntry(varDecl.getVariable().getName(), new SymbolTableRecord(arrayNodeType, NodeKind.VARIABLE));
+            } else {
+                arg.addEntry(varDecl.getVariable().getName(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
+            }
         }
         return isVarDeclSafe;
     }
@@ -256,7 +259,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         arg.enterScope();
         boolean isVariableSafe = forStatement.getVariable().accept(this, arg);
         if (isVariableSafe) {
-            arg.addEntry(forStatement.getVariable().getValue(), new SymbolTableRecord(PrimitiveNodeType.INT, NodeKind.VARIABLE));
+            arg.addEntry(forStatement.getVariable().getName(), new SymbolTableRecord(PrimitiveNodeType.INT, NodeKind.VARIABLE));
         }
         boolean areStatemetSafe = checkContext(forStatement.getStatements(), arg);
         boolean isAssignExprSafe = forStatement.getAssignExpr().accept(this, arg);
@@ -658,7 +661,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(Id id, SymbolTable arg) {
-        return arg.lookup(id.getValue()).isPresent();
+        return arg.lookup(id.getName()).isPresent();
     }
 
 
@@ -672,7 +675,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     @Override
     public Boolean visit(Variable variable, SymbolTable arg) {
         //return arg.lookup(variable.getValue()).isEmpty();
-        return !arg.probe(variable.getValue());
+        return !arg.probe(variable.getName());
     }
 
     /**

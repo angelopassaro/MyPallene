@@ -1,10 +1,7 @@
 package visitor;
 
 import error.ErrorHandler;
-import nodetype.CompositeNodeType;
-import nodetype.FunctionNodeType;
-import nodetype.NodeType;
-import nodetype.PrimitiveNodeType;
+import nodetype.*;
 import semantic.SymbolTable;
 import syntax.*;
 import syntax.expression.*;
@@ -191,12 +188,20 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
-        arrayElementStatement.getArrayExpr().accept(this, arg);
-        NodeType aType = arrayElementStatement.getArrayPoint().getType();
-        if (!aType.equals(PrimitiveNodeType.INT)) {
-            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, aType, arrayElementStatement);
+        NodeType indexType = arrayElementStatement.getArrayPoint().accept(this, arg);
+        if (!indexType.equals(PrimitiveNodeType.INT)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, indexType, arrayElementStatement);
         }
-        arrayElementStatement.getArrayAssign().accept(this, arg);
+
+        ArrayNodeType arrayNodeType = (ArrayNodeType) arrayElementStatement.getArrayAssign().accept(this, arg);
+        if (!arrayNodeType.equals(arrayElementStatement.getArrayExpr().getType())) {
+            this.errorHandler.reportTypeMismatch(arrayNodeType, arrayElementStatement.getArrayExpr().getType(), arrayElementStatement);
+        }
+
+        NodeType assigneeType = arrayElementStatement.getArrayAssign().accept(this, arg);
+        if (!assigneeType.equals(arrayNodeType.getElementType())) {
+            this.errorHandler.reportTypeMismatch(arrayNodeType.getElementType(), assigneeType, arrayElementStatement);
+        }
         return PrimitiveNodeType.NULL;
     }
 
@@ -263,14 +268,17 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        emptyArrayExpression.accept(this, arg);
-        return PrimitiveNodeType.NULL;
+        return emptyArrayExpression.getTypeDenoter().typeFactory();
     }
 
     @Override
     public NodeType visit(ArrayRead readArrayExpression, SymbolTable arg) {
-        readArrayExpression.accept(this, arg);
-        return PrimitiveNodeType.NULL;
+        NodeType indexType = readArrayExpression.getArrayElement().accept(this, arg);
+        if (!indexType.equals(PrimitiveNodeType.INT)) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, indexType, readArrayExpression);
+        }
+        ArrayNodeType arrayNodeType = (ArrayNodeType) readArrayExpression.getArrayName().accept(this, arg);
+        return arrayNodeType.getElementType();
     }
 
 
@@ -415,7 +423,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(Id id, SymbolTable arg) {
-        NodeType iType = arg.lookup(id.getValue()).get().getTypeDenoter();
+        NodeType iType = arg.lookup(id.getName()).get().getTypeDenoter();
         id.setType(iType);
         return iType;
     }
@@ -434,8 +442,10 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(SharpExpression sharpExpression, SymbolTable arg) {
-        sharpExpression.getExpr().accept(this, arg);
-        return PrimitiveNodeType.NULL;
+        NodeType type = sharpExpression.getExpr().accept(this, arg);
+        if (!type.equals(PrimitiveNodeType.STRING))
+            this.errorHandler.reportError(String.format("Type mismatch: Expected %s or %s but found %s", PrimitiveNodeType.STRING, "Array", type), sharpExpression);
+        return PrimitiveNodeType.INT;
     }
 
     @Override
@@ -446,6 +456,6 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(Variable variable, SymbolTable arg) {
-        return arg.lookup(variable.getValue()).get().getTypeDenoter();
+        return arg.lookup(variable.getName()).get().getTypeDenoter();
     }
 }

@@ -66,14 +66,14 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
 
     @Override
     public Boolean visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
-        if (simpleDefFun.getVariable().getValue().equalsIgnoreCase("main")) {
+        if (simpleDefFun.getVariable().getName().equalsIgnoreCase("main")) {
             this.mainCounter++;
         }
         boolean isSimpleFunctionSafe = simpleDefFun.getVariable().accept(this, arg);
         if (!isSimpleFunctionSafe) {
             this.errorHandler.reportYetDefined(simpleDefFun);
         } else {
-            arg.addEntry(simpleDefFun.getVariable().getValue(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            arg.addEntry(simpleDefFun.getVariable().getName(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
         }
         return isSimpleFunctionSafe;
 
@@ -81,14 +81,14 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
 
     @Override
     public Boolean visit(ComplexDefFun complexDefFun, SymbolTable arg) {
-        if (complexDefFun.getVariable().getValue().equalsIgnoreCase("main")) {
+        if (complexDefFun.getVariable().getName().equalsIgnoreCase("main")) {
             this.mainCounter++;
         }
         boolean isComplexFunctionSafe = complexDefFun.getVariable().accept(this, arg);
         if (!isComplexFunctionSafe) {
             this.errorHandler.reportYetDefined(complexDefFun);
         } else {
-            arg.addEntry(complexDefFun.getVariable().getValue(),
+            arg.addEntry(complexDefFun.getVariable().getName(),
                     new SymbolTableRecord(new FunctionNodeType(complexDefFun.domain(), complexDefFun.getTypeDenoter().typeFactory()), NodeKind.FUNCTION));
         }
         return isComplexFunctionSafe;
@@ -306,6 +306,6 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
 
     @Override
     public Boolean visit(Variable variable, SymbolTable arg) {
-        return !arg.probe(variable.getValue());
+        return !arg.probe(variable.getName());
     }
 }
