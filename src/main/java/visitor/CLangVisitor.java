@@ -1,5 +1,7 @@
 package visitor;
 
+import nodetype.NodeType;
+import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
 import syntax.*;
 import syntax.expression.*;
@@ -34,6 +36,30 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         return joiner.toString();
     }
 
+    private String formatType(NodeType type) {
+        PrimitiveNodeType pType = PrimitiveNodeType.class.cast(type);
+        switch (pType) {
+            case FLOAT:
+                return "%f";
+            case STRING:
+                return "%s";
+            default:
+                return "%d";
+        }
+    }
+
+    public String functionType(String name, String type) {
+        if (name.equals("main") && type.equals("undefined")) {
+            return "int";
+        } else if ((!name.equals("main")) && type.equals("undefined")) {
+            return "void";
+        } else if (type.equals("string")) {
+            return "char *";
+        } else {
+            return type;
+        }
+    }
+
 
     @Override
     public String visit(Program program, SymbolTable arg) {
@@ -55,6 +81,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         String type = simpleDefFun.getTypeDenoter().accept(this, arg);
         String statements = this.beautify(simpleDefFun.getStatements(), new StringJoiner("\n"), arg);
         arg.exitScope();
+        type = functionType(name, type);
         return String.format("\n%s %s(){\n%s\n}\n", type, name, statements);
     }
 
@@ -66,6 +93,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         String parDecls = this.beautify(complexDefFun.getParDecls(), new StringJoiner(" , "), arg);
         String statements = this.beautify(complexDefFun.getStatements(), new StringJoiner("\n"), arg);
         arg.exitScope();
+        type = functionType(name, type);
         return String.format("\n%s %s (%s){\n%s\n}\n", type, name, parDecls, statements);
     }
 
@@ -79,14 +107,11 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(VarDecl varDecl, SymbolTable arg) {
         String type = varDecl.getTypeDenoter().accept(this, arg);
         String name = varDecl.getVariable().accept(this, arg);
-        String value = varDecl.getVarInitValue().accept(this, arg);
-        String result;
-        if (value != null) {
-            result = String.format("%s %s = %s;", type, name, value);
+        if (varDecl.getVarInitValue() != null) {
+            return String.format("%s %s = %s;", type, name, varDecl.getVarInitValue().accept(this, arg));
         } else {
-            result = String.format("%s %s;", type, name);
+            return String.format("%s %s;", type, name);
         }
-        return result;
     }
 
     @Override
@@ -131,7 +156,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         String expr = forStatement.getCommaExpr().accept(this, arg);
         String statements = this.beautify(forStatement.getStatements(), new StringJoiner("\n"), arg);
         arg.exitScope();
-        return String.format("for (%s = %s; %s; %s++){\n %s\n}", var, varValue, expr, var, statements);
+        return String.format("for (int %s = %s; %s; %s++){\n %s\n}", var, varValue, expr, var, statements);
     }
 
     @Override
@@ -164,12 +189,24 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ReadStatement readStatement, SymbolTable arg) {
-        return null;
+        StringJoiner scanfs = new StringJoiner("\n");
+        readStatement.getIds().forEach(var -> {
+            String type = this.formatType(arg.lookup(var.getValue()).get().getTypeDenoter());
+            String varName = (type == "%s" ? "&" + var.getValue() : var.getValue());
+            scanfs.add(String.format("scanf(\"%s\", &%s);", type, varName));
+        });
+        return scanfs.toString();
     }
 
     @Override
     public String visit(WriteStatement writeStatement, SymbolTable arg) {
-        return null;
+        StringJoiner scanfs = new StringJoiner("\n");
+        writeStatement.getExprs().forEach(expr -> {
+            String type = this.formatType(expr.getType());
+            String toPrint = expr.accept(this, arg);
+            scanfs.add(String.format("printf(\"%s\", %s);", type, toPrint));
+        });
+        return scanfs.toString();
     }
 
     @Override
@@ -308,7 +345,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(NopStatement nopStatement, SymbolTable arg) {
-        return null;
+        return "nop()";
     }
 
     @Override

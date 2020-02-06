@@ -34,6 +34,18 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         return joiner.toString();
     }
 
+    public String functionType(String name, String type) {
+        if (name.equals("main") && type.equals("undefined")) {
+            return "int";
+        } else if ((!name.equals("main")) && type.equals("undefined")) {
+            return "void";
+        } else if (type.equals("string")) {
+            return "char *";
+        } else {
+            return type;
+        }
+    }
+
     @Override
     public String visit(Program program, SymbolTable arg) {
         arg.enterScope();
@@ -72,7 +84,8 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
         String name = simpleDefFun.getVariable().accept(this, arg);
         String type = simpleDefFun.getTypeDenoter().accept(this, arg);
-        return String.format("%s %s();", type, name);
+        type = functionType(name, type);
+        return name.equals("main") ? "" : String.format("%s %s();", type, name);
     }
 
     @Override
@@ -80,7 +93,8 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         String name = complexDefFun.getVariable().accept(this, arg);
         String type = complexDefFun.getTypeDenoter().accept(this, arg);
         String parDecls = this.beautify(complexDefFun.getParDecls(), new StringJoiner(" , "), arg);
-        return String.format("%s %s (%s);", type, name, parDecls);
+        type = functionType(name, type);
+        return name.equals("main") ? "" : String.format("%s %s (%s);", type, name, parDecls);
     }
 
     @Override
