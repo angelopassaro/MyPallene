@@ -151,7 +151,7 @@ GlobalKeyword = [gG][lL][oO][bB][aA][lL]
 }
 
 <STRING> {
-    \" { yybegin(YYINITIAL); return generateTokenSym("STRING_CONST", ParserSym.STRING_CONST); }
+    \" { yybegin(YYINITIAL); return generateTokenSym("STRING_CONST", ParserSym.STRING_CONST, sb.toString()); }
     /* escape sequences */
     {StringLiteral}+ { string.append( yytext()); }
     "\\b" { string.append( '\b' ); }
