@@ -22,7 +22,7 @@ public class IntegerConst extends Expr implements Leaf<Integer> {
      * @return The value
      */
     @Override
-    public Integer getValue() {
+    public Integer getName() {
         return value;
     }
 

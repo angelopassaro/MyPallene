@@ -15,7 +15,7 @@ public class ArrayConst extends Expr{
         this.type = type;
     }
 
-    public TypeDenoter getTypeDenoterDenoter() {
+    public TypeDenoter getTypeDenoter() {
         return type;
     }
 

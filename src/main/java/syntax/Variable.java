@@ -23,7 +23,7 @@ public class Variable extends Expr implements Leaf<String> {
      * @return The name
      */
     @Override
-    public String getValue() {
+    public String getName() {
         return name;
     }
 

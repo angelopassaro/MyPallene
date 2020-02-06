@@ -22,7 +22,7 @@ public class FloatConst extends Expr implements Leaf<Float> {
      * @return The value
      */
     @Override
-    public Float getValue() {
+    public Float getName() {
         return value;
     }
 

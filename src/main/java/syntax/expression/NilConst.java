@@ -17,7 +17,7 @@ public class NilConst extends Expr implements Leaf<Object> {
     }
 
     @Override
-    public Object getValue() {
+    public Object getName() {
         return null;
     }
 }

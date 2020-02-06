@@ -36,7 +36,7 @@ public class PrimitiveTypeDenoter extends TypeDenoter implements Leaf<String> {
     }
 
     @Override
-    public String getValue() {
+    public String getName() {
         return this.kind;
     }
 

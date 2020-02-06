@@ -15,7 +15,7 @@ public class BooleanConst extends Expr implements Leaf<Boolean> {
 
 
     @Override
-    public Boolean getValue() {
+    public Boolean getName() {
         return value;
     }
 

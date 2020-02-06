@@ -22,7 +22,7 @@ public class StringConst extends Expr implements Leaf<String> {
      * @return The value
      */
     @Override
-    public String getValue() {
+    public String getName() {
         return value;
     }
 

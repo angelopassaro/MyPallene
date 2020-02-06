@@ -193,7 +193,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, indexType, arrayElementStatement);
         }
 
-        ArrayNodeType arrayNodeType = (ArrayNodeType) arrayElementStatement.getArrayAssign().accept(this, arg);
+        ArrayNodeType arrayNodeType = (ArrayNodeType) arrayElementStatement.getArrayExpr().accept(this, arg);
         if (!arrayNodeType.equals(arrayElementStatement.getArrayExpr().getType())) {
             this.errorHandler.reportTypeMismatch(arrayNodeType, arrayElementStatement.getArrayExpr().getType(), arrayElementStatement);
         }
@@ -450,7 +450,6 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(NopStatement nopStatement, SymbolTable arg) {
-        nopStatement.accept(this, arg);
         return PrimitiveNodeType.NULL;
     }
 

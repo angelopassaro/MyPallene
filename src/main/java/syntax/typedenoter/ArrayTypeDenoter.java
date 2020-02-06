@@ -22,8 +22,15 @@ public class ArrayTypeDenoter extends TypeDenoter {
     /**
      * @return The syntax.type
      */
-    public TypeDenoter getTypeDenoterDenoter() {
+    public TypeDenoter getTypeDenoter() {
         return type;
+    }
+
+    /**
+     * @return type of element
+     */
+    public PrimitiveNodeType getElementsType() {
+        return this.type.typeFactory();
     }
 
     @Override
