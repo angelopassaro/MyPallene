@@ -115,7 +115,7 @@ TypeDenoter         ::= NIL:nil                                                 
                         | BOOL:booler                                                                                   {: RESULT = new PrimitiveTypeDenoter(boolerxleft, boolerxright, "BOOL"); :}
                         | FLOAT:floater                                                                                 {: RESULT = new PrimitiveTypeDenoter(floaterxleft, floaterxright, "FLOAT");:}
                         | STRING:stringer                                                                               {: RESULT = new PrimitiveTypeDenoter(stringerxleft, stringerxright, "STRING");:}
-                        | BLPAR:b TypeDenoter:type BLPAR                                                                {: RESULT = new ArrayTypeDenoter(bxleft, bxright, type);:}
+                        | BLPAR:b TypeDenoter:type BRPAR                                                                {: RESULT = new ArrayTypeDenoter(bxleft, bxright, type);:}
                         | LPAR:l Types:types RPAR ARROW TypeDenoter:rtype                                               {: RESULT = new FunctionTypeDenoter(lxleft, lxright, types, rtype);:}
                         | LPAR:l RPAR ARROW TypeDenoter:type                                                            {: RESULT = new FunctionTypeDenoter(typexleft, typexright, type); :}
                         ;
