@@ -346,8 +346,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(GtOp gtOp, SymbolTable arg) {
         NodeType lType = gtOp.getElement1().accept(this, arg);
         NodeType rType = gtOp.getElement2().accept(this, arg);
-        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
-            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, gtOp);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.STRING)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || lType.equals(PrimitiveNodeType.STRING))) {
+            this.errorHandler.reportTypeMismatch(rType, lType, gtOp);
         }
         return lType.checkRel((PrimitiveNodeType) rType);
     }
@@ -357,7 +357,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         NodeType lType = geOp.getElement1().accept(this, arg);
         NodeType rType = geOp.getElement2().accept(this, arg);
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
-            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, geOp);
+            this.errorHandler.reportTypeMismatch(rType, lType, geOp);
         }
         return lType.checkRel((PrimitiveNodeType) rType);
     }
@@ -367,8 +367,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(LtOp ltOp, SymbolTable arg) {
         NodeType lType = ltOp.getElement1().accept(this, arg);
         NodeType rType = ltOp.getElement2().accept(this, arg);
-        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
-            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, ltOp);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.STRING)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || lType.equals(PrimitiveNodeType.STRING))) {
+            this.errorHandler.reportTypeMismatch(rType, lType, ltOp);
         }
         return lType.checkRel((PrimitiveNodeType) rType);
     }
@@ -379,7 +379,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         NodeType lType = leOp.getElement1().accept(this, arg);
         NodeType rType = leOp.getElement2().accept(this, arg);
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
-            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, leOp);
+            this.errorHandler.reportTypeMismatch(rType, lType, leOp);
         }
         return lType.checkRel((PrimitiveNodeType) rType);
     }
@@ -389,8 +389,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(EqOp eqOp, SymbolTable arg) {
         NodeType lType = eqOp.getElement1().accept(this, arg);
         NodeType rType = eqOp.getElement2().accept(this, arg);
-        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
-            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, rType, eqOp);
+        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.STRING)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || lType.equals(PrimitiveNodeType.STRING))) {
+            this.errorHandler.reportTypeMismatch(rType, lType, eqOp);
         }
         return lType.checkRel((PrimitiveNodeType) rType);
     }

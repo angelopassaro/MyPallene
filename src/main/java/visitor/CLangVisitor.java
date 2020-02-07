@@ -293,6 +293,8 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(GtOp gtOp, SymbolTable arg) {
+        if (gtOp.getElement1().getType().toString().equals("string") && gtOp.getElement2().getType().toString().equals("string"))
+            return String.format("strcmp(%s, %s) > 0", gtOp.getElement1().accept(this, arg), gtOp.getElement2().accept(this, arg));
         return String.format("%s > %s", gtOp.getElement1().accept(this, arg), gtOp.getElement2().accept(this, arg));
     }
 
@@ -303,6 +305,8 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(LtOp ltOp, SymbolTable arg) {
+        if (ltOp.getElement1().getType().toString().equals("string") && ltOp.getElement2().getType().toString().equals("string"))
+            return String.format("strcmp(%s, %s) < 0", ltOp.getElement1().accept(this, arg), ltOp.getElement2().accept(this, arg));
         return String.format("%s < %s", ltOp.getElement1().accept(this, arg), ltOp.getElement2().accept(this, arg));
     }
 
@@ -313,6 +317,8 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(EqOp eqOp, SymbolTable arg) {
+        if (eqOp.getElement1().getType().toString().equals("string") && eqOp.getElement2().getType().toString().equals("string"))
+            return String.format("strcmp(%s, %s) == 0", eqOp.getElement1().accept(this, arg), eqOp.getElement2().accept(this, arg));
         return String.format("%s == %s", eqOp.getElement1().accept(this, arg), eqOp.getElement2().accept(this, arg));
 
     }

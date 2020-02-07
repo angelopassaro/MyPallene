@@ -251,7 +251,12 @@ public enum PrimitiveNodeType implements NodeType {
 
         @Override
         public PrimitiveNodeType checkRel(PrimitiveNodeType type) {
-            return NULL;
+            switch (type) {
+                case STRING:
+                    return BOOL;
+                default:
+                    return STRING;
+            }
         }
     };
 
