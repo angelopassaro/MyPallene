@@ -67,6 +67,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         String name = varDecl.getVariable().accept(this, arg);
         String value = varDecl.getVarInitValue().accept(this, arg);
         String result;
+        if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) name = name + "[50]";
         if (value != null) {
             result = String.format("%s %s = %s;", type, name, value);
         } else {
@@ -116,7 +117,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayTypeDenoter arrayTypeDenoter, SymbolTable arg) {
-        return null;
+        return arrayTypeDenoter.getElementsType().cType();
     }
 
     @Override
@@ -196,7 +197,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return null;
+        return "{}";
     }
 
     @Override
