@@ -14,21 +14,28 @@ import template.CTemplate;
 import template.XMLTemplate;
 import visitor.*;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class App {
 
     private static Lexer lexer;
     private static Parser parser;
     private static ComplexSymbolFactory complexSymbolFactory = new ComplexSymbolFactory();
-    private static final String path = "/home/angelo/Documents/Universita/compilatori(GENNAIO)/esercizi/passaro_es5_scg/testfile/input3.mypl";
+
     private static final ErrorHandler errorHandler = new StackErrorHandler();
     private static final StringTable stringTable = new ArrayStringTable();
     private static final StackSymbolTable symbolTable = new StackSymbolTable(stringTable);
 
-    public static void main(String[] args) throws Exception {
 
+    public static void compiler(String path, ArrayList<String> options) throws Exception {
+
+        System.out.println("Inizio compilazione");
         lexer = new Lexer(complexSymbolFactory, new FileInputStream(new File(path)), stringTable);
         parser = new Parser(lexer, complexSymbolFactory);
 
@@ -36,12 +43,11 @@ class App {
         PreScopeCheckerVisitor preScopeCheckerVisitor = new PreScopeCheckerVisitor(errorHandler);
         TypeCheckerVisitor typeCheckerVisitor = new TypeCheckerVisitor(errorHandler);
 
-
         ScopeCheckerVisitor scopeCheckerVisitor = new ScopeCheckerVisitor(errorHandler);
-        boolean prescope = program.accept(preScopeCheckerVisitor, symbolTable);
+        program.accept(preScopeCheckerVisitor, symbolTable);
         symbolTable.resetLevel();
 
-        boolean scope = program.accept(scopeCheckerVisitor, symbolTable);
+        program.accept(scopeCheckerVisitor, symbolTable);
         symbolTable.resetLevel();
 
         program.accept(typeCheckerVisitor, symbolTable);
@@ -53,10 +59,8 @@ class App {
         }
 
 
-        // System.out.println("PreScope: " + prescope + " scope: " + scope);
-        // System.out.println(symbolTable.toString());
-
-        String fileName = "/home/angelo/Documents/Universita/compilatori(GENNAIO)/esercizi/passaro_es5_scg/output/" + path.substring(path.lastIndexOf('/') + 1);
+        String output = ClassLoader.getSystemResource("output/").getPath();
+        String fileName = output + path.substring(path.lastIndexOf('/') + 1);
 
         CTemplate template = new CTemplate();
         String model = template.create().get();
@@ -71,13 +75,58 @@ class App {
         symbolTable.resetLevel();
         template.write(fileName, model);
 
-        if (args.length > 0 && args[0].equals("xml")) {
+
+        Process p = Runtime.getRuntime().exec(String.format("clang -pthread -lm -std=c99 %s -o %s", fileName.replace("mypl", "c"), output + "/output.out"));
+        BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        handleIO(stdInput, true);
+        handleIO(stdError, false);
+
+        if (!options.isEmpty() && options.contains("xml")) {
             XMLTemplate xmlTemplate = new XMLTemplate();
             Document xmlDocument = xmlTemplate.create().get();
             ConcreteXMLVisitor xmlVisitor = new ConcreteXMLVisitor();
             program.accept(xmlVisitor, xmlDocument);
             xmlTemplate.write(fileName.replace("mypl", "xml"), xmlDocument);
         }
+        System.out.println("Fine compilazione");
+    }
+
+
+    public static HashMap<Integer, String> generateFile() throws Exception {
+        HashMap<Integer, String> files = new HashMap<>();
+        AtomicInteger counter = new AtomicInteger(0);
+        String path = ClassLoader.getSystemResource("input").getPath();
+        Files.list(Path.of(path)).forEach(e -> files.put(counter.getAndIncrement(), e.toString()));
+        return files;
+    }
+
+    private static void handleIO(BufferedReader bufferedReader, boolean out) throws IOException {
+        String messages;
+        while ((messages = bufferedReader.readLine()) != null) {
+            if (out)
+                System.out.println(messages);
+            else
+                System.err.println(messages);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+
+
+        HashMap<Integer, String> files = generateFile();
+        AtomicInteger counter = new AtomicInteger(0);
+        ArrayList<String> options = new ArrayList<>();
+        options.add("xml");
+
+
+        System.out.println("Scegli un programma:");
+        files.entrySet().forEach(e -> {
+            System.out.println(counter.getAndIncrement() + ") " + e.toString().substring(e.toString().lastIndexOf("/") + 1).replace(".mypl", ""));
+        });
+        Scanner testNumber = new Scanner(System.in);
+        String testFile = files.get(testNumber.nextInt());
+        compiler(testFile, options);
 
 
     }

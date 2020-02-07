@@ -27,9 +27,22 @@
       <PrimitiveTypeDenoter.java kind="FLOAT"/>
     </ParDecl>
     <PrimitiveTypeDenoter.java kind="FLOAT"/>
-    <WriteStatement>
-      <Id lexeme="result"/>
-    </WriteStatement>
+    <AssignStatement>
+      <Id lexeme="y"/>
+      <PlusOp>
+        <Id lexeme="x"/>
+        <FloatConst value="2.0"/>
+      </PlusOp>
+    </AssignStatement>
+    <IfThenStatement>
+      <LtOp>
+        <Id lexeme="x"/>
+        <Id lexeme="y"/>
+      </LtOp>
+      <WriteStatement>
+        <Id lexeme="x"/>
+      </WriteStatement>
+    </IfThenStatement>
     <LocalStatement>
       <VarDecl>
         <Variable lexeme="i"/>
@@ -46,14 +59,48 @@
         </PlusOp>
       </AssignStatement>
       <ReturnStatement>
-        <PlusOp>
-          <PlusOp>
-            <Id lexeme="x"/>
-            <Id lexeme="y"/>
-          </PlusOp>
-          <Id lexeme="i"/>
-        </PlusOp>
+        <IntegerConst value="1"/>
       </ReturnStatement>
+      <LocalStatement>
+        <VarDecl>
+          <Variable lexeme="i"/>
+          <PrimitiveTypeDenoter.java kind="FLOAT"/>
+          <VarInitValue>
+            <FloatConst value="2.0"/>
+          </VarInitValue>
+        </VarDecl>
+        <AssignStatement>
+          <Id lexeme="i"/>
+          <PlusOp>
+            <Id lexeme="i"/>
+            <IntegerConst value="1"/>
+          </PlusOp>
+        </AssignStatement>
+        <ReturnStatement>
+          <PlusOp>
+            <PlusOp>
+              <Id lexeme="x"/>
+              <Id lexeme="y"/>
+            </PlusOp>
+            <Id lexeme="i"/>
+          </PlusOp>
+        </ReturnStatement>
+      </LocalStatement>
     </LocalStatement>
+  </Function>
+  <Function>
+    <Variable lexeme="main"/>
+    <PrimitiveTypeDenoter.java kind="NIL"/>
+    <AssignStatement>
+      <Id lexeme="result"/>
+      <FunctionCallExpression>
+        <Id lexeme="add"/>
+        <FloatConst value="3.2"/>
+        <FloatConst value="1.0"/>
+      </FunctionCallExpression>
+    </AssignStatement>
+    <ReturnStatement>
+      <NilConst Value="Nil"/>
+    </ReturnStatement>
   </Function>
 </Program>
