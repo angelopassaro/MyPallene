@@ -219,7 +219,11 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ReturnStatement returnStatement, SymbolTable arg) {
-        return String.format("return %s;", returnStatement.getExpr().accept(this, arg));
+        String type = returnStatement.getExpr().accept(this, arg);
+        if (type.equals("NULL")) {
+            type = "0";
+        }
+        return String.format("return %s;", type);
     }
 
     @Override
@@ -336,7 +340,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(NilConst nilConst, SymbolTable arg) {
-        return null;
+        return "NULL";
     }
 
     @Override
