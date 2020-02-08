@@ -356,7 +356,13 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(SharpExpression sharpExpression, SymbolTable arg) {
-        return null;
+        String a = sharpExpression.getExpr().accept(this, arg);
+        sharpExpression.setType(PrimitiveNodeType.INT);
+        if (sharpExpression.getExpr().getType().toString().equalsIgnoreCase("string")) {
+            return String.format("strlen(%s)", a);
+        } else {
+            return String.format("count(%s)", a);
+        }
     }
 
     @Override
