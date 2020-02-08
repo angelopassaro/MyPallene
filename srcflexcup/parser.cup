@@ -88,8 +88,8 @@ Global              ::= GLOBAL:g Var_decls:varDecls END                         
                         | /* empty*/
                         ;
 
-Functions           ::= Def_fun:defFun Functions:functions                                                              {: functions.addFirst(defFun); RESULT = functions; :}
-                        | Def_fun:defFun                                                                                {: RESULT = new LinkedList<Function>(); RESULT.addFirst(defFun); :}
+Functions           ::= Def_fun:defFun Functions:functions                                                              {: functions.addLast(defFun); RESULT = functions; :}
+                        | Def_fun:defFun                                                                                {: RESULT = new LinkedList<Function>(); RESULT.addLast(defFun); :}
                         ;
 
 Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON TypeDenoter:type Statements:statements END   {: RESULT = new ComplexDefFun(fxleft, fxright, new Variable(idxleft, idxright, id), type, statements, parDecl); :}
@@ -98,12 +98,12 @@ Def_fun             ::= FUNCTION:f ID:id LPAR Par_decls:parDecl RPAR COLON TypeD
 Def_fun             ::= FUNCTION:f ID:id LPAR RPAR COLON TypeDenoter:type Statements:statements END                     {: RESULT = new SimpleDefFun(fxleft, fxright,new Variable(idxleft, idxright, id), type, statements);:}
                         ;
 
-Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl                                           {: parDecl.addFirst(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));RESULT = parDecl;:}
-                        | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addFirst(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));:}
+Par_decls            ::= ID:id COLON TypeDenoter:type COMMA Par_decls:parDecl                                           {: parDecl.addLast(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));RESULT = parDecl;:}
+                        | ID:id COLON TypeDenoter:type                                                                  {: RESULT = new LinkedList<ParDecl>(); RESULT.addLast(new ParDecl(idxleft, idxright, new Variable(idxleft, idxright, id), type));:}
                         ;
 
-Var_decls           ::= Var_decls:varDecls SEMI ID:id COLON TypeDenoter:type Var_init_value:varInit                     {: varDecls.addFirst(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id),type,varInit)); RESULT = varDecls;:}
-                        | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addFirst(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id), type, varInit)); :}
+Var_decls           ::= Var_decls:varDecls SEMI ID:id COLON TypeDenoter:type Var_init_value:varInit                     {: varDecls.addLast(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id),type,varInit)); RESULT = varDecls;:}
+                        | ID:id COLON TypeDenoter:type Var_init_value:varInit                                           {: RESULT = new LinkedList<VarDecl>(); RESULT.addLast(new VarDecl(idxleft,idxright,new Variable(idxleft, idxright, id), type, varInit)); :}
                         ;
 
 Var_init_value      ::= ASSIGN Expr:expr                                                                                {:  RESULT = new VarInitValue(exprxleft, exprxright, expr); :}
@@ -120,12 +120,14 @@ TypeDenoter         ::= NIL:nil                                                 
                         | LPAR:l RPAR ARROW TypeDenoter:type                                                            {: RESULT = new FunctionTypeDenoter(typexleft, typexright, type); :}
                         ;
 
-Types               ::= TypeDenoter:type COMMA Types:types                                                              {: types.addFirst(type); RESULT = types;:}
-                        | TypeDenoter:type                                                                              {: RESULT = new LinkedList<TypeDenoter>(); RESULT.addFirst(type);:}
+Types               ::= TypeDenoter:type COMMA Types:types                                                              {: types.addLast(type); RESULT = types;:}
+                        | TypeDenoter:type                                                                              {: RESULT = new LinkedList<TypeDenoter>(); RESULT.addLast(type);:}
                         ;
 
-Statements           ::= Stat:stat SEMI Statements:statements                                                           {: statements.addFirst(stat); RESULT = statements; :}
-                        | Stat:stat                                                                                     {: RESULT = new LinkedList<Statement>(); RESULT.addFirst(stat); :}
+Statements           ::= Stat:stat SEMI Statements:statements                                                           {: statements.addLast(stat); RESULT = statements; :}
+                        | Stat:stat                                                                                     {: RESULT = new LinkedList<Statement>(); RESULT.addLast(stat); :}
+                        | Stat:stat                                                                                     {: RESULT = new LinkedList<Statement>(); RESULT.addLast(stat); :}
+                        | Stat:stat                                                                                     {: RESULT = new LinkedList<Statement>(); RESULT.addLast(stat); :}
                         ;
 
 Stat                ::= NOP:nop                                                                                         {: RESULT = new NopStatement(nopxleft, nopxright); :}
@@ -144,11 +146,11 @@ Stat                ::= NOP:nop                                                 
                         | error:e                                                                                       {: :}
                         ;
 
-Vars                ::= ID:id COMMA Vars:vars                                                                           {: vars.addFirst(new Id(idxleft, idxright, id));RESULT = vars; :}
-                        | ID:id                                                                                         {: RESULT = new LinkedList<Id>(); RESULT.addFirst(new Id(idxleft, idxright, id));:}
+Vars                ::= ID:id COMMA Vars:vars                                                                           {: vars.addLast(new Id(idxleft, idxright, id));RESULT = vars; :}
+                        | ID:id                                                                                         {: RESULT = new LinkedList<Id>(); RESULT.addLast(new Id(idxleft, idxright, id));:}
                         ;
-Exprs               ::= Expr:expr COMMA Exprs:exprs                                                                     {: exprs.addFirst(expr); RESULT = exprs;:}
-                        | Expr:expr                                                                                     {: RESULT = new LinkedList<Expr>(); RESULT.addFirst(expr);:}
+Exprs               ::= Expr:expr COMMA Exprs:exprs                                                                     {: exprs.addLast(expr); RESULT = exprs;:}
+                        | Expr:expr                                                                                     {: RESULT = new LinkedList<Expr>(); RESULT.addLast(expr);:}
                         ;
 
 Expr                ::= NIL:nil                                                                                         {: RESULT = new NilConst(nilxleft, nilxright); :}
