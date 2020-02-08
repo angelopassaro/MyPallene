@@ -117,7 +117,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayTypeDenoter arrayTypeDenoter, SymbolTable arg) {
-        return arrayTypeDenoter.getElementsType().cType();
+        return arrayTypeDenoter.cType();
     }
 
     @Override

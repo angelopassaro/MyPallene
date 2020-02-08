@@ -1,7 +1,7 @@
 package syntax.typedenoter;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-import nodetype.PrimitiveNodeType;
+import nodetype.NodeType;
 import syntax.AstNode;
 
 public abstract class TypeDenoter extends AstNode {
@@ -10,6 +10,6 @@ public abstract class TypeDenoter extends AstNode {
         super(leftLocation, rightLocation);
     }
 
-    public abstract PrimitiveNodeType typeFactory();
+    public abstract NodeType typeFactory();
 
 }

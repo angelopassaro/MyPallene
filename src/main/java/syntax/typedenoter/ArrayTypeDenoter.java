@@ -1,6 +1,8 @@
 package syntax.typedenoter;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
+import nodetype.ArrayNodeType;
+import nodetype.NodeType;
 import nodetype.PrimitiveNodeType;
 import visitor.Visitor;
 
@@ -29,7 +31,7 @@ public class ArrayTypeDenoter extends TypeDenoter {
     /**
      * @return type of element
      */
-    public PrimitiveNodeType getElementsType() {
+    public NodeType getElementsType() {
         return this.type.typeFactory();
     }
 
@@ -39,7 +41,24 @@ public class ArrayTypeDenoter extends TypeDenoter {
     }
 
     @Override
-    public PrimitiveNodeType typeFactory() {
-        return null;
+    public NodeType typeFactory() {
+        return new ArrayNodeType((PrimitiveNodeType) this.type.typeFactory());
+    }
+
+    public String cType() {
+        switch ((PrimitiveNodeType) this.getElementsType()) {
+            case STRING:
+                return "Char *";
+            case INT:
+                return "int";
+            case FLOAT:
+                return "float";
+            case BOOL:
+                return "bool";
+            case NULL:
+                return "";
+            default:
+                return null;
+        }
     }
 }

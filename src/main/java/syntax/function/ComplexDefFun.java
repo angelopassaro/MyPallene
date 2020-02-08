@@ -2,6 +2,7 @@ package syntax.function;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import nodetype.CompositeNodeType;
+import nodetype.NodeType;
 import syntax.ParDecl;
 import syntax.Variable;
 import syntax.statement.Statement;
@@ -71,6 +72,10 @@ public class ComplexDefFun extends Function {
         CompositeNodeType ct = new CompositeNodeType(new ArrayList<>());
         this.parDecls.forEach(pd -> ct.addType(pd.getTypeDenoter().typeFactory()));
         return ct;
+    }
+
+    public NodeType codomain() {
+        return this.getTypeDenoter().typeFactory();
     }
 
 

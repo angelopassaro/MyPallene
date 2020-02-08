@@ -268,7 +268,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
 
     @Override
     public NodeType visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return emptyArrayExpression.getTypeDenoter().typeFactory();
+        emptyArrayExpression.setType(emptyArrayExpression.getTypeDenoter().typeFactory());
+        return emptyArrayExpression.getType();
     }
 
     @Override

@@ -89,7 +89,7 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
             this.errorHandler.reportYetDefined(complexDefFun);
         } else {
             arg.addEntry(complexDefFun.getVariable().getName(),
-                    new SymbolTableRecord(new FunctionNodeType(complexDefFun.domain(), complexDefFun.getTypeDenoter().typeFactory()), NodeKind.FUNCTION));
+                    new SymbolTableRecord(new FunctionNodeType(complexDefFun.domain(), complexDefFun.codomain()), NodeKind.FUNCTION));
         }
         return isComplexFunctionSafe;
     }

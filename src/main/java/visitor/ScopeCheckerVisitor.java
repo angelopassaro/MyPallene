@@ -2,7 +2,6 @@ package visitor;
 
 import error.ErrorHandler;
 import nodekind.NodeKind;
-import nodetype.ArrayNodeType;
 import nodetype.PrimitiveNodeType;
 import semantic.SymbolTable;
 import semantic.SymbolTableRecord;
@@ -167,12 +166,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isVarDeclSafe) {
             this.errorHandler.reportError("Variable Declaration Error", varDecl);
         } else {
-            if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
-                ArrayNodeType arrayNodeType = new ArrayNodeType(((ArrayTypeDenoter) varDecl.getTypeDenoter()).getTypeDenoter().typeFactory());
-                arg.addEntry(varDecl.getVariable().getName(), new SymbolTableRecord(arrayNodeType, NodeKind.VARIABLE));
-            } else {
-                arg.addEntry(varDecl.getVariable().getName(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
-            }
+            arg.addEntry(varDecl.getVariable().getName(), new SymbolTableRecord(varDecl.getTypeDenoter().typeFactory(), NodeKind.VARIABLE));
         }
         return isVarDeclSafe;
     }

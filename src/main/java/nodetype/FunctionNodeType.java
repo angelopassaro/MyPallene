@@ -5,9 +5,9 @@ import java.util.Objects;
 public class FunctionNodeType implements NodeType {
 
     CompositeNodeType input;
-    PrimitiveNodeType output;
+    NodeType output;
 
-    public FunctionNodeType(CompositeNodeType input, PrimitiveNodeType output) {
+    public FunctionNodeType(CompositeNodeType input, NodeType output) {
         this.input = input;
         this.output = output;
     }
@@ -16,7 +16,7 @@ public class FunctionNodeType implements NodeType {
         return input;
     }
 
-    public PrimitiveNodeType getOutput() {
+    public NodeType getOutput() {
         return output;
     }
 
