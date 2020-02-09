@@ -24,6 +24,7 @@ class MyPallene2C {
         AtomicInteger counter = new AtomicInteger(0);
         ArrayList<String> options = new ArrayList<>();
         MyPallene compiler;
+        Scanner scanner = new Scanner(System.in);
 
         // For format and executing with clang
         String output = System.getProperty("user.dir") + "/";
@@ -36,8 +37,7 @@ class MyPallene2C {
             files.entrySet().forEach(e -> {
                 System.out.println(counter.getAndIncrement() + ") " + e.toString().substring(e.toString().lastIndexOf("/") + 1).replace(".mypl", ""));
             });
-            Scanner testNumber = new Scanner(System.in);
-            String path = files.get(testNumber.nextInt());
+            String path = files.get(scanner.nextInt());
             fileName = output + path.substring(path.lastIndexOf('/') + 1);
             compiler = new MyPallene(path, options);
         } else {
@@ -54,12 +54,14 @@ class MyPallene2C {
         handleIO(stdInput, true);
         handleIO(stdError, false);
 
+        /*
         System.out.println("Execute outuput in " + output);
         Process p2 = Runtime.getRuntime().exec(String.format("%s", output + "output.out"));
         BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
         BufferedReader stdError2 = new BufferedReader(new InputStreamReader(p2.getErrorStream()));
         handleIO(stdInput2, true);
         handleIO(stdError2, false);
+         */
     }
 
 

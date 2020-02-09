@@ -85,22 +85,13 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
-        //      if (!isSimpleFunctionSafe) {
-        //          this.errorHandler.reportYetDefined(simpleDefFun);
-        //      } else {
         arg.enterScope();
         boolean isStatementsSafe = this.checkContext(simpleDefFun.getStatements(), arg);
-        //String name = simpleDefFun.getVariable().getValue();
         boolean isSimpleFunctionSafe = isStatementsSafe;
         if (!isSimpleFunctionSafe) {
             this.errorHandler.reportError("Simple Function Error", simpleDefFun);
         }
         arg.exitScope();
-        //isSimpleFunctionSafe = isSimpleFunctionSafe && !arg.probe(name);
-        //if (isSimpleFunctionSafe) {
-        //    arg.addEntry(name, new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-        //}
-        //    }
         return isSimpleFunctionSafe;
     }
 
@@ -113,23 +104,14 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
      */
     @Override
     public Boolean visit(ComplexDefFun complexDefFun, SymbolTable arg) {
-        //  if (!isComplexFunctionSafe) {
-        //      this.errorHandler.reportYetDefined(complexDefFun);
-        //  } else {
         arg.enterScope();
         boolean isParDeclSafe = this.checkContext(complexDefFun.getParDecls(), arg);
         boolean isStatementsSafe = this.checkContext(complexDefFun.getStatements(), arg);
-        //String name = complexDefFun.getVariable().getValue();
         boolean isComplexFunctionSafe = isStatementsSafe && isParDeclSafe;
         if (!isComplexFunctionSafe) {
             this.errorHandler.reportError("Complex Function Error", complexDefFun);
         }
         arg.exitScope();
-        //isComplexFunctionSafe = isComplexFunctionSafe && !arg.probe(name);
-        //if (isComplexFunctionSafe) {
-        //    arg.addEntry(name, new SymbolTableRecord(complexDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
-        //}
-        //  }
         return isComplexFunctionSafe;
     }
 
