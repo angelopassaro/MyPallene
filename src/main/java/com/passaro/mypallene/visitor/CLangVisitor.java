@@ -161,7 +161,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         String expr = forStatement.getCommaExpr().accept(this, arg);
         String statements = this.beautify(forStatement.getStatements(), new StringJoiner("\n"), arg);
         arg.exitScope();
-        return String.format("for (int %s = %s; %s; %s++){\n %s\n}", var, varValue, expr, var, statements);
+        return String.format("for (int %s = %s; %s<%s; %s++){\n %s\n}", var, varValue, var, expr, var, statements);
     }
 
     @Override

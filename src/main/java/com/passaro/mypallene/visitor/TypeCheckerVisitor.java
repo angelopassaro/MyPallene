@@ -159,7 +159,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, assignType, forStatement);
         }
         NodeType commaExpr = forStatement.getCommaExpr().accept(this, arg);
-        if (!commaExpr.equals(PrimitiveNodeType.BOOL)) { //PrimitiveNodeType.INT
+        if (!(commaExpr.equals(PrimitiveNodeType.BOOL) || commaExpr.equals(PrimitiveNodeType.INT))) { //PrimitiveNodeType.INT
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, commaExpr, forStatement);
         }
         forStatement.getStatements().forEach(this.typeCheck(arg));
@@ -307,7 +307,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(TimesOp timesOp, SymbolTable arg) {
         NodeType lType = timesOp.getElement1().accept(this, arg);
         NodeType rType = timesOp.getElement2().accept(this, arg);
-        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
+        if (!(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, timesOp);
         }
         return lType.checkMul((PrimitiveNodeType) rType);
