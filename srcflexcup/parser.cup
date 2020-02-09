@@ -1,21 +1,21 @@
-/* Simple +/-/* syntax.expression language; Parser evaluates constant expressions on the fly*/
-package core;
+/* Simple +/-/* com.passaro.mypallene.syntax.expression language; Parser evaluates constant expressions on the fly*/
+package com.passaro.mypallene.core;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java.util.LinkedList;
 import java.util.List;
 
-import syntax.*;
-import syntax.expression.*;
-import syntax.expression.binaryexpr.arithop.DivOp;
-import syntax.expression.binaryexpr.arithop.MinusOp;
-import syntax.expression.binaryexpr.arithop.PlusOp;
-import syntax.expression.binaryexpr.arithop.TimesOp;
-import syntax.expression.binaryexpr.relop.*;
-import syntax.expression.unaryexpr.*;
-import syntax.function.*;
-import syntax.statement.*;
-import syntax.typedenoter.*;
+import com.passaro.mypallene.syntax.*;
+import com.passaro.mypallene.syntax.expression.*;
+import com.passaro.mypallene.syntax.expression.binaryexpr.arithop.DivOp;
+import com.passaro.mypallene.syntax.expression.binaryexpr.arithop.MinusOp;
+import com.passaro.mypallene.syntax.expression.binaryexpr.arithop.PlusOp;
+import com.passaro.mypallene.syntax.expression.binaryexpr.arithop.TimesOp;
+import com.passaro.mypallene.syntax.expression.binaryexpr.relop.*;
+import com.passaro.mypallene.syntax.expression.unaryexpr.*;
+import com.passaro.mypallene.syntax.function.*;
+import com.passaro.mypallene.syntax.statement.*;
+import com.passaro.mypallene.syntax.typedenoter.*;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 class Parser;

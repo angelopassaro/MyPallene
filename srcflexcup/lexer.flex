@@ -4,8 +4,7 @@ package core;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.ComplexSymbolFactory.Location;
-import lexical.ArrayStringTable;
-import lexical.StringTable;
+import com.passaro.mypallene.lexical.StringTable;
 
 import java.io.InputStreamReader;
 /**
@@ -151,7 +150,7 @@ GlobalKeyword = [gG][lL][oO][bB][aA][lL]
 }
 
 <STRING> {
-    \" { yybegin(YYINITIAL); return generateTokenSym("STRING_CONST", ParserSym.STRING_CONST, sb.toString()); }
+    \" { yybegin(YYINITIAL); return generateTokenSym("STRING_CONST", ParserSym.STRING_CONST, string.toString()); }
     /* escape sequences */
     {StringLiteral}+ { string.append( yytext()); }
     "\\b" { string.append( '\b' ); }
@@ -164,7 +163,7 @@ GlobalKeyword = [gG][lL][oO][bB][aA][lL]
     "\\\\" { string.append( '\\' ); }
   }
 
-/* error fallback */
+/* com.passaro.mypallene.error fallback */
 [^] {
   throw new RuntimeException("Error:(" + yyline + ":" + yycolumn + ") Cannot resolve symbol '"+yytext()+"'");
 }
