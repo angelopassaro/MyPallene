@@ -212,7 +212,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         writeStatement.getExprs().forEach(expr -> {
             String type = this.formatType(expr.getType());
             String toPrint = expr.accept(this, arg);
-            scanfs.add(String.format("printf(\"%s\", %s);", type, toPrint));
+            scanfs.add(String.format("printf(\"%s \\n\", %s);", type, toPrint));
         });
         return scanfs.toString();
     }

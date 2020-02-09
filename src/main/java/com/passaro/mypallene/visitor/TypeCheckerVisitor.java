@@ -159,7 +159,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, assignType, forStatement);
         }
         NodeType commaExpr = forStatement.getCommaExpr().accept(this, arg);
-        if (!commaExpr.equals(PrimitiveNodeType.BOOL)) {
+        if (!commaExpr.equals(PrimitiveNodeType.BOOL)) { //PrimitiveNodeType.INT
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, commaExpr, forStatement);
         }
         forStatement.getStatements().forEach(this.typeCheck(arg));
@@ -317,7 +317,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(DivOp divOp, SymbolTable arg) {
         NodeType lType = divOp.getElement1().accept(this, arg);
         NodeType rType = divOp.getElement2().accept(this, arg);
-        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
+        if (!(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, divOp);
         }
         return lType.checkDiv((PrimitiveNodeType) rType);
@@ -327,7 +327,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(AndOp andOp, SymbolTable arg) {
         NodeType lType = andOp.getElement1().accept(this, arg);
         NodeType rType = andOp.getElement2().accept(this, arg);
-        if (rType.equals(PrimitiveNodeType.BOOL)) {
+        if (!rType.equals(PrimitiveNodeType.BOOL)) {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, andOp);
         }
         return lType.checkRel((PrimitiveNodeType) rType);
@@ -337,7 +337,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(OrOp orOp, SymbolTable arg) {
         NodeType lType = orOp.getElement1().accept(this, arg);
         NodeType rType = orOp.getElement2().accept(this, arg);
-        if (rType.equals(PrimitiveNodeType.BOOL)) {
+        if (!rType.equals(PrimitiveNodeType.BOOL)) {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, orOp);
         }
         return lType.checkRel((PrimitiveNodeType) rType);

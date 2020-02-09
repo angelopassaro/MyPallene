@@ -65,14 +65,14 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(VarDecl varDecl, SymbolTable arg) {
         String type = varDecl.getTypeDenoter().accept(this, arg);
         String name = varDecl.getVariable().accept(this, arg);
-        String value = varDecl.getVarInitValue().accept(this, arg);
         String result;
         if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) name = name + "[50]";
-        if (value != null) {
+        if (varDecl.getVarInitValue() != null) {
+            String value = varDecl.getVarInitValue().accept(this, arg);
             result = String.format("%s %s = %s;", type, name, value);
-        } else {
+
+        } else
             result = String.format("%s %s;", type, name);
-        }
         return result;
     }
 
