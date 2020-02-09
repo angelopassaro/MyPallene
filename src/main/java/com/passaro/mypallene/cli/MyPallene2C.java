@@ -66,6 +66,7 @@ class MyPallene2C {
     public static HashMap<Integer, String> generateFile() throws Exception {
         HashMap<Integer, String> files = new HashMap<>();
         AtomicInteger counter = new AtomicInteger(0);
+        //no work with jar need stream
         String path = ClassLoader.getSystemResource("input1.mypl").getPath();
         path = path.substring(path.indexOf("/"), path.lastIndexOf("/"));
         Files.list(Path.of(path)).filter(e -> e.toString().contains(".mypl")).forEach(e -> files.put(counter.getAndIncrement(), e.toString()));

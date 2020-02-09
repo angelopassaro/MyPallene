@@ -54,71 +54,71 @@ public interface ParserSym {
   public static final int WHILE = 8;
   public static final int BLPAR = 26;
   public static final int FLOAT = 22;
-  public static final int THEN = 6;
-  public static final int NE = 38;
-  public static final int END = 4;
-  public static final int LPAR = 24;
-  public static final int STRING = 23;
-  public static final int LOCAL = 11;
-  public static final int FALSE = 53;
-  public static final int STRING_CONST = 51;
-  public static final int GT = 39;
-  public static final int DO = 9;
-  public static final String[] terminalNames = new String[]{
-          "EOF",
-          "error",
-          "FUNCTION",
-          "MAIN",
-          "END",
-          "IF",
-          "THEN",
-          "ELSE",
-          "WHILE",
-          "DO",
-          "FOR",
-          "LOCAL",
-          "GLOBAL",
-          "READ",
-          "WRITE",
-          "RETURN",
-          "NOT",
-          "SHARP",
-          "ID",
-          "NIL",
-          "INT",
-          "BOOL",
-          "FLOAT",
-          "STRING",
-          "LPAR",
-          "RPAR",
-          "BLPAR",
-          "BRPAR",
-          "SLPAR",
-          "SRPAR",
-          "COMMA",
-          "SEMI",
-          "COLON",
-          "AND",
-          "OR",
-          "LT",
-          "LE",
-          "EQ",
-          "NE",
-          "GT",
-          "GE",
-          "ARROW",
-          "ASSIGN",
-          "NOP",
-          "PLUS",
-          "MINUS",
-          "TIMES",
-          "DIV",
-          "UMINUS",
-          "INT_CONST",
-          "FLOAT_CONST",
-          "STRING_CONST",
-          "TRUE",
-          "FALSE"
-  };
+    public static final int THEN = 6;
+    public static final int NE = 38;
+    public static final int END = 4;
+    public static final int LPAR = 24;
+    public static final int STRING = 23;
+    public static final int LOCAL = 11;
+    public static final int FALSE = 53;
+    public static final int STRING_CONST = 51;
+    public static final int GT = 39;
+    public static final int DO = 9;
+    public static final String[] terminalNames = new String[]{
+            "EOF",
+            "error",
+            "FUNCTION",
+            "MAIN",
+            "END",
+            "IF",
+            "THEN",
+            "ELSE",
+            "WHILE",
+            "DO",
+            "FOR",
+            "LOCAL",
+            "GLOBAL",
+            "READ",
+            "WRITE",
+            "RETURN",
+            "NOT",
+            "SHARP",
+            "ID",
+            "NIL",
+            "INT",
+            "BOOL",
+            "FLOAT",
+            "STRING",
+            "LPAR",
+            "RPAR",
+            "BLPAR",
+            "BRPAR",
+            "SLPAR",
+            "SRPAR",
+            "COMMA",
+            "SEMI",
+            "COLON",
+            "AND",
+            "OR",
+            "LT",
+            "LE",
+            "EQ",
+            "NE",
+            "GT",
+            "GE",
+            "ARROW",
+            "ASSIGN",
+            "NOP",
+            "PLUS",
+            "MINUS",
+            "TIMES",
+            "DIV",
+            "UMINUS",
+            "INT_CONST",
+            "FLOAT_CONST",
+            "STRING_CONST",
+            "TRUE",
+            "FALSE"
+    };
 }
 
