@@ -297,7 +297,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(MinusOp minusOp, SymbolTable arg) {
         NodeType lType = minusOp.getElement1().accept(this, arg);
         NodeType rType = minusOp.getElement2().accept(this, arg);
-        if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
+        if (!(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, minusOp);
         }
         return lType.checkSub((PrimitiveNodeType) rType);

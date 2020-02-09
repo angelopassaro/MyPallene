@@ -1,0 +1,16 @@
+global
+    a : int = 0;
+    b : int = 0;
+    result: int
+end
+
+function main( ): nil
+    "Inserisci due numeri:" ==>;
+    a, b <== ;
+    result = sub( a, b );
+    "Il risultato è: ", result ==>
+end
+
+function sub( x : int , y : int ): int
+  return x - y
+end
