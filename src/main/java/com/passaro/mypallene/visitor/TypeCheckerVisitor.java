@@ -159,7 +159,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, assignType, forStatement);
         }
         NodeType commaExpr = forStatement.getCommaExpr().accept(this, arg);
-        if (!(commaExpr.equals(PrimitiveNodeType.BOOL) || commaExpr.equals(PrimitiveNodeType.INT))) { //PrimitiveNodeType.INT
+        if (!commaExpr.equals(PrimitiveNodeType.INT)) {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, commaExpr, forStatement);
         }
         forStatement.getStatements().forEach(this.typeCheck(arg));
