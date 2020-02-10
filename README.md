@@ -4,8 +4,9 @@ It is a programming language designed for the Compiler course from University of
 compiles into llvm with the following phases:
 
 1. MyPallene -> C Language
+
 2. C source code -> LLVM with clang
-2B. C source code -> JavaScript
+3. C source code -> JavaScript
 
 ## Lexical Specification
 
