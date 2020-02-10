@@ -11,8 +11,6 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * TODO Add emscripten
- * TODO Add programs
  * TODO getinput
  */
 
@@ -33,6 +31,7 @@ class MyPallene2C {
 
         if (args.length == 0) {
             // options.add("xml");
+            options.add("emcc");
             System.out.println("Scegli un programma:");
             files.entrySet().forEach(e -> {
                 System.out.println(counter.getAndIncrement() + ") " + e.toString().substring(e.toString().lastIndexOf("/") + 1).replace(".mypl", ""));
@@ -41,6 +40,8 @@ class MyPallene2C {
             fileName = output + path.substring(path.lastIndexOf('/') + 1);
             compiler = new MyPallene(path, options);
         } else {
+            // options.add("xml");
+            // options.add("emcc");
             fileName = output + args[0].substring(args[0].lastIndexOf('/') + 1);
             compiler = new MyPallene(args[0], options);
         }
@@ -53,6 +54,24 @@ class MyPallene2C {
         BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         handleIO(stdInput, true);
         handleIO(stdError, false);
+
+
+        if (!options.isEmpty() && options.contains("emcc")) {
+            System.out.println("Emscripten");
+            Process p2 = Runtime.getRuntime().exec(String.format("emcc %s -o %s", fileName.replace("mypl", "c"), fileName.replace("mypl", "html")));
+            BufferedReader stdInput2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
+            BufferedReader stdError2 = new BufferedReader(new InputStreamReader(p2.getErrorStream()));
+            handleIO(stdInput2, true);
+            handleIO(stdError2, false);
+
+            System.out.println("Start server for web script");
+            System.out.println(String.format("Link for web script http://localhost:8000/%s", fileName.substring(fileName.lastIndexOf("/") + 1).replace("mypl", "html")));
+            Process p3 = Runtime.getRuntime().exec(String.format("python3 -m http.server --directory %s", output));
+            BufferedReader stdInput3 = new BufferedReader(new InputStreamReader(p3.getInputStream()));
+            BufferedReader stdError3 = new BufferedReader(new InputStreamReader(p3.getErrorStream()));
+            handleIO(stdInput3, true);
+            handleIO(stdError3, false);
+        }
 
         /*
         System.out.println("Execute outuput in " + output);

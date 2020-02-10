@@ -152,7 +152,6 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         return String.format("if (%s) {\n%s\n} else {\n%s\n}", condition, statements, elseStatements);
     }
 
-    //TODO da rivedere
     @Override
     public String visit(ForStatement forStatement, SymbolTable arg) {
         arg.enterScope();
