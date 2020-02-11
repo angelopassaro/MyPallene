@@ -17,11 +17,10 @@ public class StackErrorHandler implements ErrorHandler {
         StringBuilder errorBuilder = new StringBuilder();
         errorBuilder.append(msg);
         errorBuilder.append(" at ");
-        errorBuilder.append('(');
-        errorBuilder.append(node.getLeftLocation());
-        errorBuilder.append('-');
-        errorBuilder.append(node.getRightLocation());
-        errorBuilder.append(")");
+        errorBuilder.append("Line: ");
+        errorBuilder.append(node.getLeftLocation().getLine());
+        errorBuilder.append(" Column: ");
+        errorBuilder.append(node.getRightLocation().getColumn());
         this.catchedErrors.push(errorBuilder.toString());
     }
 
