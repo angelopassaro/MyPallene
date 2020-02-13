@@ -12,66 +12,83 @@ function menu(): nil
     "(3) Moltiplicazione" ==>;
     "(4) Divisione" ==>;
     "(5) Quadrato" ==>;
-    "(0) Esci" ==>;
-    select <==
+    "(0) Esci" ==>
 end
 
 function sum(): int
     "Inserisci due numeri per la somma (a + b)" ==>;
-     a, b <==;
+    "a:" ==>;
+     a <==;
+    "b:"==>;
+     b <==;
+     "Il risultato è:" ==>;
      return a + b
 end
 
 function sub(): int
     "Inserisci due numeri per la sottrazione (a - b)" ==>;
-     a, b <==;
-     return a - b
+    "a:" ==>;
+    a <==;
+    "b:"==>;
+    b <==;
+    "Il risultato è:" ==>;
+    return a - b
 end
 
 function mul(): int
     "Inserisci due numeri per la somma (a * b)" ==>;
-     a, b <==;
-     return a * b
+    "a:" ==>;
+    a <==;
+    "b:"==>;
+    b <==;
+    "Il risultato è:" ==>;
+    return a * b
 end
 
 function div(): int
     "Inserisci due numeri per la somma (a / b)" ==>;
-     a, b <==;
-     return a / b
+    "a:" ==>;
+    a <==;
+    "b:"==>;
+    b <==;
+    "Il risultato è:" ==>;
+    return a / b
 end
 
 function square(): int
     "Inserisci il numero per il quadrato (a * a)" ==>;
-     a <==;
-     return a * a
+    "a:" ==>;
+    a <==;
+    "Il risultato è:" ==>;
+    return a * a
 end
 
 function main(): nil
     "MyPallene demo" ==>;
-    menu()
-
+    menu();
+    select <==;
     while select != 0 do
-
         if select == 1 then
             sum() ==>
-        end
+        end;
 
         if select == 2 then
            sub() ==>
-        end
+        end;
 
         if select == 3 then
             mul() ==>
-        end
+        end;
 
         if select == 4 then
             div() ==>
-        end
+        end;
 
         if select == 5 then
             square() ==>
-        end
+        end;
 
-        menu()
+        menu();
+        select <==
     end
 end

@@ -37,7 +37,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     }
 
     private String formatType(NodeType type) {
-        PrimitiveNodeType pType = PrimitiveNodeType.class.cast(type);
+        PrimitiveNodeType pType = (PrimitiveNodeType) type;
         switch (pType) {
             case FLOAT:
                 return "%f";
@@ -126,8 +126,8 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(PrimitiveTypeDenoter primitiveTypeDenoter, SymbolTable arg) {
-        String type = primitiveTypeDenoter.typeFactory().toString();
-        return type.equals("undefined") ? "void" : type;
+        return primitiveTypeDenoter.typeFactory().toString();
+        // return type.equals("undefined") ? "void" : type;
     }
 
     @Override
@@ -191,7 +191,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
         String func = functionCallStatement.getId().accept(this, arg);
         String params = this.beautify(functionCallStatement.getExprs(), new StringJoiner(" , "), arg);
-        return String.format("%s(%s)", func, params);
+        return String.format("%s(%s);", func, params);
     }
 
     @Override
@@ -199,7 +199,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         StringJoiner scanfs = new StringJoiner("\n");
         readStatement.getIds().forEach(var -> {
             String type = this.formatType(arg.lookup(var.getName()).get().getTypeDenoter());
-            String varName = (type == "%s" ? "&" + var.getName() : var.getName());
+            String varName = (type.equals("%s") ? "&" + var.getName() : var.getName());
             scanfs.add(String.format("scanf(\"%s\", &%s);", type, varName));
         });
         return scanfs.toString();
@@ -256,6 +256,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(FunctionCall functionCallExpression, SymbolTable arg) {
         String func = functionCallExpression.getId().accept(this, arg);
         String params = this.beautify(functionCallExpression.getExprs(), new StringJoiner(" , "), arg);
+        //System.out.println(functionCallExpression.getType());
         return String.format("%s(%s)", func, params);
     }
 

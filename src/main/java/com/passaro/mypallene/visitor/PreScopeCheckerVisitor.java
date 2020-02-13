@@ -73,7 +73,8 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         if (!isSimpleFunctionSafe) {
             this.errorHandler.reportYetDefined(simpleDefFun);
         } else {
-            arg.addEntry(simpleDefFun.getVariable().getName(), new SymbolTableRecord(simpleDefFun.getTypeDenoter().typeFactory(), NodeKind.FUNCTION));
+            arg.addEntry(simpleDefFun.getVariable().getName(),
+                    new SymbolTableRecord(new FunctionNodeType(simpleDefFun.codomain()), NodeKind.FUNCTION));
         }
         return isSimpleFunctionSafe;
 

@@ -1,14 +1,19 @@
 package com.passaro.mypallene.nodetype;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class FunctionNodeType implements NodeType {
 
-    CompositeNodeType input;
+    CompositeNodeType input = new CompositeNodeType(new ArrayList<>());
     NodeType output;
 
     public FunctionNodeType(CompositeNodeType input, NodeType output) {
         this.input = input;
+        this.output = output;
+    }
+
+    public FunctionNodeType(NodeType output) {
         this.output = output;
     }
 
@@ -71,7 +76,7 @@ public class FunctionNodeType implements NodeType {
         StringBuilder sb = new StringBuilder();
         sb.append(this.input.toString());
         sb.append("->");
-        sb.append(this.input.toString());
+        sb.append(this.output.toString());
         return sb.toString();
     }
 }

@@ -286,6 +286,8 @@ public enum PrimitiveNodeType implements NodeType {
                 return "float";
             case STRING:
                 return "string";
+            case NULL:
+                return "void";
             default:
                 return "undefined";
         }

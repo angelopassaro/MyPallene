@@ -35,9 +35,9 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     }
 
     public String functionType(String name, String type) {
-        if (name.equals("main") && type.equals("undefined")) {
+        if (name.equals("main") && type.equals("void")) {
             return "int";
-        } else if ((!name.equals("main")) && type.equals("undefined")) {
+        } else if ((!name.equals("main")) && type.equals("void")) {
             return "void";
         } else if (type.equals("string")) {
             return "char *";

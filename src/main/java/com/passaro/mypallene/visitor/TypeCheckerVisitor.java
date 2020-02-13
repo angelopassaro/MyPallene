@@ -209,8 +209,11 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(FunctionCallStatement functionCallStatement, SymbolTable arg) {
         CompositeNodeType input = new CompositeNodeType(new ArrayList<>());
         functionCallStatement.getExprs().forEach(e -> input.addType(e.accept(this, arg)));
-        functionCallStatement.getId().accept(this, arg);
-        FunctionNodeType cNodeType = (FunctionNodeType) functionCallStatement.getId().accept(this, arg);
+        if (functionCallStatement.getId().getName().equalsIgnoreCase("main")) {
+            this.errorHandler.reportError("Cannot call main", functionCallStatement);
+        }
+        NodeType id = functionCallStatement.getId().accept(this, arg);
+        FunctionNodeType cNodeType = (FunctionNodeType) id;
         if (!cNodeType.getInput().equals(input)) {
             this.errorHandler.reportTypeMismatch(cNodeType.getInput(), input, functionCallStatement);
         }
@@ -221,8 +224,12 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(FunctionCall functionCallExpression, SymbolTable arg) {
         CompositeNodeType input = new CompositeNodeType(new ArrayList<>());
         functionCallExpression.getExprs().forEach(e -> input.addType(e.accept(this, arg)));
-        functionCallExpression.getId().accept(this, arg);
-        FunctionNodeType cNodeType = (FunctionNodeType) functionCallExpression.getId().accept(this, arg);
+        if (functionCallExpression.getId().getName().equalsIgnoreCase("main")) {
+            this.errorHandler.reportError("Cannot call main", functionCallExpression);
+        }
+        NodeType id = functionCallExpression.getId().accept(this, arg);
+        FunctionNodeType cNodeType = (FunctionNodeType) id;
+        functionCallExpression.setType(cNodeType.getOutput());
         if (!cNodeType.getInput().equals(input)) {
             this.errorHandler.reportTypeMismatch(cNodeType.getInput(), input, functionCallExpression);
         }

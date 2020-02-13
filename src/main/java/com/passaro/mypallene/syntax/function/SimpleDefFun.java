@@ -1,5 +1,6 @@
 package com.passaro.mypallene.syntax.function;
 
+import com.passaro.mypallene.nodetype.NodeType;
 import com.passaro.mypallene.syntax.Variable;
 import com.passaro.mypallene.syntax.statement.Statement;
 import com.passaro.mypallene.syntax.typedenoter.TypeDenoter;
@@ -47,6 +48,10 @@ public class SimpleDefFun extends Function {
      */
     public LinkedList<Statement> getStatements() {
         return statements;
+    }
+
+    public NodeType codomain() {
+        return this.getTypeDenoter().typeFactory();
     }
 
     @Override
