@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define nop();
-#define count(x)  (sizeof(x) / sizeof((x)[0]))
+#define count(x)  sizeof(x) / sizeof((x)[0])
 
 /********************* Declarations ****************/
 $declarations$

@@ -384,7 +384,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(NopStatement nopStatement, SymbolTable arg) {
-        return "nop()";
+        return "nop();";
     }
 
     @Override

@@ -7,5 +7,10 @@ function main(): nil
     array[0] = 1;
     result = #array;
     result ==>;
+    result = conta(array);
   nop
+end
+
+function conta(a:{int}):int
+    return #a
 end
