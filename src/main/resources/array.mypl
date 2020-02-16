@@ -1,0 +1,11 @@
+global
+  array: {int} = {}: int;
+  result: int
+end
+
+function main(): nil
+    array[0] = 1;
+    result = #array;
+    result ==>;
+  nop
+end

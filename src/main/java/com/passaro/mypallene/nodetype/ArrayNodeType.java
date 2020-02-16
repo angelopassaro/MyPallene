@@ -61,4 +61,9 @@ public class ArrayNodeType implements NodeType {
             return Objects.equals(this.elementType, other.elementType);
         }
     }
+
+    @Override
+    public String toString() {
+        return elementType.toString();
+    }
 }

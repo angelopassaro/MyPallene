@@ -451,6 +451,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     @Override
     public NodeType visit(SharpExpression sharpExpression, SymbolTable arg) {
         NodeType type = sharpExpression.getExpr().accept(this, arg);
+        sharpExpression.setType(type);
         if (!type.equals(PrimitiveNodeType.STRING) && (type instanceof ArrayTypeDenoter))
             this.errorHandler.reportError(String.format("Type mismatch: Expected %s or %s but found %s", PrimitiveNodeType.STRING, "Array", type), sharpExpression);
         return PrimitiveNodeType.INT;

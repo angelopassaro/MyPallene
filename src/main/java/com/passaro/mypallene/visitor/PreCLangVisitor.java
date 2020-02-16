@@ -20,6 +20,7 @@ import com.passaro.mypallene.syntax.typedenoter.PrimitiveTypeDenoter;
 
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
@@ -44,6 +45,16 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         } else {
             return type;
         }
+    }
+
+    private Consumer<ParDecl> formatArg(StringJoiner joiner, SymbolTable table) {
+        return t -> {
+            if (t.getTypeDenoter() instanceof ArrayTypeDenoter) {
+                joiner.add(String.format("%s[]", t.accept(PreCLangVisitor.this, table)));
+            } else {
+                joiner.add(String.format("%s", t.accept(PreCLangVisitor.this, table)));
+            }
+        };
     }
 
     @Override
@@ -93,7 +104,9 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(ComplexDefFun complexDefFun, SymbolTable arg) {
         String name = complexDefFun.getVariable().accept(this, arg);
         String type = complexDefFun.getTypeDenoter().accept(this, arg);
-        String parDecls = this.beautify(complexDefFun.getParDecls(), new StringJoiner(" , "), arg);
+        StringJoiner parDecls = new StringJoiner(", ");
+        complexDefFun.getParDecls().forEach(this.formatArg(parDecls, arg));
+        //  String parDecls = this.beautify(complexDefFun.getParDecls(), new StringJoiner(" , "), arg);
         type = functionType(name, type);
         return name.equals("main") ? "" : String.format("%s %s (%s);", type, name, parDecls);
     }

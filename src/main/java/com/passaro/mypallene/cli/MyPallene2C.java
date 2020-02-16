@@ -88,7 +88,7 @@ class MyPallene2C {
         HashMap<Integer, String> files = new HashMap<>();
         AtomicInteger counter = new AtomicInteger(0);
         //no work with jar need stream
-        String path = ClassLoader.getSystemResource("input1.mypl").getPath();
+        String path = ClassLoader.getSystemResource("program.c").getPath();
         path = path.substring(path.indexOf("/"), path.lastIndexOf("/"));
         Files.list(Path.of(path)).filter(e -> e.toString().contains(".mypl")).forEach(e -> files.put(counter.getAndIncrement(), e.toString()));
         return files;

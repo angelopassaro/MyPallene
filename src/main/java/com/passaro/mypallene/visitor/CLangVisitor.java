@@ -22,6 +22,7 @@ import com.passaro.mypallene.syntax.typedenoter.PrimitiveTypeDenoter;
 
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 public class CLangVisitor implements Visitor<String, SymbolTable> {
 
@@ -46,6 +47,16 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
             default:
                 return "%d";
         }
+    }
+
+    private Consumer<ParDecl> formatArg(StringJoiner joiner, SymbolTable table) {
+        return t -> {
+            if (t.getTypeDenoter() instanceof ArrayTypeDenoter) {
+                joiner.add(String.format("%s[]", t.accept(CLangVisitor.this, table)));
+            } else {
+                joiner.add(String.format("%s", t.accept(CLangVisitor.this, table)));
+            }
+        };
     }
 
     public String functionType(String name, String type) {
@@ -90,7 +101,9 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         arg.enterScope();
         String name = complexDefFun.getVariable().accept(this, arg);
         String type = complexDefFun.getTypeDenoter().accept(this, arg);
-        String parDecls = this.beautify(complexDefFun.getParDecls(), new StringJoiner(" , "), arg);
+        StringJoiner parDecls = new StringJoiner(", ");
+        complexDefFun.getParDecls().forEach(this.formatArg(parDecls, arg));
+        //String parDecls = this.beautify(complexDefFun.getParDecls(), new StringJoiner(" , "), arg);
         String statements = this.beautify(complexDefFun.getStatements(), new StringJoiner("\n"), arg);
         arg.exitScope();
         type = functionType(name, type);
