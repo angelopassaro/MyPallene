@@ -45,7 +45,7 @@ function mul(): int
     return a * b
 end
 
-function div(): int
+function mydiv(): int
     "Inserisci due numeri per la somma (a / b)" ==>;
     "a:" ==>;
     a <==;
@@ -81,7 +81,7 @@ function main(): nil
         end;
 
         if select == 4 then
-            div() ==>
+            mydiv() ==>
         end;
 
         if select == 5 then
