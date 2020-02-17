@@ -298,7 +298,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, plusOp);
         }
-        return lType.checkAdd((PrimitiveNodeType) rType);
+        plusOp.setType(lType.checkAdd((PrimitiveNodeType) rType));
+        return plusOp.getType();
     }
 
     @Override
@@ -308,7 +309,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, minusOp);
         }
-        return lType.checkSub((PrimitiveNodeType) rType);
+        minusOp.setType(lType.checkSub((PrimitiveNodeType) rType));
+        return minusOp.getType();
     }
 
     @Override
@@ -318,7 +320,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, timesOp);
         }
-        return lType.checkMul((PrimitiveNodeType) rType);
+        timesOp.setType(lType.checkMul((PrimitiveNodeType) rType));
+        return timesOp.getType();
     }
 
     @Override
@@ -328,7 +331,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(lType, rType, divOp);
         }
-        return lType.checkDiv((PrimitiveNodeType) rType);
+        divOp.setType(lType.checkDiv((PrimitiveNodeType) rType));
+        return divOp.getType();
     }
 
     @Override
@@ -338,7 +342,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!rType.equals(PrimitiveNodeType.BOOL)) {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, andOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        andOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return andOp.getType();
     }
 
     @Override
@@ -348,7 +353,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!rType.equals(PrimitiveNodeType.BOOL)) {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, orOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        orOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return orOp.getType();
     }
 
     @Override
@@ -358,7 +364,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.STRING)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || lType.equals(PrimitiveNodeType.STRING))) {
             this.errorHandler.reportTypeMismatch(rType, lType, gtOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        gtOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return gtOp.getType();
     }
 
     @Override
@@ -368,7 +375,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(rType, lType, geOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        geOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return geOp.getType();
     }
 
 
@@ -379,7 +387,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.STRING)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || lType.equals(PrimitiveNodeType.STRING))) {
             this.errorHandler.reportTypeMismatch(rType, lType, ltOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        ltOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return ltOp.getType();
     }
 
 
@@ -390,7 +399,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT))) {
             this.errorHandler.reportTypeMismatch(rType, lType, leOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        leOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return leOp.getType();
     }
 
 
@@ -401,7 +411,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (!(rType.equals(PrimitiveNodeType.INT) || rType.equals(PrimitiveNodeType.FLOAT) || rType.equals(PrimitiveNodeType.STRING)) && !(lType.equals(PrimitiveNodeType.INT) || lType.equals(PrimitiveNodeType.FLOAT) || lType.equals(PrimitiveNodeType.STRING))) {
             this.errorHandler.reportTypeMismatch(rType, lType, eqOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        eqOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return eqOp.getType();
     }
 
 
@@ -412,7 +423,8 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
         if (rType.equals(PrimitiveNodeType.BOOL)) {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.BOOL, rType, neOp);
         }
-        return lType.checkRel((PrimitiveNodeType) rType);
+        neOp.setType(lType.checkRel((PrimitiveNodeType) rType));
+        return neOp.getType();
     }
 
     @Override
