@@ -23,7 +23,7 @@ function main(): nil
         test4[10] = false;
         "Valore posiione 0", test4[0] ==>;
         "Valore posizione 10", test4[10] ==>;
-        "Dimensione array", #test4 ==>;
+        "Dimensione array", #test4 ==>
      end;
   nop
 end

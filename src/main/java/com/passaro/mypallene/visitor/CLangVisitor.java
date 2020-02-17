@@ -52,7 +52,9 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     private Consumer<ParDecl> formatArg(StringJoiner joiner, SymbolTable table) {
         return t -> {
             if (t.getTypeDenoter() instanceof ArrayTypeDenoter) {
-                joiner.add(String.format("%s %s", ((ArrayTypeDenoter) t.getTypeDenoter()).cType(), t.getVariable().getName()));
+                joiner.add(String.format("%s %s", (t.getTypeDenoter()).cType(), t.getVariable().getName()));
+            } else if (t.getTypeDenoter() instanceof FunctionTypeDenoter) {
+                joiner.add(String.format(t.accept(CLangVisitor.this, table), "%s"));
             } else {
                 joiner.add(String.format("%s", t.accept(CLangVisitor.this, table)));
             }
@@ -117,7 +119,12 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ParDecl parDecl, SymbolTable arg) {
-        return String.format("%s %s", parDecl.getTypeDenoter().typeFactory(), parDecl.getVariable().getName());
+        String type = parDecl.getTypeDenoter().accept(this, arg);
+        String name = parDecl.getVariable().accept(this, arg);
+        if (parDecl.getTypeDenoter() instanceof FunctionTypeDenoter) {
+            return String.format(type, name);
+        }
+        return String.format("%s %s", type, name);
     }
 
 
@@ -127,7 +134,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         String name = varDecl.getVariable().accept(this, arg);
         String result;
         if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
-            type = ((ArrayTypeDenoter) varDecl.getTypeDenoter()).cType();
+            type = (varDecl.getTypeDenoter()).cType();
             result = String.format("%s %s;init%s(&%s,1);", type, name, type, name);
             if (!varDecl.getVarInitValue().accept(this, arg).equals("null")) {
                 result = result + String.format("insert%s(&%s,%s,0);", type, name, varDecl.getVarInitValue().getExpr().accept(this, arg));
@@ -139,6 +146,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
             result = String.format("%s %s;", type, name);
         return result;
     }
+
 
     @Override
     public String visit(VarInitValue varInitValue, SymbolTable arg) {
@@ -408,7 +416,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(FunctionTypeDenoter functionTypeDenoter, SymbolTable arg) {
-        return null;
+        return functionTypeDenoter.cType();
     }
 
     @Override

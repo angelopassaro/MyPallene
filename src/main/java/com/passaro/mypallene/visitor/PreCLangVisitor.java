@@ -134,8 +134,9 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     private Consumer<ParDecl> formatArg(StringJoiner joiner, SymbolTable table) {
         return t -> {
             if (t.getTypeDenoter() instanceof ArrayTypeDenoter) {
-                joiner.add(String.format("%s %s", ((ArrayTypeDenoter) t.getTypeDenoter()).cType(), t.getVariable().getName()));
-
+                joiner.add(String.format("%s %s", (t.getTypeDenoter()).cType(), t.getVariable().getName()));
+            } else if (t.getTypeDenoter() instanceof FunctionTypeDenoter) {
+                joiner.add(String.format(t.accept(PreCLangVisitor.this, table), "%s"));
             } else {
                 joiner.add(String.format("%s", t.accept(PreCLangVisitor.this, table)));
             }
@@ -149,7 +150,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         String functions = this.beautify(program.getFunctions(), new StringJoiner("\n"), arg);
         arg.exitScope();
         String result = this.root.replace("$declarations$", global).replace("$statements$", functions);
-        return result.contains("ArrayInt") || result.contains("ArrayFloat") || result.contains("ArrayChar") ? result.replace("$array$", array) : result.replace("$array$", "// no array use");
+        return result.contains("ArrayInt") || result.contains("ArrayFloat") || result.contains("ArrayChar") || result.contains("ArrayBool") ? result.replace("$array$", array) : result.replace("$array$", "// no array use");
     }
 
     @Override
@@ -164,9 +165,9 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         String name = varDecl.getVariable().accept(this, arg);
         String result;
         if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
-            type = ((ArrayTypeDenoter) varDecl.getTypeDenoter()).cType();
+            type = (varDecl.getTypeDenoter()).cType();
             this.globalArray.addGlobal(String.format("init%s(&%s,1);", type, name));
-            if (varDecl.getVarInitValue() != null) {
+            if (!varDecl.getVarInitValue().accept(this, arg).equals("null")) {
                 this.globalArray.addGlobal(String.format("insert%s(&%s,%s,0);", type, name, varDecl.getVarInitValue().accept(this, arg)));
             }
         }
@@ -177,6 +178,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             result = String.format("%s %s;", type, name);
         return result;
     }
+
 
     @Override
     public String visit(Global global, SymbolTable arg) {
@@ -204,7 +206,12 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ParDecl parDecl, SymbolTable arg) {
-        return String.format("%s %s", parDecl.getTypeDenoter().typeFactory(), parDecl.getVariable().getName());
+        String type = parDecl.getTypeDenoter().accept(this, arg);
+        String name = parDecl.getVariable().accept(this, arg);
+        if (parDecl.getTypeDenoter() instanceof FunctionTypeDenoter) {
+            return String.format(type, name);
+        }
+        return String.format("%s %s", type, name);
     }
 
 
@@ -226,7 +233,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(FunctionTypeDenoter functionTypeDenoter, SymbolTable arg) {
-        return null;
+        return functionTypeDenoter.cType();
     }
 
     @Override
@@ -301,7 +308,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return "{}";
+        return "null";
     }
 
     @Override
