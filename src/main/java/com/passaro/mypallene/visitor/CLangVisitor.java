@@ -40,9 +40,10 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     }
 
     private String formatType(NodeType type) {
-        if (type.toString().equals("float")) {
+        String type2 = type.toString().replace("[]", "");
+        if (type2.equals("float")) {
             return "%f";
-        } else if (type.toString().equals("string")) {
+        } else if (type2.equals("string")) {
             return "%s";
         } else
             return "%d";
@@ -210,7 +211,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
-        String type = arrayElementStatement.getArrayExpr().getType().toString();
+        String type = arrayElementStatement.getArrayExpr().getType().toString().replace("[]", "");
         if (type.equals("string")) {
             type = "char";
         }
@@ -396,7 +397,6 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     @Override
     public String visit(SharpExpression sharpExpression, SymbolTable arg) {
         String a = sharpExpression.getExpr().accept(this, arg);
-//        sharpExpression.setType(PrimitiveNodeType.INT);
         if (sharpExpression.getExpr().getType().toString().equalsIgnoreCase("string")) {
             return String.format("strlen(%s)", a);
         } else {

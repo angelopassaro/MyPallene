@@ -1,0 +1,23 @@
+global
+     array: {string} = {}: string;
+     array2: {int} = {}: int
+
+end
+
+function main(): nil
+  array[0] = "prima";
+  array[1] = "seconda";
+  array[2] = "terza";
+
+  for i=0, #array do
+    array[i] ==>
+  end;
+
+  array2[0] = 1;
+  array2[1] = 2;
+  array2[2] = 3;
+
+  for i=0, #array2 do
+    array2[i] ==>
+  end
+end
