@@ -53,6 +53,8 @@ public class ArrayTypeDenoter extends TypeDenoter {
                 return "ArrayInt";
             case FLOAT:
                 return "ArrayFloat";
+            case BOOL:
+                return "ArrayBool";
             default:
                 return null;
         }

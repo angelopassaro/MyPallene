@@ -87,6 +87,26 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "  }\n" +
             "  a->array[position] = element;\n" +
             "  a->used++;\n" +
+            "}" +
+            "typedef struct {\n" +
+            "  bool *array;\n" +
+            "  size_t used;\n" +
+            "  size_t size;\n" +
+            "} ArrayBool;\n" +
+            "\n" +
+            "void initArrayBool(ArrayBool *a, size_t initialSize) {\n" +
+            "  a->array = (bool *)malloc(initialSize * sizeof(bool));\n" +
+            "  a->used = 0;\n" +
+            "  a->size = initialSize;\n" +
+            "}\n" +
+            "\n" +
+            "void insertArrayBool(ArrayBool *a, bool element, int position) {\n" +
+            "  if (position >= a->size) {\n" +
+            "    a->size *= position;\n" +
+            "    a->array = (bool *)realloc(a->array, a->size * sizeof(bool));\n" +
+            "  }\n" +
+            "  a->array[position] = element;\n" +
+            "  a->used++;\n" +
             "}";
 
     public PreCLangVisitor(String root, GlobalArray globalArray) {
