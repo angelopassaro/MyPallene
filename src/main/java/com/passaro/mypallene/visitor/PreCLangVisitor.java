@@ -29,11 +29,11 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     private GlobalArray globalArray;
     private final String array = "typedef struct {\n" +
             "  int *array;\n" +
-            "  size_t used;\n" +
-            "  size_t size;\n" +
+            "  int used;\n" +
+            "  int size;\n" +
             "} ArrayInt;\n" +
             "\n" +
-            "void initArrayInt(ArrayInt *a, size_t initialSize) {\n" +
+            "void initArrayInt(ArrayInt *a, int initialSize) {\n" +
             "  a->array = (int *)malloc(initialSize * sizeof(int));\n" +
             "  a->used = 0;\n" +
             "  a->size = initialSize;\n" +
@@ -50,11 +50,11 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "\n" +
             "typedef struct {\n" +
             "  char **array;\n" +
-            "  size_t used;\n" +
-            "  size_t size;\n" +
+            "  int used;\n" +
+            "  int size;\n" +
             "} ArrayChar;\n" +
             "\n" +
-            "void initArrayChar(ArrayChar *a, size_t initialSize) {\n" +
+            "void initArrayChar(ArrayChar *a, int initialSize) {\n" +
             "  a->array = malloc(initialSize * sizeof(char *) + 1);\n" +
             "  a->used = 0;\n" +
             "  a->size = initialSize;\n" +
@@ -70,11 +70,11 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "}\n" +
             "typedef struct {\n" +
             "  float *array;\n" +
-            "  size_t used;\n" +
-            "  size_t size;\n" +
+            "  int used;\n" +
+            "  int size;\n" +
             "} ArrayFloat;\n" +
             "\n" +
-            "void initArrayFloat(ArrayFloat *a, size_t initialSize) {\n" +
+            "void initArrayFloat(ArrayFloat *a, int initialSize) {\n" +
             "  a->array = (float *)malloc(initialSize * sizeof(float));\n" +
             "  a->used = 0;\n" +
             "  a->size = initialSize;\n" +
@@ -90,11 +90,11 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "}" +
             "typedef struct {\n" +
             "  bool *array;\n" +
-            "  size_t used;\n" +
-            "  size_t size;\n" +
+            "  int used;\n" +
+            "  int size;\n" +
             "} ArrayBool;\n" +
             "\n" +
-            "void initArrayBool(ArrayBool *a, size_t initialSize) {\n" +
+            "void initArrayBool(ArrayBool *a, int initialSize) {\n" +
             "  a->array = (bool *)malloc(initialSize * sizeof(bool));\n" +
             "  a->used = 0;\n" +
             "  a->size = initialSize;\n" +
