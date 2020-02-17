@@ -286,6 +286,7 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
             this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, indexType, readArrayExpression);
         }
         ArrayNodeType arrayNodeType = (ArrayNodeType) readArrayExpression.getArrayName().accept(this, arg);
+        readArrayExpression.setType(arrayNodeType);
         return arrayNodeType.getElementType();
     }
 

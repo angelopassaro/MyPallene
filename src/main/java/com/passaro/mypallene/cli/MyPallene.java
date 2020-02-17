@@ -6,6 +6,7 @@ import com.passaro.mypallene.error.ErrorHandler;
 import com.passaro.mypallene.error.StackErrorHandler;
 import com.passaro.mypallene.lexical.ArrayStringTable;
 import com.passaro.mypallene.lexical.StringTable;
+import com.passaro.mypallene.semantic.GlobalArray;
 import com.passaro.mypallene.semantic.StackSymbolTable;
 import com.passaro.mypallene.syntax.Program;
 import com.passaro.mypallene.template.CTemplate;
@@ -86,12 +87,13 @@ public class MyPallene {
         CTemplate template = new CTemplate();
         String model = template.create().get();
 
-        PreCLangVisitor PreCLangVisitor = new PreCLangVisitor(model);
+        GlobalArray globalArray = new GlobalArray();
+        PreCLangVisitor PreCLangVisitor = new PreCLangVisitor(model, globalArray);
         model = program.accept(PreCLangVisitor, symbolTable);
         symbolTable.resetLevel();
         template.write(filePath, model);
 
-        CLangVisitor cLangVisitor = new CLangVisitor(model);
+        CLangVisitor cLangVisitor = new CLangVisitor(model, globalArray);
         model = program.accept(cLangVisitor, symbolTable);
         symbolTable.resetLevel();
         template.write(filePath, model);

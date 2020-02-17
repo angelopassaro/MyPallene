@@ -48,15 +48,11 @@ public class ArrayTypeDenoter extends TypeDenoter {
     public String cType() {
         switch ((PrimitiveNodeType) this.getElementsType()) {
             case STRING:
-                return "Char *";
+                return "ArrayChar";
             case INT:
-                return "int";
+                return "ArrayInt";
             case FLOAT:
-                return "float";
-            case BOOL:
-                return "bool";
-            case NULL:
-                return "";
+                return "ArrayFloat";
             default:
                 return null;
         }

@@ -1,7 +1,7 @@
 package com.passaro.mypallene.visitor;
 
 import com.passaro.mypallene.nodetype.NodeType;
-import com.passaro.mypallene.nodetype.PrimitiveNodeType;
+import com.passaro.mypallene.semantic.GlobalArray;
 import com.passaro.mypallene.semantic.SymbolTable;
 import com.passaro.mypallene.syntax.*;
 import com.passaro.mypallene.syntax.expression.*;
@@ -24,12 +24,16 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
+//TODO readArray
+//TODO test float and char
 public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     private final String root;
+    private GlobalArray globalArray;
 
-    public CLangVisitor(String root) {
+    public CLangVisitor(String root, GlobalArray globalArray) {
         this.root = root;
+        this.globalArray = globalArray;
     }
 
     private String beautify(List<? extends AstNode> nodes, StringJoiner joiner, SymbolTable table) {
@@ -38,21 +42,19 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     }
 
     private String formatType(NodeType type) {
-        PrimitiveNodeType pType = (PrimitiveNodeType) type;
-        switch (pType) {
-            case FLOAT:
-                return "%f";
-            case STRING:
-                return "%s";
-            default:
-                return "%d";
-        }
+        if (type.toString().equals("float")) {
+            return "%f";
+        } else if (type.toString().equals("string")) {
+            return "%s";
+        } else
+            return "%d";
     }
+
 
     private Consumer<ParDecl> formatArg(StringJoiner joiner, SymbolTable table) {
         return t -> {
             if (t.getTypeDenoter() instanceof ArrayTypeDenoter) {
-                joiner.add(String.format("%s[]", t.accept(CLangVisitor.this, table)));
+                joiner.add(String.format("%s %s", ((ArrayTypeDenoter) t.getTypeDenoter()).cType(), t.getVariable().getName()));
             } else {
                 joiner.add(String.format("%s", t.accept(CLangVisitor.this, table)));
             }
@@ -89,8 +91,13 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(SimpleDefFun simpleDefFun, SymbolTable arg) {
         arg.enterScope();
         String name = simpleDefFun.getVariable().accept(this, arg);
+        String statements = "";
+        if (name.equals("main")) {
+            statements = this.globalArray.getGlobals();
+        }
         String type = simpleDefFun.getTypeDenoter().accept(this, arg);
-        String statements = this.beautify(simpleDefFun.getStatements(), new StringJoiner("\n"), arg);
+        statements = statements + "" + this.beautify(simpleDefFun.getStatements(), new StringJoiner("\n"), arg);
+
         arg.exitScope();
         type = functionType(name, type);
         return String.format("\n%s %s(){\n%s\n}\n", type, name, statements);
@@ -120,16 +127,16 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     public String visit(VarDecl varDecl, SymbolTable arg) {
         String type = varDecl.getTypeDenoter().accept(this, arg);
         String name = varDecl.getVariable().accept(this, arg);
-        if (type.equals("string")) {
-            type = "char *";
-        }
-        if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) name = name + "[50]";
-
-        if (varDecl.getVarInitValue() != null) {
-            return String.format("%s %s = %s;", type, name, varDecl.getVarInitValue().accept(this, arg));
-        } else {
-            return String.format("%s %s;", type, name);
-        }
+        String result;
+        if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
+            type = ((ArrayTypeDenoter) varDecl.getTypeDenoter()).cType();
+            result = String.format("%s %s;init%s(&%s,1);", type, name, type, name);
+        } else if (varDecl.getVarInitValue() != null && !(varDecl.getTypeDenoter() instanceof ArrayTypeDenoter)) {
+            String value = varDecl.getVarInitValue().accept(this, arg);
+            result = String.format("%s %s = %s;", type, name, value);
+        } else
+            result = String.format("%s %s;", type, name);
+        return result;
     }
 
     @Override
@@ -194,10 +201,16 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayElementStatement arrayElementStatement, SymbolTable arg) {
+        String type = arrayElementStatement.getArrayExpr().getType().toString();
+        if (type.equals("string")) {
+            type = "char";
+        }
+        type = type.substring(0, 1).toUpperCase() + type.substring(1);
         String array = arrayElementStatement.getArrayExpr().accept(this, arg);
         String index = arrayElementStatement.getArrayPoint().accept(this, arg);
         String assignee = arrayElementStatement.getArrayAssign().accept(this, arg);
-        return String.format("%s[%s] = %s;", array, index, assignee);
+        return String.format("insertArray%s(&%s,%s,%s);", type, array, assignee, index);
+        //       return String.format("%s[%s] = %s;", array, index, assignee);
     }
 
     @Override
@@ -255,14 +268,14 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return "{ }";
+        return "{}";
     }
 
     @Override
     public String visit(ArrayRead readArrayExpression, SymbolTable arg) {
         String array = readArrayExpression.getArrayName().accept(this, arg);
         String index = readArrayExpression.getArrayElement().accept(this, arg);
-        return String.format("%s[%s]", array, index);
+        return String.format("%s.array[%s]", array, index);
     }
 
     @Override
@@ -374,11 +387,11 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     @Override
     public String visit(SharpExpression sharpExpression, SymbolTable arg) {
         String a = sharpExpression.getExpr().accept(this, arg);
-        sharpExpression.setType(PrimitiveNodeType.INT);
+//        sharpExpression.setType(PrimitiveNodeType.INT);
         if (sharpExpression.getExpr().getType().toString().equalsIgnoreCase("string")) {
             return String.format("strlen(%s)", a);
         } else {
-            return String.format("count(%s)", a);
+            return String.format("%s.used", a);
         }
     }
 

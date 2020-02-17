@@ -1,16 +1,26 @@
 global
-  array: {int} = {}: int;
+  test: {int} = {}: int;
   result: int
 end
 
 function main(): nil
-    array[0] = 1;
-    result = #array;
-    result ==>;
-    result = conta(array);
+    test[0] = 1;
+    result = #test;
+    "Dimensione array ", result ==>;
+    result = count(test);
+    local
+        test2: {float} = {}: float;
+        test2[2] = 2.0;
+        "Valore posizione 2 ",test2[2] ==>
+    end;
+    local
+        test3: {string} = {}: string;
+        test3[5] = "testo";
+        "Valore posizione 5 ", test3[5] ==>
+     end;
   nop
 end
 
-function conta(a:{int}):int
-    return #a
-end
+function count(a:{int}):int
+ return #a
+ end

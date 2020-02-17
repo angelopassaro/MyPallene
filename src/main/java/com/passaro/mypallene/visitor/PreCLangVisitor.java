@@ -1,5 +1,6 @@
 package com.passaro.mypallene.visitor;
 
+import com.passaro.mypallene.semantic.GlobalArray;
 import com.passaro.mypallene.semantic.SymbolTable;
 import com.passaro.mypallene.syntax.*;
 import com.passaro.mypallene.syntax.expression.*;
@@ -25,9 +26,72 @@ import java.util.function.Consumer;
 public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     private final String root;
+    private GlobalArray globalArray;
+    private final String array = "typedef struct {\n" +
+            "  int *array;\n" +
+            "  size_t used;\n" +
+            "  size_t size;\n" +
+            "} ArrayInt;\n" +
+            "\n" +
+            "void initArrayInt(ArrayInt *a, size_t initialSize) {\n" +
+            "  a->array = (int *)malloc(initialSize * sizeof(int));\n" +
+            "  a->used = 0;\n" +
+            "  a->size = initialSize;\n" +
+            "}\n" +
+            "\n" +
+            "void insertArrayInt(ArrayInt *a, int element, int position) {\n" +
+            "  if (position >= a->size) {\n" +
+            "    a->size *= position;\n" +
+            "    a->array = (int *)realloc(a->array, a->size * sizeof(int));\n" +
+            "  }\n" +
+            "  a->array[position] = element;\n" +
+            "  a->used++;\n" +
+            "}\n" +
+            "\n" +
+            "typedef struct {\n" +
+            "  char **array;\n" +
+            "  size_t used;\n" +
+            "  size_t size;\n" +
+            "} ArrayChar;\n" +
+            "\n" +
+            "void initArrayChar(ArrayChar *a, size_t initialSize) {\n" +
+            "  a->array = malloc(initialSize * sizeof(char *) + 1);\n" +
+            "  a->used = 0;\n" +
+            "  a->size = initialSize;\n" +
+            "}\n" +
+            "\n" +
+            "void insertArrayChar(ArrayChar *a, char *element, int position) {\n" +
+            "  if (position >= a->size) {\n" +
+            "    a->size *= position;\n" +
+            "    a->array = realloc(a->array, a->size * sizeof(char) + 1);\n" +
+            "  }\n" +
+            "  a->array[position] = element;\n" +
+            "  a->used++;\n" +
+            "}\n" +
+            "typedef struct {\n" +
+            "  float *array;\n" +
+            "  size_t used;\n" +
+            "  size_t size;\n" +
+            "} ArrayFloat;\n" +
+            "\n" +
+            "void initArrayFloat(ArrayFloat *a, size_t initialSize) {\n" +
+            "  a->array = (float *)malloc(initialSize * sizeof(float));\n" +
+            "  a->used = 0;\n" +
+            "  a->size = initialSize;\n" +
+            "}\n" +
+            "\n" +
+            "void insertArrayFloat(ArrayFloat *a, float element, int position) {\n" +
+            "  if (position >= a->size) {\n" +
+            "    a->size *= position;\n" +
+            "    a->array = (float *)realloc(a->array, a->size * sizeof(float));\n" +
+            "  }\n" +
+            "  a->array[position] = element;\n" +
+            "  a->used++;\n" +
+            "}";
 
-    public PreCLangVisitor(String root) {
+    public PreCLangVisitor(String root, GlobalArray globalArray) {
         this.root = root;
+        this.globalArray = globalArray;
     }
 
     private String beautify(List<? extends AstNode> nodes, StringJoiner joiner, SymbolTable table) {
@@ -50,7 +114,8 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
     private Consumer<ParDecl> formatArg(StringJoiner joiner, SymbolTable table) {
         return t -> {
             if (t.getTypeDenoter() instanceof ArrayTypeDenoter) {
-                joiner.add(String.format("%s[]", t.accept(PreCLangVisitor.this, table)));
+                joiner.add(String.format("%s %s", ((ArrayTypeDenoter) t.getTypeDenoter()).cType(), t.getVariable().getName()));
+
             } else {
                 joiner.add(String.format("%s", t.accept(PreCLangVisitor.this, table)));
             }
@@ -63,7 +128,8 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         String global = this.beautify(program.getGlobal().getVarDecls(), new StringJoiner("\n"), arg);
         String functions = this.beautify(program.getFunctions(), new StringJoiner("\n"), arg);
         arg.exitScope();
-        return this.root.replace("$declarations$", global).replace("$statements$", functions);
+        String result = this.root.replace("$declarations$", global).replace("$statements$", functions);
+        return result.contains("ArrayInt") || result.contains("ArrayFloat") || result.contains("ArrayChar") ? result.replace("$array$", array) : result.replace("$array$", "// no array use");
     }
 
     @Override
@@ -77,11 +143,13 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         String type = varDecl.getTypeDenoter().accept(this, arg);
         String name = varDecl.getVariable().accept(this, arg);
         String result;
-        if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) name = name + "[50]";
-        if (varDecl.getVarInitValue() != null) {
+        if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
+            type = ((ArrayTypeDenoter) varDecl.getTypeDenoter()).cType();
+            this.globalArray.addGlobal(String.format("init%s(&%s,1);", type, name));
+        }
+        if (varDecl.getVarInitValue() != null && !(varDecl.getTypeDenoter() instanceof ArrayTypeDenoter)) {
             String value = varDecl.getVarInitValue().accept(this, arg);
             result = String.format("%s %s = %s;", type, name, value);
-
         } else
             result = String.format("%s %s;", type, name);
         return result;

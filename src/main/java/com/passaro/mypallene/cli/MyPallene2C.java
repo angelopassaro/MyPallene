@@ -10,10 +10,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * TODO getinput
- */
-
 class MyPallene2C {
 
     public static void main(String[] args) throws Exception {

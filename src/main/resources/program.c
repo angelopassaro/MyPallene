@@ -1,10 +1,12 @@
 #include<stdio.h>
 #include<stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define nop();
-#define count(x)  sizeof(x) / sizeof((x)[0])
 
+/********************* Array ************************/
+$array$
 /********************* Declarations ****************/
 $declarations$
 /********************* Signs ***********************/
