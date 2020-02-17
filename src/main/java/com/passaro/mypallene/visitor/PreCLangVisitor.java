@@ -146,6 +146,9 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
             type = ((ArrayTypeDenoter) varDecl.getTypeDenoter()).cType();
             this.globalArray.addGlobal(String.format("init%s(&%s,1);", type, name));
+            if (varDecl.getVarInitValue() != null) {
+                this.globalArray.addGlobal(String.format("insert%s(&%s,%s,0);", type, name, varDecl.getVarInitValue().accept(this, arg)));
+            }
         }
         if (varDecl.getVarInitValue() != null && !(varDecl.getTypeDenoter() instanceof ArrayTypeDenoter)) {
             String value = varDecl.getVarInitValue().accept(this, arg);

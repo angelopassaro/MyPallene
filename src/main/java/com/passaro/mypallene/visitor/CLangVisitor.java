@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
-//TODO readArray
-//TODO test float and char
 public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     private final String root;
@@ -131,6 +129,9 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
             type = ((ArrayTypeDenoter) varDecl.getTypeDenoter()).cType();
             result = String.format("%s %s;init%s(&%s,1);", type, name, type, name);
+            if (!varDecl.getVarInitValue().accept(this, arg).equals("null")) {
+                result = result + String.format("insert%s(&%s,%s,0);", type, name, varDecl.getVarInitValue().getExpr().accept(this, arg));
+            }
         } else if (varDecl.getVarInitValue() != null && !(varDecl.getTypeDenoter() instanceof ArrayTypeDenoter)) {
             String value = varDecl.getVarInitValue().accept(this, arg);
             result = String.format("%s %s = %s;", type, name, value);
@@ -268,7 +269,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(ArrayConst emptyArrayExpression, SymbolTable arg) {
-        return "{}";
+        return "null";
     }
 
     @Override

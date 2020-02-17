@@ -1,10 +1,10 @@
 global
-  test: {int} = {}: int;
+  test: {int} = 4;
   result: int
 end
 
 function main(): nil
-    test[0] = 1;
+    test[1] = 1;
     result = #test;
     "Dimensione array ", result ==>;
     result = count(test);
@@ -14,7 +14,7 @@ function main(): nil
         "Valore posizione 2 ",test2[2] ==>
     end;
     local
-        test3: {string} = {}: string;
+        test3: {string} = "test";
         test3[5] = "testo";
         "Valore posizione 5 ", test3[5] ==>
      end;
