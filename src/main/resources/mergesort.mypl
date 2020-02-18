@@ -1,0 +1,93 @@
+global
+    n : int;
+    v : {int} = {} : int
+end
+
+function insert_array(v:{int}):int
+    local
+        n: int;
+        i: int;
+        tmp: int;
+        "Quanti elementi" ==>;
+        n <==;
+        for i=0, n do
+            "Inserisci un elemento " ==>;
+            tmp <==;
+            v[i] = tmp
+        end;
+        return n
+    end
+end
+
+function mergeSort(a:{int}, p:int, r:int):nil
+    local
+        q:int;
+        if p < r then
+            q = p + r;
+            q = q/2;
+            mergeSort(a, p, q);
+            mergeSort(a, q+1, r);
+            merge(a, p, q, r)
+        end
+     end
+end
+
+
+function merge(a:{int}, p:int, q:int, r:int):nil
+    local
+        i:int;
+        j:int;
+        k:int = 0;
+        b:{int} = {}:int;
+        tmp: int;
+        tmpb: int;
+        i = p;
+        j = q + 1;
+
+
+        while i<=q and j<=r do
+            tmp = a[i];
+            tmpb = a[j];
+            if tmp < tmpb then
+                b[k] = a[i];
+                i = i + 1
+            else
+                b[k] = a[j];
+                j = j + 1
+            end;
+         k = k + 1
+        end;
+
+        while i <= q do
+            b[k] = a[i];
+            i = i + 1;
+            k = k + 1
+        end;
+
+        while j <= r do
+            b[k] = a[j];
+            j = j + 1;
+            k = k + 1
+        end;
+
+        for k = p , r + 1 do
+            a[k] = b[k-p]
+        end
+    end
+end
+
+function stampa_array(v:{int}, n:int):nil
+    "" ==>;
+    local
+        i:int;
+        for i=0, n do
+            v[i] ==>
+        end
+    end
+end
+
+function main():nil
+    n = insert_array(v);
+    mergeSort(v, 0, n-1);
+    stampa_array(v,n)
+end
