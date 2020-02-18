@@ -136,7 +136,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         String result;
         if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
             type = (varDecl.getTypeDenoter()).cType();
-            result = String.format("%s %s;init%s(&%s,1);", type, name, type, name);
+            result = String.format("%s %s;init%s(&%s);", type, name, type, name);
             if (!varDecl.getVarInitValue().accept(this, arg).equals("null")) {
                 result = result + String.format("insert%s(&%s,%s,0);", type, name, varDecl.getVarInitValue().getExpr().accept(this, arg));
             }

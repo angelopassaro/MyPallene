@@ -33,10 +33,10 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "  int size;\n" +
             "} ArrayInt;\n" +
             "\n" +
-            "void initArrayInt(ArrayInt *a, int initialSize) {\n" +
-            "  a->array = (int *)malloc(initialSize * sizeof(int));\n" +
+            "void initArrayInt(ArrayInt *a) {\n" +
+            "  a->array = (int *)malloc(100 * sizeof(int));\n" +
             "  a->used = 0;\n" +
-            "  a->size = initialSize;\n" +
+            "  a->size = 100;\n" +
             "}\n" +
             "\n" +
             "void insertArrayInt(ArrayInt *a, int element, int position) {\n" +
@@ -54,10 +54,10 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "  int size;\n" +
             "} ArrayChar;\n" +
             "\n" +
-            "void initArrayChar(ArrayChar *a, int initialSize) {\n" +
-            "  a->array = malloc(initialSize * sizeof(char *) + 1);\n" +
+            "void initArrayChar(ArrayChar *a) {\n" +
+            "  a->array = malloc(100 * sizeof(char *) + 1);\n" +
             "  a->used = 0;\n" +
-            "  a->size = initialSize;\n" +
+            "  a->size = 100;\n" +
             "}\n" +
             "\n" +
             "void insertArrayChar(ArrayChar *a, char *element, int position) {\n" +
@@ -74,10 +74,10 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "  int size;\n" +
             "} ArrayFloat;\n" +
             "\n" +
-            "void initArrayFloat(ArrayFloat *a, int initialSize) {\n" +
-            "  a->array = (float *)malloc(initialSize * sizeof(float));\n" +
+            "void initArrayFloat(ArrayFloat *a) {\n" +
+            "  a->array = (float *)malloc(100 * sizeof(float));\n" +
             "  a->used = 0;\n" +
-            "  a->size = initialSize;\n" +
+            "  a->size = 100;\n" +
             "}\n" +
             "\n" +
             "void insertArrayFloat(ArrayFloat *a, float element, int position) {\n" +
@@ -94,10 +94,10 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
             "  int size;\n" +
             "} ArrayBool;\n" +
             "\n" +
-            "void initArrayBool(ArrayBool *a, int initialSize) {\n" +
-            "  a->array = (bool *)malloc(initialSize * sizeof(bool));\n" +
+            "void initArrayBool(ArrayBool *a) {\n" +
+            "  a->array = (bool *)malloc(100 * sizeof(bool));\n" +
             "  a->used = 0;\n" +
-            "  a->size = initialSize;\n" +
+            "  a->size = 100;\n" +
             "}\n" +
             "\n" +
             "void insertArrayBool(ArrayBool *a, bool element, int position) {\n" +
@@ -166,7 +166,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         String result;
         if (varDecl.getTypeDenoter() instanceof ArrayTypeDenoter) {
             type = (varDecl.getTypeDenoter()).cType();
-            this.globalArray.addGlobal(String.format("init%s(&%s,1);", type, name));
+            this.globalArray.addGlobal(String.format("init%s(&%s);", type, name));
             if (!varDecl.getVarInitValue().accept(this, arg).equals("null")) {
                 this.globalArray.addGlobal(String.format("insert%s(&%s,%s,0);", type, name, varDecl.getVarInitValue().accept(this, arg)));
             }
