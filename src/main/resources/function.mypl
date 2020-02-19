@@ -4,17 +4,14 @@ global
 end
 
 function main( ): nil
+  array[2] = 5;
   executor(somma, array, array);
   nop
 end
 
-function asd(): int
-  nop;
-  return 1
-end
 
 function somma(a: {int}, b: {int}): int
-  return #a
+  return #a + #b
 end
 
 function executor(ptr: ({int}, {int}) -> int, a: {int}, b: {int}): nil

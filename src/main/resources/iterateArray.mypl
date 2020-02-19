@@ -1,7 +1,8 @@
 global
      array: {string} = {}: string;
-     array2: {int} = {}: int
-
+     array2: {int} = {}: int;
+     array3:{float} = {}: float;
+     array4:{bool} = {}: bool
 end
 
 function main(): nil
@@ -19,5 +20,21 @@ function main(): nil
 
   for i=0, #array2 do
     array2[i] ==>
-  end
+  end;
+
+    array3[0] = 6.2;
+    array3[1] = 2.0;
+    array3[2] = 3.5;
+
+    for i=0, #array3 do
+      array3[i] ==>
+    end;
+
+    array4[0] = true;
+    array4[1] = false;
+    array4[2] = false;
+
+    for i=0, #array4 do
+        array4[i] ==>
+    end
 end
