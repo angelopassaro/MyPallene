@@ -4,6 +4,7 @@ global
 end
 
 function main( ): nil
+  executor(somma, array, array);
   array[2] = 5;
   executor(somma, array, array);
   nop
