@@ -93,16 +93,27 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     @Override
     public NodeType visit(VarDecl varDecl, SymbolTable arg) {
         NodeType tType = varDecl.getTypeDenoter().accept(this, arg);
+        NodeType oType;
         if (varDecl.getVarInitValue() != null) {
-            varDecl.getVarInitValue().getExpr().accept(this, arg);
+            oType = varDecl.getVarInitValue().accept(this, arg);
+            if (tType.toString().contains("[]")) {
+                if (!tType.toString().replace("[]", "").equals(oType.toString())) {
+                    this.errorHandler.reportTypeMismatch(tType, varDecl.getVarInitValue().getExpr().getType(), varDecl);
+                }
+            } else {
+                if (!tType.equals(oType)) {
+                    this.errorHandler.reportTypeMismatch(tType, varDecl.getVarInitValue().getExpr().getType(), varDecl);
+                }
+            }
         }
+
         return tType;
     }
 
     @Override
     public NodeType visit(VarInitValue varInitValue, SymbolTable arg) {
         varInitValue.getExpr().accept(this, arg);
-        return PrimitiveNodeType.NULL;
+        return varInitValue.getExpr().getType();
     }
 
     @Override
@@ -218,6 +229,30 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
             this.errorHandler.reportTypeMismatch(cNodeType.getInput(), input, functionCallStatement);
         }
         return cNodeType.getOutput();
+    }
+
+    @Override
+    public NodeType visit(Execute execute, SymbolTable arg) {
+        FunctionNodeType functionNodeType = (FunctionNodeType) execute.getId().accept(this, arg);
+        if (!functionNodeType.getInput().toString().equals("int")) {
+            this.errorHandler.reportError("Aspect one arg in execute function", execute);
+        }
+
+        if (!functionNodeType.getOutput().toString().equals("int")) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, functionNodeType.getOutput(), execute);
+        }
+
+        CompositeNodeType exp = new CompositeNodeType(new ArrayList<>());
+        execute.getExprs().forEach(e -> exp.addType(e.accept(this, arg)));
+        if (exp.toString().contains("float") || exp.toString().contains("bool") || exp.toString().contains("string")) {
+            this.errorHandler.reportTypeMismatch(PrimitiveNodeType.INT, exp, execute);
+        }
+
+        if (exp.toString().length() == 0) {
+            this.errorHandler.reportError("Aspect almost one arg", execute);
+        }
+
+        return functionNodeType.getOutput();
     }
 
     @Override
@@ -479,4 +514,6 @@ public class TypeCheckerVisitor implements Visitor<NodeType, SymbolTable> {
     public NodeType visit(Variable variable, SymbolTable arg) {
         return arg.lookup(variable.getName()).get().getTypeDenoter();
     }
+
+
 }

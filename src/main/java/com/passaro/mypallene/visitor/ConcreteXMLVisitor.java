@@ -396,5 +396,10 @@ public class ConcreteXMLVisitor implements Visitor<Element, Document> {
         return element;
     }
 
+    @Override
+    public Element visit(Execute execute, Document arg) {
+        return null;
+    }
+
 
 }

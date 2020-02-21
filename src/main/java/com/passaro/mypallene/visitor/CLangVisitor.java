@@ -39,6 +39,7 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
         return joiner.toString();
     }
 
+
     private String formatType(NodeType type) {
         String type2 = type.toString().replace("[]", "");
         if (type2.equals("float")) {
@@ -422,5 +423,16 @@ public class CLangVisitor implements Visitor<String, SymbolTable> {
     @Override
     public String visit(Variable variable, SymbolTable arg) {
         return variable.getName();
+    }
+
+
+    @Override
+    public String visit(Execute execute, SymbolTable arg) {
+
+        String function = execute.getId().accept(this, arg);
+        StringJoiner joiner = new StringJoiner("+");
+        execute.getExprs().forEach(e -> joiner.add(String.format("%s(%s)", function, e.accept(this, arg))));
+        return joiner.toString();
+
     }
 }

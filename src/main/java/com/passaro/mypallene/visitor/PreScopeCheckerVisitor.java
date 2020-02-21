@@ -309,4 +309,9 @@ public class PreScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
     public Boolean visit(Variable variable, SymbolTable arg) {
         return !arg.probe(variable.getName());
     }
+
+    @Override
+    public Boolean visit(Execute execute, SymbolTable arg) {
+        return true;
+    }
 }

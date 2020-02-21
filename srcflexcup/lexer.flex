@@ -95,6 +95,7 @@ GlobalKeyword = [gG][lL][oO][bB][aA][lL]
   "false"               { return generateTokenSym("FALSE", ParserSym.FALSE, Boolean.parseBoolean(yytext())); }
   "not"                 { return generateTokenSym("NOT", ParserSym.NOT); }
   "#"                   { return generateTokenSym("SHARP", ParserSym.SHARP); }
+  "execute"             { return generateTokenSym("EXECUTE", ParserSym.EXECUTE);}
 
 
   /* Types Keywords */

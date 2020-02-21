@@ -348,4 +348,7 @@ public interface Visitor<T, P> {
      * @param arg      The Additional parameter
      */
     T visit(Variable variable, P arg);
+
+
+    T visit(Execute execute, P arg);
 }

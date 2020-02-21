@@ -71,7 +71,7 @@ public class MyPallene {
 
         if (errorHandler.haveErrors()) {
             errorHandler.logErrors();
-            throw new Exception("Errore durante la fase di Scope Checking");
+            System.out.println("Errore durante la fase di Scope Checking");
         }
 
         program.accept(typeCheckerVisitor, symbolTable);

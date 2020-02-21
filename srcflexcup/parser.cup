@@ -43,11 +43,11 @@ parser code{:
 
 
 /* Terminals (tokens returned by the scanner). */
-terminal String FUNCTION, MAIN, END, IF, THEN, ELSE, WHILE, DO, FOR, LOCAL, GLOBAL,READ, WRITE, RETURN, NOT, SHARP, ID; /* Keywords */
-terminal String NIL, INT, BOOL, FLOAT, STRING;                                                                          /* Types Keywords */
-terminal String LPAR, RPAR, BLPAR, BRPAR, SLPAR, SRPAR, COMMA, SEMI, COLON;                                             /* separators */
-terminal String AND, OR, LT, LE, EQ, NE, GT, GE, ARROW, ASSIGN, NOP;                                                    /* relop */
-terminal String PLUS, MINUS, TIMES, DIV;                                                                                /* arop */
+terminal String FUNCTION, MAIN, END, IF, THEN, ELSE, WHILE, DO, FOR, LOCAL, GLOBAL,READ, WRITE, RETURN, NOT, SHARP, ID, EXECUTE;    /* Keywords */
+terminal String NIL, INT, BOOL, FLOAT, STRING;                                                                                      /* Types Keywords */
+terminal String LPAR, RPAR, BLPAR, BRPAR, SLPAR, SRPAR, COMMA, SEMI, COLON;                                                         /* separators */
+terminal String AND, OR, LT, LE, EQ, NE, GT, GE, ARROW, ASSIGN, NOP;                                                                /* relop */
+terminal String PLUS, MINUS, TIMES, DIV;                                                                                            /* arop */
 terminal String UMINUS;
 
 /* Types Keywords */
@@ -152,7 +152,9 @@ Exprs               ::= Expr:expr COMMA Exprs:exprs                             
                         | Expr:expr                                                                                     {: RESULT = new LinkedList<Expr>(); RESULT.addFirst(expr);:}
                         ;
 
+
 Expr                ::= NIL:nil                                                                                         {: RESULT = new NilConst(nilxleft, nilxright); :}
+                        | EXECUTE:ex LPAR ID:func COMMA Exprs:exprs RPAR                                                {: RESULT = new Execute(exxleft,exxright, new Id(funcxleft,funcxright, func), exprs); :}
                         | TRUE:truer                                                                                    {: RESULT = new BooleanConst(truerxleft, truerxright, true);:}
                         | FALSE:falser                                                                                  {: RESULT = new BooleanConst(falserxleft, falserxright, false);:}
                         | INT_CONST:intConst                                                                            {: RESULT = new IntegerConst(intConstxleft, intConstxright, intConst);:}

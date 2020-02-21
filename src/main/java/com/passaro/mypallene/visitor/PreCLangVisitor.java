@@ -158,6 +158,11 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
         return variable.getName();
     }
 
+    @Override
+    public String visit(Execute execute, SymbolTable arg) {
+        return null;
+    }
+
 
     @Override
     public String visit(VarDecl varDecl, SymbolTable arg) {
@@ -238,6 +243,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(WhileStatement whileStatement, SymbolTable arg) {
+
         return null;
     }
 
@@ -258,6 +264,7 @@ public class PreCLangVisitor implements Visitor<String, SymbolTable> {
 
     @Override
     public String visit(LocalStatement localStatement, SymbolTable arg) {
+
         return null;
     }
 

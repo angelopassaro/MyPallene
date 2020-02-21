@@ -1,0 +1,19 @@
+global
+    a : int = 0;
+    result: int
+end
+
+function main( ): nil
+    local
+        x:int = 10;
+        y:int = 5;
+
+        result = execute(inc,x,x+y*2,inc(4));
+        "result = ", result ==>
+    end
+end
+
+//no int return type
+function inc( x : int): float
+  return x + 1
+end

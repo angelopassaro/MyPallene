@@ -115,6 +115,18 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         return isComplexFunctionSafe;
     }
 
+
+    @Override
+    public Boolean visit(Execute execute, SymbolTable arg) {
+        boolean isFunSafe = execute.getId().accept(this, arg);
+        boolean isVarSafe = this.checkContext(execute.getExprs(), arg);
+        boolean isExecuteSafe = isFunSafe && isVarSafe;
+        if (!isExecuteSafe) {
+            this.errorHandler.reportError("Execute Error", execute);
+        }
+        return isExecuteSafe;
+    }
+
     /**
      * ParDecl visit
      *
@@ -653,6 +665,7 @@ public class ScopeCheckerVisitor implements Visitor<Boolean, SymbolTable> {
         //return arg.lookup(variable.getValue()).isEmpty();
         return !arg.probe(variable.getName());
     }
+
 
     /**
      * Nil value const
